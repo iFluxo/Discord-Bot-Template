@@ -1,2 +1,2 @@
-export * from "./config.ts";
-export * from "./emoji.ts";
+export * from "./config";
+export * from "./emoji";

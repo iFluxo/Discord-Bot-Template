@@ -6,7 +6,7 @@ import { Yuna } from "yunaforseyfert";
 import { CooldownMiddlewares, cooldown } from "@slipher/cooldown";
 import { formatMemoryUsage } from "seyfert/lib/common/it/logger";
 import * as globalMiddlewares from "./middlewares/index";
-import { webhookClientPlugin } from "./plugins/webhookClient.ts"
+import { webhookClientPlugin } from "./plugins/webhookClient"
 
 const plugins = definePlugins(
     Yuna.plugin({
