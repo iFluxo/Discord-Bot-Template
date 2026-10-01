@@ -1,0 +1,19 @@
+{
+  "name": "Aoka",
+  "description": "Latest Discord bot",
+  "version": "0.0.1-28092026",
+  "main": "app/index.ts",
+  "type": "commonjs",
+  "scripts": {
+    "start": "bun app/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "^1",
+    "typescript": "^7"
+  },
+  "dependencies": {
+    "@slipher/cooldown": "^1.0.0",
+    "seyfert": "^5.1.0",
+    "yunaforseyfert": "^1.2.4"
+  }
+}
