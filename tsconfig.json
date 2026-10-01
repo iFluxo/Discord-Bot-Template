@@ -20,7 +20,6 @@
         "rootDir": "./app",
         "stripInternal": true,
         "paths": {
-            "*": "./*",
             "#data": ["./data/index.ts"]
         }
     },
