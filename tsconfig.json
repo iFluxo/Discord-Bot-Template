@@ -2,7 +2,6 @@
     "compilerOptions": {
         "module": "CommonJS",
         "target": "ESNext",
-        "moduleResolution": "node",
         "strict": true,
         "esModuleInterop": true,
         "experimentalDecorators": true,
@@ -19,9 +18,9 @@
         "noErrorTruncation": true,
         "outDir": "./dist",
         "rootDir": "./app",
-        "baseUrl": ".",
         "stripInternal": true,
         "paths": {
+            "*": "./*",
             "#data": ["./data/index.ts"]
         }
     },
