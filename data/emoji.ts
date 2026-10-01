@@ -1,4 +1,4 @@
 export const emoji = {
     "#Developer": "🔐",
-    "#Informasi": "ℹ️",
+    "#General": "ℹ️",
 } as const;

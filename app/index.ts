@@ -10,12 +10,10 @@ import { webhookClientPlugin } from "./plugins/webhookClient"
 
 const plugins = definePlugins(
     Yuna.plugin({
-      parser: {
-        syntax: { namedOptions: ['-', '--'] },
-      },
+        parser: { syntax: { namedOptions: ['-', '--'] },},
     }),
     cooldown({
-      middleware: { global: true }
+        middleware: { global: true }
     }),
     webhookClientPlugin(),
 );
@@ -45,14 +43,14 @@ declare module "seyfert" {
 
 declare module "seyfert" {
     interface InternalOptions {
-      withPrefix: true | false;
+        withPrefix: true | false;
     }
 }
 
 Logger.customize((logger, level, args) => {
     const now = Date.now();
     if (now - Logger.__memoryCache.ts > 1000) {
-      Logger.__memoryCache = { rss: process.memoryUsage?.()?.rss ?? 0, ts: now };
+        Logger.__memoryCache = { rss: process.memoryUsage?.()?.rss ?? 0, ts: now };
     }
     const color = Logger.colorFunctions.get(level) ?? Logger.noColor;
     return [formatMemoryUsage(Logger.__memoryCache.rss).replace("RAM Usage ", ""), `${color(Logger.prefixes.get(level) ?? "DEBUG")} >`, ...args];
