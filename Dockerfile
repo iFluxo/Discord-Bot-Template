@@ -1,10 +1,8 @@
 FROM oven/bun:latest
 
-RUN mkdir -p /Aoka
-WORKDIR /Aoka
-
 COPY package.json .
 RUN bun install
 COPY . .
+RUN bunx tsc
 
 CMD ["bun", "run", "start"]

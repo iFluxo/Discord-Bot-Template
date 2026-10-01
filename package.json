@@ -1,7 +1,7 @@
 {
-  "name": "Aoka",
-  "description": "Latest Discord bot",
-  "version": "0.0.1-28092026",
+  "name": "Discord-Bot-Template",
+  "description": "Using TypeScript 7, Bun & Seyfert",
+  "version": "0.0.1",
   "main": "app/index.ts",
   "type": "commonjs",
   "scripts": {
