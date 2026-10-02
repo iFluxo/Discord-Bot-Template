@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 
 import { Client } from "../structures/Client";
 
+import { colors, config } from "#data";
+
 import {
     type SelectCustom,
     type SelectGuild,
@@ -575,7 +577,7 @@ export class AIODatabase {
 
         return (
             guild?.color ??
-            this.client.config.color
+            colors.Primary
         );
     }
 
@@ -592,7 +594,7 @@ export class AIODatabase {
 
         return (
             guild?.locale ??
-            this.client.config.locale
+            config.Locale
         );
     }
 
@@ -609,7 +611,7 @@ export class AIODatabase {
 
         return (
             guild?.prefix ??
-            this.client.config.prefix
+            config.CommandPrefixs
         );
     }
 
