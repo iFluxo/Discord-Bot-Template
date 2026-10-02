@@ -3,10 +3,9 @@ import {
     MessageFlags,
     Declare,
     Embed,
-    Formatter,
     Options,
+    Formatter,
     type CommandContext,
-    createIntegerOption,
     createStringOption,
 } from "seyfert";
 import {
@@ -16,12 +15,12 @@ import {
     Yuna,
 } from "yunaforseyfert";
 
-const { inspect } = Bun;
+import { execSync } from "node:child_process";
 
 @Declare({
-    name: "eval",
+    name: "shell",
+    aliases: ["sh"],
     description: "No explanation.",
-    aliases: [],
     defaultMemberPermissions: ["ManageGuild", "Administrator"],
     integrationTypes: ["GuildInstall"],
     contexts: ["Guild"],
@@ -30,12 +29,8 @@ const { inspect } = Bun;
     },
 })
 @Options({
-    code: createStringOption({
-        description: "Some code.",
-    }),
-    depth: createIntegerOption({
-        description: "Depth of the result.",
-        min_value: 0,
+    cmd: createStringOption({
+        description: "Some command.",
     }),
 })
 @DeclareParserConfig(ParserRecommendedConfig.Eval)
@@ -57,7 +52,7 @@ export default class EvalCommand extends Command {
                 content: "",
                 embeds: [
                     new Embed()
-                        .setDescription(`\`📕\` Eval command watcher ended <t:${Math.trunc(Date.now() / 1000)}:R>. (\`${reason}\`)`)
+                        .setDescription(`> Shell watcher ended <t:${Math.trunc(Date.now() / 1000)}:R>. (\`${reason}\`)`)
                         .setColor("Greyple"),
                 ],
             });
@@ -67,51 +62,43 @@ export default class EvalCommand extends Command {
         const { client, options, channelId } = ctx;
 
         const start = Date.now();
-        const depth = options?.depth ?? 0;
 
-        let code = options?.code ?? null;
+        let cmd = options?.cmd;
         let output = null;
-        let typecode;
 
         await client.channels.typing(channelId);
 
-        if (!code && !code?.length)
+        if (!cmd && !cmd?.length)
             return ctx.editOrReply({
                 embeds: [
                     new Embed()
-                        .setDescription("`❌` Input code!")
+                        .setDescription("`❌` Input command!")
                         .setColor("Red"),
                 ],
                 flags: MessageFlags.Ephemeral
             });
 
         try {
-            if (typeof output !== "string") {
-                if (/^(?:\(?)\s*await\b/.test(code.toLowerCase()))
-                code = `(async () => ${code})()`;
-
-                output = await eval(code ?? "");
-                typecode = typeof output;
-                output = inspect(output, { depth }).replace(process.env.Token ?? "No Token Found!?", "X".repeat(process.env.Token?.length ?? 1))
-            }
-
+            output = execSync(cmd);
             await ctx.editOrReply({
                 embeds: [
                     new Embed()
                         .setColor("Green")
-                        .setDescription(`${output?.length > 4083 ? Formatter.codeBlock((output ?? "").slice(0, 4080) + "...", "js").trim() : Formatter.codeBlock(output ?? "", "js")}`)
+                        .setTitle(`> \`${cmd}\``)
+                        .setDescription(`${Formatter.codeBlock(output ?? "", "bash")}`)
                         .setTimestamp()
-                        .setFooter({ text: `Type: ${typecode} | ${Math.floor(Date.now() - start)}ms` })
+                        .setFooter({ text: `Unix Shell | ${Math.floor(Date.now() - start)} ms` })
                 ],
             });
-        } catch (error) {
+        } catch (error: unknown) {
             await ctx.editOrReply({
                 embeds: [
                     new Embed()
                         .setColor("Red")
+                        .setTitle(`> \`${cmd}\``)
                         .setDescription(Formatter.codeBlock(inspect(error).slice(0, 4080), "js"))
                         .setTimestamp()
-                        .setFooter({ text: `Type: Error | ${Math.floor(Date.now() - start)}ms` })
+                        .setFooter({ text: `Error | ${Math.floor(Date.now() - start)}ms` })
                 ],
                 flags: MessageFlags.Ephemeral
             });
