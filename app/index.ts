@@ -1,7 +1,8 @@
 process.on("unhandledRejection", info => console.error("UnhandledRejection?!", info as unknown));
 process.on("uncaughtException", info => console.error("UncaughtException?!", info as unknown));
 
-import { Logger, type ParseClient, definePlugins } from "seyfert";
+import { Client } from "./structures/Client";
+import { Logger, ParseClient, ParseGlobalMiddlewares, definePlugins } from "seyfert";
 import { Yuna } from "yunaforseyfert";
 import { CooldownMiddlewares, cooldown } from "@slipher/cooldown";
 import { formatMemoryUsage } from "seyfert/lib/common/it/logger";
@@ -29,7 +30,7 @@ declare module "seyfert" {
 }
 
 declare module "seyfert" {
-    interface UsingClient extends ParseClient<Client<true>> {}
+    interface UsingClient extends ParseClient<Client<true>>{}
 }
 
 declare module "seyfert" {
@@ -47,7 +48,7 @@ declare module "seyfert" {
     }
 }
 
-Logger.customize((logger, level, args) => {
+Logger.customize((logger: Logger.instance, level, args) => {
     const now = Date.now();
     if (now - logger.__memoryCache.ts > 1000) {
         logger.__memoryCache = { rss: process.memoryUsage?.()?.rss ?? 0, ts: now };
@@ -56,7 +57,6 @@ Logger.customize((logger, level, args) => {
     return [formatMemoryUsage(logger.__memoryCache.rss).replace("RAM Usage ", ""), `${color(logger.prefixes.get(level) ?? "DEBUG")} >`, ...args];
 });
 
-import { Client } from "./structures/Client";
 const client = new Client({ globalMiddlewares: Object.keys(globalMiddlewares), plugins })
 
 client.setServices({ middlewares: globalMiddlewares });
