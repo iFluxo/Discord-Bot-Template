@@ -56,13 +56,7 @@ export class AIODatabase {
     /**
      * Drizzle ORM instance connected to the Turso/libSQL database.
      */
-    protected readonly drizzle({
-        connection: {
-            url: process.env.TursoUrl,
-            authToken: process.env.TursoAuthToken,
-        },
-    });
-
+    protected readonly drizzle: drizzle;
     /**
      * Redis client used for application caching.
      */
@@ -116,6 +110,13 @@ export class AIODatabase {
                 "Missing environment variable: MongoUrl",
             );
         }
+
+        drizzle({
+            connection: {
+                url: tursoUrl,
+                authToken: tursoAuthToken,
+            },
+        });
 
         this.cache = new Bun.RedisClient(redisUrl);
 
