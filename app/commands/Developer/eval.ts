@@ -65,12 +65,12 @@ export default class EvalCommand extends Command {
         },
     })
     async run(ctx: CommandContext) {
-        const { client, options as { depth?: number, code?: string }, channelId } = ctx;
+        const { client, options, channelId } = ctx;
 
         const start = Date.now();
-        const depth = options.depth ?? 0;
+        const depth = (options as { depth?: number }).depth ?? 0;
 
-        let code = options?.code ?? null;
+        let code = (options as { code?: string | null })?.code ?? null;
         let output = null;
         let typecode;
 
