@@ -6,4 +6,6 @@ RUN bun install
 
 COPY . .
 
-CMD ["bun", "run", "start"]
+RUN bunx db:generate
+
+CMD ["bun", "start"]

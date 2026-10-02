@@ -8,12 +8,14 @@ import { CooldownMiddlewares, cooldown } from "@slipher/cooldown";
 import { formatMemoryUsage } from "seyfert/lib/common/it/logger";
 import * as globalMiddlewares from "./middlewares/index";
 
+import { DatabasePlugin } from "lib/database.plugin";
 import { WebhookPlugin } from "lib/webhook.plugin";
 
 const plugins = definePlugins(
     Yuna.plugin({
         parser: { syntax: { namedOptions: ['-', '--'] },},
     }),
+    DatabasePlugin(),
     WebhookPlugin({
         log: "https://discord.com/api/webhooks/1231915746666352670/etkARVaRE_D81COoihRcJQYjtlxjiG3vPtxfPkplcAvg6jJ_x_9v9Qq9CsbszSKTpte4",
     }),

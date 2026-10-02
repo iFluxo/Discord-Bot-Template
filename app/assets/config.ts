@@ -1,5 +1,6 @@
 export const config = {
-    commandPrefixs: process.env.CmdPrefixs ?? [...generateCases("ai"), ...generateCases("aichan")]
+    CommandPrefixs: ["-", ...generateCases("ai"), ...generateCases("aichan")],
+    Locale: "en-US",
 } as const;
 
 function generateCases(word: string) {
