@@ -23,12 +23,12 @@ export interface Webhook {
 
 export type WebhookCollection = Record<string, Webhook>;
 
-export async function WebhookPlugin(
+export function WebhookPlugin(
     options: PluginOptions = {},
 ) {
     const hooks: WebhookCollection = {
         name: "Webhook Client",
-        version: "0.0.1-zero",
+        version: "0.0.1-flux",
         creator: "iFluxo (Fluxo)",
     };
 

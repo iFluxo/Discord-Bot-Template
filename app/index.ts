@@ -10,8 +10,6 @@ import * as globalMiddlewares from "./middlewares/index";
 
 import { WebhookPlugin } from "lib/webhook.plugin";
 
-console.debug(WebhookPlugin);
-
 const plugins = definePlugins(
     Yuna.plugin({
         parser: { syntax: { namedOptions: ['-', '--'] },},
