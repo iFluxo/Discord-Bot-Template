@@ -3,7 +3,9 @@ import {
     type CommandContext,
     type MenuCommandContext,
     MessageFlags,
-    PermissionStrings
+    PermissionStrings,
+    type ActivityType,
+    type PresenceUpdateStatus,
 } from "seyfert";
 import { config } from "#data";
 
@@ -63,9 +65,22 @@ const clientOptions = {
             },
         },
     },
-    presence: {
-        
-    }
+    presence: (shardId) => ({
+        status: PresenceUpdateStatus.Online,
+        activities: [{
+            name: "Custom Status",
+            state: "Made with ❤️ by Surya",
+            type: ActivityType.Custom,
+        },{
+            name: "Surya my Suami 😍",
+            type: Activity.Listening,
+        },{
+            name: `Total ${shardId} shard!`,
+            type: ActivityType.Watching,
+        }],
+        since: Date.now(),
+        afk: false,
+    }),
 };
 
 class CustomClient extends Client<true> {
