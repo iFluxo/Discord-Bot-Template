@@ -1,8 +1,8 @@
-import { createMiddleware, type MiddlewareContext } from "seyfert";
+import { createMiddleware } from "seyfert";
 
 export const commandLogger = createMiddleware<void>(
-    (middle: MiddlewareContext) => {
-        middle.context.client.logger.info(`${middle.context.author.username} (${middle.context.author.id}) used /${middle.context.resolver.fullCommandName}`);
-        middle.next();
+    ({ context, next }) => {
+        context.client.logger.info(`${context.author.username} (${context.author.id}) used /${context.resolver.fullCommandName}`);
+        next();
     }
 );

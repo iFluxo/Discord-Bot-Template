@@ -1,6 +1,4 @@
 import { Client, type CommandContext, MessageFlags } from "seyfert";
-import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
-
 import { config } from "#data";
 
 const clientOptions = {
@@ -33,7 +31,7 @@ const clientOptions = {
                 context.editOrReply({ content: `I need ${permissions.join(', ')} permissions to run this command.`, flags: MessageFlags.Ephemeral });
             },
             onMiddlewaresError: async (context: CommandContext, error: unknown) => {
-                const result = await context.cooldown.consume();
+                const result = await context?.cooldown?.consume();
                 context.editOrReply({ content: error, flags: MessageFlags.Ephemeral });
                 if (!context.interaction) {
                     setTimeout(() => context.deleteResponse(), result.remainingMs < 3000 ? result.remainingMs + 5000 : result.remainingMs);
@@ -65,12 +63,12 @@ const clientOptions = {
             device: "android"
         }
     },
-    presence: (shardId: string) => ({
-        status: PresenceUpdateStatus.Online,
+    presence: (shardId: number) => ({
+        status: "online",
         activities: [{
             name: "Custom Status",
             state: "Fight! ⚔️💥🔥",
-            type: ActivityType.Custom,
+            type: 5,
         }],
         since: Date.now(),
         afk: false,

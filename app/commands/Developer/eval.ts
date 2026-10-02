@@ -6,9 +6,9 @@ import {
     createStringOption,
     Declare,
     Embed,
+    Formatter,
     Options
 } from "seyfert";
-import { Formatter } from "seyfert/lib/common";
 import {
     DeclareParserConfig,
     ParserRecommendedConfig,

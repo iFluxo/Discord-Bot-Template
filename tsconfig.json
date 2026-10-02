@@ -5,8 +5,6 @@
     "types": ["bun", "node"],
 
     "strict": true,
-    "declaration": false,
-    "declarationMap": false,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
