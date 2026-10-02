@@ -16,6 +16,7 @@ import {
 } from "yunaforseyfert";
 
 import { execSync } from "node:child_process";
+const { inspect } = Bun;
 
 @Declare({
     name: "shell",
@@ -86,7 +87,6 @@ export default class EvalCommand extends Command {
                         .setColor("Green")
                         .setTitle(`> \`${cmd}\``)
                         .setDescription(`${Formatter.codeBlock(output ?? "", "bash")}`)
-                        .setTimestamp()
                         .setFooter({ text: `Unix Shell | ${Math.floor(Date.now() - start)} ms` })
                 ],
             });
@@ -97,8 +97,7 @@ export default class EvalCommand extends Command {
                         .setColor("Red")
                         .setTitle(`> \`${cmd}\``)
                         .setDescription(Formatter.codeBlock(inspect(error).slice(0, 4080), "js"))
-                        .setTimestamp()
-                        .setFooter({ text: `Error | ${Math.floor(Date.now() - start)}ms` })
+                        .setFooter({ text: `Error | ${Math.floor(Date.now() - start)} ms` })
                 ],
                 flags: MessageFlags.Ephemeral
             });
