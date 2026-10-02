@@ -49,11 +49,11 @@ declare module "seyfert" {
 
 Logger.customize((logger, level, args) => {
     const now = Date.now();
-    if (now - Logger.__memoryCache.ts > 1000) {
-        Logger.__memoryCache = { rss: process.memoryUsage?.()?.rss ?? 0, ts: now };
+    if (now - logger.__memoryCache.ts > 1000) {
+        logger.__memoryCache = { rss: process.memoryUsage?.()?.rss ?? 0, ts: now };
     }
-    const color = Logger.colorFunctions.get(level) ?? Logger.noColor;
-    return [formatMemoryUsage(Logger.__memoryCache.rss).replace("RAM Usage ", ""), `${color(Logger.prefixes.get(level) ?? "DEBUG")} >`, ...args];
+    const color = logger.colorFunctions.get(level) ?? logger.noColor;
+    return [formatMemoryUsage(logger.__memoryCache.rss).replace("RAM Usage ", ""), `${color(logger.prefixes.get(level) ?? "DEBUG")} >`, ...args];
 });
 
 import { Client } from "./structures/Client";

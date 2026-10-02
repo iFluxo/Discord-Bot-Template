@@ -30,11 +30,12 @@ const clientOptions = {
             onBotPermissionsFail: (context: CommandContext, permissions: string[]) => {
                 context.editOrReply({ content: `I need ${permissions.join(', ')} permissions to run this command.`, flags: MessageFlags.Ephemeral });
             },
-            onMiddlewaresError: async (context: CommandContext, error: unknown) => {
+            onMiddlewaresError: async (context: CommandContext, error: string) => {
                 const result = await context?.cooldown?.consume();
                 context.editOrReply({ content: error, flags: MessageFlags.Ephemeral });
                 if (!context.interaction) {
-                    setTimeout(() => context.deleteResponse(), result.remainingMs < 3000 ? result.remainingMs + 5000 : result.remainingMs);
+                    rms = result?.remainingMs ?? 3000;
+                    setTimeout(() => context.deleteResponse(), rms < 3000 ? rms + 5000 : rms);
                 }
             },
             onInternalError: (client: Client<true>, error: unknown) => {
@@ -56,23 +57,6 @@ const clientOptions = {
             },
         },
     },
-    gateway: {
-        properties: {
-            os: "android",
-            browser: "Discord Android",
-            device: "android"
-        }
-    },
-    presence: (shardId: number) => ({
-        status: "online",
-        activities: [{
-            name: "Custom Status",
-            state: "Fight! ⚔️💥🔥",
-            type: 5,
-        }],
-        since: Date.now(),
-        afk: false,
-    }),
 };
 
 class CustomClient extends Client<true> {
