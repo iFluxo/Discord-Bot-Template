@@ -92,7 +92,7 @@ export default class EvalCommand extends Command {
 
                 output = await eval(code ?? "");
                 typecode = typeof output;
-                output = inspect(output, { depth }).replace(process.env.Token ?? "No Token Found!?", "X".repeat(process.env.Token?.length ?? 1))
+                output = inspect(output, { depth }).replace(Bun.env.Token ?? "No Token Found!?", "X".repeat(Bun.env.Token?.length ?? 1))
             }
 
             await ctx.editOrReply({

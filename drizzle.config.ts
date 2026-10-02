@@ -1,11 +1,11 @@
-import { defineConfig } from "drizzle-kit";
+import type { Config } from "drizzle-kit";
 
-export default defineConfig({
+export default {
     schema: "./app/database/drizzle.schema.ts",
     out: "./drizzle",
     dialect: "turso",
     dbCredentials: {
-        url: process.env.TursoUrl!,
-        authToken: process.env.TursoAuthToken!,
+        url: Bun.env.TursoUrl!,
+        authToken: Bun.env.TursoAuthToken!,
     },
-});
+} satisfies Config;
