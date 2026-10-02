@@ -1,4 +1,4 @@
-import { Client, MessageFlags } from "seyfert";
+import { Client, type CommandContext, MessageFlags } from "seyfert";
 import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
 
 import { config } from "#data";
@@ -19,41 +19,41 @@ const clientOptions = {
                 disabled: false,
                 category: "none"
             },
-            onRunError: (context, error: unknown) => {
+            onRunError: (context: CommandContext, error: unknown) => {
                 context.editOrReply({ content: 'Something went wrong!', flags: MessageFlags.Ephemeral });
                 context.client.logger.error(error);
             },
-            onOptionsError: () => {
+            onOptionsError: (context: CommandContext) => {
                 context.editOrReply({ content: 'Invalid options provided.', flags: MessageFlags.Ephemeral });
             },
-            onPermissionsFail: (context, permissions) => {
+            onPermissionsFail: (context: CommandContext, permissions: string[]) => {
                 context.editOrReply({ content: `You need ${permissions.join(', ')} permissions to use this command.`, flags: MessageFlags.Ephemeral });
             },
-            onBotPermissionsFail: (context, permissions) => {
+            onBotPermissionsFail: (context: CommandContext, permissions: string[]) => {
                 context.editOrReply({ content: `I need ${permissions.join(', ')} permissions to run this command.`, flags: MessageFlags.Ephemeral });
             },
-            onMiddlewaresError: async (context, error: unknown) => {
+            onMiddlewaresError: async (context: CommandContext, error: unknown) => {
                 const result = await context.cooldown.consume();
                 context.editOrReply({ content: error, flags: MessageFlags.Ephemeral });
                 if (!context.interaction) {
                     setTimeout(() => context.deleteResponse(), result.remainingMs < 3000 ? result.remainingMs + 5000 : result.remainingMs);
                 }
             },
-            onInternalError: (client, error: unknown) => {
+            onInternalError: (client: Client<true>, error: unknown) => {
                 client.logger.fatal(error);
             },
         },
     },
     components: {
         defaults: {
-            onRunError: (context) => {
+            onRunError: (context: CommandContext) => {
                 context.editOrReply({ content: 'Component error!', flags: MessageFlags.Ephemeral });
             },
         },
     },
     modals: {
         defaults: {
-            onRunError: (context) => {
+            onRunError: (context: CommandContext) => {
                 context.editOrReply({ content: 'Modal error!', flags: MessageFlags.Ephemeral });
             },
         },
@@ -65,7 +65,7 @@ const clientOptions = {
             device: "android"
         }
     },
-    presence: () => ({
+    presence: (shardId: string) => ({
         status: PresenceUpdateStatus.Online,
         activities: [{
             name: "Custom Status",

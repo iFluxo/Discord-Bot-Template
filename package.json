@@ -5,6 +5,8 @@
   "main": "app/index.ts",
   "type": "commonjs",
   "scripts": {
+    "build": "tsc",
+    "check": "tsc --noEmit",
     "start": "bun app/index.ts"
   },
   "devDependencies": {

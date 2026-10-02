@@ -30,7 +30,7 @@ import { config } from "#data";
 
 export default class HelpCommand extends Command {
     async run(ctx: CommandContext) {
-        if (ctx.options?.command?.length) helpCommand(ctx);
+        if (!ctx.options?.command) helpCommand(ctx);
         else commandsList(ctx);
   }
 }

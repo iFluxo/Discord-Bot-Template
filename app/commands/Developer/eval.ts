@@ -68,9 +68,9 @@ export default class EvalCommand extends Command {
         const { client, options, channelId } = ctx;
 
         const start = Date.now();
-        const depth = options.depth ?? 0;
+        const depth = options?.depth ?? 0;
 
-        let code = options.code ?? null;
+        let code = options?.code ?? null;
         let output = null;
         let typecode;
 

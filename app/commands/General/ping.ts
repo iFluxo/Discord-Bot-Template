@@ -24,8 +24,8 @@ import { config } from "#data";
 
 export default class PingCommand extends Command {
     async run(ctx: CommandContext) {
-        const ping = ctx.client.gateway.latency;
-        const pong = Date.now() - (ctx.interaction?.createdTimestamp ?? ctx.message?.createdTimestamp);
+        const ping = ctx.client.gateway?.latency;
+        const pong = (ctx.interaction?.createdTimestamp ?? ctx.message?.createdTimestamp ?? Date.now());
 
         const embed = new Embed()
             .setColor(config.primaryColor)
@@ -36,7 +36,7 @@ export default class PingCommand extends Command {
             },
             {
                 name: "Runtime Latency",
-                value: `\`${pong} ms\``,
+                value: `\`${Date.now() - pong} ms\``,
                 inline: true
             });
 

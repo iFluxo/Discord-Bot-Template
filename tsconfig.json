@@ -2,8 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "CommonJS",
-    "moduleResolution": "bundler",
-    "types": ["node"],
+    "types": ["bun", "node"],
 
     "strict": true,
     "declaration": false,
