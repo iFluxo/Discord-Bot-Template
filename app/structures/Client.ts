@@ -1,4 +1,4 @@
-import { Client, type CommandContext, type MenuCommandContext, MessageFlags } from "seyfert";
+import { Client, type CommandContext, type MenuCommandContext, MessageFlags, PermissionStrings } from "seyfert";
 import { config } from "#data";
 
 const clientOptions = {
@@ -17,17 +17,17 @@ const clientOptions = {
                 disabled: false,
                 category: "none"
             },
-            onRunError: (context: CommandContext | MenuCommandContext, error: unknown) => {
+            onRunError: (context: CommandContext | MenuCommandContext<any, any>, error: unknown) => {
                 context.editOrReply({ content: 'Something went wrong!', flags: MessageFlags.Ephemeral });
                 context.client.logger.error(error);
             },
             onOptionsError: (context: CommandContext) => {
                 context.editOrReply({ content: 'Invalid options provided.', flags: MessageFlags.Ephemeral });
             },
-            onPermissionsFail: (context: CommandContext, permissions: string[]) => {
+            onPermissionsFail: (context: CommandContext, permissions: PermissionStrings) => {
                 context.editOrReply({ content: `You need ${permissions.join(', ')} permissions to use this command.`, flags: MessageFlags.Ephemeral });
             },
-            onBotPermissionsFail: (context: CommandContext, permissions: string[]) => {
+            onBotPermissionsFail: (context: CommandContext, permissions: PermissionStrings) => {
                 context.editOrReply({ content: `I need ${permissions.join(', ')} permissions to run this command.`, flags: MessageFlags.Ephemeral });
             },
             onMiddlewaresError: async (context: CommandContext, error: string) => {

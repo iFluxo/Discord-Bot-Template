@@ -30,10 +30,6 @@ declare module "seyfert" {
 }
 
 declare module "seyfert" {
-    interface UsingClient extends ParseClient {}
-}
-
-declare module "seyfert" {
     interface ExtraProps {
         botAdminOnly?: boolean;
         botDeveloperOnly?: boolean;
