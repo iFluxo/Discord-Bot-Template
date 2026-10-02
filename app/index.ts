@@ -47,13 +47,13 @@ declare module "seyfert" {
     }
 }
 
-Logger.customize((logger: Logger, level, args) => {
+Logger.customize((logger, level, args) => {
     const now = Date.now();
-    if (now - (Logger as any).__memoryCache.ts > 1000) {
-        (Logger as any).__memoryCache = { rss: process.memoryUsage?.()?.rss ?? 0, ts: now };
+    if (now - Logger.__memoryCache.ts > 1000) {
+        Logger.__memoryCache = { rss: process.memoryUsage?.()?.rss ?? 0, ts: now };
     }
-    const color = (Logger as any).colorFunctions.get(level) ?? (Logger as any).noColor;
-    return [formatMemoryUsage((Logger as any).__memoryCache.rss).replace("RAM Usage ", ""), `${color((Logger as any).prefixes.get(level) ?? "DEBUG")} >`, ...args];
+    const color = Logger.colorFunctions.get(level) ?? Logger.noColor;
+    return [formatMemoryUsage(Logger.__memoryCache.rss).replace("RAM Usage ", ""), `${color(Logger.prefixes.get(level) ?? "DEBUG")} >`, ...args];
 });
 
 

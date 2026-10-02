@@ -1,5 +1,5 @@
 export const config = {
-    "cmdPrefixs": process.env.CmdPrefix ?? [...generateCases("fry"), ...generateCases("freya")]
+    "cmdPrefixs": process.env.CmdPrefix ?? [...generateCases("ai"), ...generateCases("aichan")]
 } as const;
 
 function generateCases(word: string) {

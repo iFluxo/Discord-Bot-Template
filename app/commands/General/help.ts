@@ -18,7 +18,7 @@ import { colors } from "#data";
     integrationTypes: ["GuildInstall"],
     botPermissions: ["EmbedLinks"],
     props: {
-      category: "General"
+        category: "General"
     },
 })
 @Cooldown.user(10_000)
