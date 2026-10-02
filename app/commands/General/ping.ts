@@ -39,7 +39,7 @@ export default class PingCommand extends Command {
             },
             {
                 name: translate.ping.database.title,
-                value: translate.ping.database.value(dbPing),
+                value: translate.ping.database.value(dbPing.latency),
                 inline: true,
             },
             {
