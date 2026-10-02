@@ -30,7 +30,7 @@ declare module "seyfert" {
 }
 
 declare module "seyfert" {
-    interface UsingClient extends ParseClient<Client<true>>{}
+    interface UsingClient extends ParseClient {}
 }
 
 declare module "seyfert" {
@@ -48,13 +48,13 @@ declare module "seyfert" {
     }
 }
 
-Logger.customize((logger: Logger.instance, level, args) => {
+Logger.customize((logger: Logger, level, args) => {
     const now = Date.now();
-    if (now - logger.__memoryCache.ts > 1000) {
-        logger.__memoryCache = { rss: process.memoryUsage?.()?.rss ?? 0, ts: now };
+    if (now - (Logger as any).__memoryCache.ts > 1000) {
+        (Logger as any).__memoryCache = { rss: process.memoryUsage?.()?.rss ?? 0, ts: now };
     }
-    const color = logger.colorFunctions.get(level) ?? logger.noColor;
-    return [formatMemoryUsage(logger.__memoryCache.rss).replace("RAM Usage ", ""), `${color(logger.prefixes.get(level) ?? "DEBUG")} >`, ...args];
+    const color = (Logger as any).colorFunctions.get(level) ?? (Logger as any).noColor;
+    return [formatMemoryUsage((Logger as any).__memoryCache.rss).replace("RAM Usage ", ""), `${color((Logger as any).prefixes.get(level) ?? "DEBUG")} >`, ...args];
 });
 
 const client = new Client({ globalMiddlewares: Object.keys(globalMiddlewares), plugins })

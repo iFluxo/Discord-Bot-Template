@@ -1,4 +1,4 @@
-import { Client, type CommandContext, MessageFlags } from "seyfert";
+import { Client, type CommandContext, type MenuCommandContext, MessageFlags } from "seyfert";
 import { config } from "#data";
 
 const clientOptions = {
@@ -17,7 +17,7 @@ const clientOptions = {
                 disabled: false,
                 category: "none"
             },
-            onRunError: (context: CommandContext, error: unknown) => {
+            onRunError: (context: CommandContext | MenuCommandContext, error: unknown) => {
                 context.editOrReply({ content: 'Something went wrong!', flags: MessageFlags.Ephemeral });
                 context.client.logger.error(error);
             },
