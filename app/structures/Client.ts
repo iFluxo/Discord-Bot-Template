@@ -9,9 +9,9 @@ const clientOptions = {
         replied_user: false
     },
     commands: {
-        prefix: (message) => config.cmdPrefix,
-        reply: (ctx) => true,
-        deferReplyResponse: (ctx) => ({ content: "Sending request..." }),
+        prefix: () => config.cmdPrefix,
+        reply: () => true,
+        deferReplyResponse: () => ({ content: "Sending request..." }),
         defaults: {
             props: {
                 botAdminOnly: false,
@@ -23,7 +23,7 @@ const clientOptions = {
                 context.editOrReply({ content: 'Something went wrong!', flags: MessageFlags.Ephemeral });
                 context.client.logger.error(error);
             },
-            onOptionsError: (context) => {
+            onOptionsError: () => {
                 context.editOrReply({ content: 'Invalid options provided.', flags: MessageFlags.Ephemeral });
             },
             onPermissionsFail: (context, permissions) => {
@@ -32,14 +32,14 @@ const clientOptions = {
             onBotPermissionsFail: (context, permissions) => {
                 context.editOrReply({ content: `I need ${permissions.join(', ')} permissions to run this command.`, flags: MessageFlags.Ephemeral });
             },
-            onMiddlewaresError: async (context, error) => {
+            onMiddlewaresError: async (context, error: unknown) => {
                 const result = await context.cooldown.consume();
                 context.editOrReply({ content: error, flags: MessageFlags.Ephemeral });
                 if (!context.interaction) {
                     setTimeout(() => context.deleteResponse(), result.remainingMs < 3000 ? result.remainingMs + 5000 : result.remainingMs);
                 }
             },
-            onInternalError: (client, error) => {
+            onInternalError: (client, error: unknown) => {
                 client.logger.fatal(error);
             },
         },
