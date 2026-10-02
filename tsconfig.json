@@ -1,19 +1,18 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true,
+    "module": "NodeNext",
+    "moduleResolution": "node",
 
     "strict": true,
-    // "noImplicitAny": true,
-    // "strictNullChecks": true,
-    // "strictFunctionTypes": true,
-    // "noImplicitThis": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitThis": true,
     "noImplicitReturns": true,
 
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
 
     "esModuleInterop": true,
     "resolveJsonModule": true,
@@ -21,7 +20,7 @@
     "emitDecoratorMetadata": true,
 
     "skipLibCheck": true,
-    // "noErrorTruncation": true,
+    "noErrorTruncation": true,
 
     "rootDir": "./app",
     "outDir": "./dist",
