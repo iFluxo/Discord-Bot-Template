@@ -7,7 +7,7 @@ import {
 } from "seyfert";
 import { Cooldown } from "@slipher/cooldown";
 
-import { config } from "#data";
+import { colors } from "#data";
 
 @Declare({
     name: "ping",
@@ -28,7 +28,7 @@ export default class PingCommand extends Command {
         const pong = (ctx.interaction?.createdTimestamp ?? ctx.message?.createdTimestamp ?? Date.now());
 
         const embed = new Embed()
-            .setColor(config.primaryColor)
+            .setColor(colors.Primary)
             .addFields({
                 name: "Client Latency",
                 value: `\`${ping} ms\``,

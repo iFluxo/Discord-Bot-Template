@@ -1,6 +1,5 @@
 export const config = {
-    primaryColor: "#000001",
-    cmdPrefix: process.env.CmdPrefix ?? [...generateCases("freya"), ...generateCases("fry")]
+    "cmdPrefixs": process.env.CmdPrefix ?? [...generateCases("fry"), ...generateCases("freya")]
 } as const;
 
 function generateCases(word: string) {

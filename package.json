@@ -5,18 +5,26 @@
   "main": "app/index.ts",
   "type": "commonjs",
   "scripts": {
-    "build": "tsc",
-    "check": "tsc --noEmit",
-    "start": "bun app/index.ts"
+    "app:start": "bun app/index.ts",
+    "db:generate": "bunx drizzle-kit generate",
+    "db:migrate": "bunx drizzle-kit migrate",
+    "db:push": "bunx drizzle-kit push",
+    "db:studio": "bunx drizzle-kit studio",
+    "ts:build": "bunx tsc",
+    "ts:check": "bunx tsc --noEmit",
+    "ts:dev": "bunx tsc -w"
+  },
+  "dependencies": {
+    "@slipher/cooldown": "^1.0.0",
+    "drizzle-orm": "^0.45.3",
+    "mongoose": "^9.10.3",
+    "seyfert": "^5.1.0",
+    "yunaforseyfert": "^1.2.4"
   },
   "devDependencies": {
     "@types/bun": "^1",
     "@types/node": "^26",
+    "drizzle-kit": "^0",
     "typescript": "^7"
-  },
-  "dependencies": {
-    "@slipher/cooldown": "^1.0.0",
-    "seyfert": "^5.1.0",
-    "yunaforseyfert": "^1.2.4"
   }
 }

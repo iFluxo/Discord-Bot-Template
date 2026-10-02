@@ -8,7 +8,7 @@ import {
 } from "seyfert";
 import { Cooldown } from "@slipher/cooldown";
 
-import { config } from "#data";
+import { colors } from "#data";
 
 @Declare({
     name: "help",
@@ -37,14 +37,14 @@ export default class HelpCommand extends Command {
 
 async function helpCommand(ctx: CommandContext) {
     const embed = new Embed()
-        .setColor(config.primaryColor)
+        .setColor(colors.Primary)
         .setTitle("Help Command")
     ctx.write({ embeds: [embed] });
 }
 
 async function commandsList(ctx: CommandContext) {
     const embed = new Embed()
-        .setColor(config.primaryColor)
+        .setColor(colors.Primary)
         .setTitle("Commands List");
     ctx.write({ embeds: [embed] });
 }

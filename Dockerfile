@@ -1,9 +1,9 @@
 FROM oven/bun:latest
 
 COPY package.json .
-RUN bun install
-COPY . .
 
-RUN bunx tsc --noEmit
+RUN bun install
+
+COPY . .
 
 CMD ["bun", "run", "start"]

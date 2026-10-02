@@ -26,10 +26,11 @@
     "outDir": "./dist",
 
     "paths": {
+      "lib/*": ["./lib/*"],
       "#data": ["./app/assets/index.ts"]
     }
   },
 
-  "include": ["app/**/*"],
+  "include": ["app/**/*", "lib/**/*"],
   "exclude": ["node_modules", "dist"]
 }

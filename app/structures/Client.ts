@@ -7,7 +7,7 @@ const clientOptions = {
         replied_user: false
     },
     commands: {
-        prefix: () => config.cmdPrefix,
+        prefix: () => config.cmdPrefixs,
         reply: () => true,
         deferReplyResponse: () => ({ content: "Sending request..." }),
         defaults: {
@@ -17,7 +17,7 @@ const clientOptions = {
                 disabled: false,
                 category: "none"
             },
-            onRunError: (context: CommandContext | MenuCommandContext<any, any>, error: unknown) => {
+            onRunError: (context: CommandContext | MenuCommandContext, error: unknown) => {
                 context.editOrReply({ content: 'Something went wrong!', flags: MessageFlags.Ephemeral });
                 context.client.logger.error(error);
             },
