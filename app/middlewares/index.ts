@@ -1,1 +1,1 @@
-export * from "./command.logger.js";
+export * from "./command.logger";
