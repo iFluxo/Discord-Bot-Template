@@ -10,7 +10,7 @@ import {
     customTable, 
     guildTable, 
     userTable 
-} from "./schema";
+} from "./drizzle.schema";
 
 export enum CacheKeys {
     Custom = "custom",
