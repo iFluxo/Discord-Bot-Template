@@ -26,10 +26,14 @@ export type WebhookCollection = Record<string, Webhook>;
 export async function WebhookPlugin(
     options: PluginOptions = {},
 ) {
-    const hooks: WebhookCollection = {};
+    const hooks: WebhookCollection = {
+        name: "Webhook Client",
+        version: "0.0.1-zero",
+        creator: "iFluxo (Fluxo)",
+    };
 
     return createPlugin({
-        name: "seyfert-webhook-plugin",
+        name: "WebhookClient",
 
         client: {
             webhook: () => hooks,
