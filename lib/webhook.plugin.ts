@@ -37,7 +37,7 @@ export interface WebhookCollection {
     version: string;
     creator: string;
 
-    hooks: Record<string, Webhook>;
+    [hookName:string]: Record<string, Webhook>;
 }
 
 export function WebhookPlugin(
@@ -47,7 +47,6 @@ export function WebhookPlugin(
         name: "Webhook Client",
         version: "0.0.1-flux",
         creator: "iFluxo (Fluxo)",
-        hooks: {},
     };
 
     return createPlugin({
@@ -78,7 +77,7 @@ export function WebhookPlugin(
                     continue;
                 }
 
-                collection.hooks[hookName] =
+                collection[hookName] =
                     createWebhook(data);
 
                 size++;
