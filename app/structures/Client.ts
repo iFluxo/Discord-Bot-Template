@@ -72,7 +72,7 @@ const clientOptions = {
             type: ActivityType.Custom,
         },{
             name: "Surya my Suami 😍",
-            type: Activity.Listening,
+            type: ActivityType.Listening,
         },{
             name: `Total ${shardId} shard!`,
             type: ActivityType.Watching,
