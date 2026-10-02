@@ -3,11 +3,11 @@ process.on("uncaughtException", info => console.error("UncaughtException?!", inf
 
 import { Client } from "./structures/Client";
 import { Logger, ParseClient, ParseGlobalMiddlewares, definePlugins } from "seyfert";
-import { Yuna } from "yunaforseyfert";
-import { CooldownMiddlewares, cooldown } from "@slipher/cooldown";
 import { formatMemoryUsage } from "seyfert/lib/common/it/logger";
 import * as globalMiddlewares from "./middlewares/index";
 
+import { Yuna } from "yunaforseyfert";
+import { CooldownMiddlewares, cooldown } from "@slipher/cooldown";
 import { DatabasePlugin } from "lib/database.plugin";
 import { WebhookPlugin } from "lib/webhook.plugin";
 

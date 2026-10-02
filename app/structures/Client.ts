@@ -1,4 +1,10 @@
-import { Client, type CommandContext, type MenuCommandContext, MessageFlags, PermissionStrings } from "seyfert";
+import {
+    Client,
+    type CommandContext,
+    type MenuCommandContext,
+    MessageFlags,
+    PermissionStrings
+} from "seyfert";
 import { config } from "#data";
 
 const clientOptions = {
@@ -57,6 +63,9 @@ const clientOptions = {
             },
         },
     },
+    presence: {
+        
+    }
 };
 
 class CustomClient extends Client<true> {
