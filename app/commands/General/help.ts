@@ -35,14 +35,14 @@ export default class HelpCommand extends Command {
   }
 }
 
-async function helpCommand(ctx) {
+async function helpCommand(ctx: CommandContext) {
     const embed = new Embed()
         .setColor(config.primaryColor)
         .setTitle("Help Command")
     ctx.write({ embeds: [embed] });
 }
 
-async function commandsList(ctx) {
+async function commandsList(ctx: CommandContext) {
     const embed = new Embed()
         .setColor(config.primaryColor)
         .setTitle("Commands List");
