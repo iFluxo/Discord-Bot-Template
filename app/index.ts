@@ -1,5 +1,5 @@
-process.on("unhandledRejection", info: any => console.error("UnhandledRejection?!", info));
-process.on("uncaughtException", info: any => console.error("UncaughtException?!", info));
+process.on("unhandledRejection", info => console.error("UnhandledRejection?!", info as any));
+process.on("uncaughtException", info => console.error("UncaughtException?!", info as any));
 
 import { Logger, type ParseClient, definePlugins } from "seyfert";
 import { Yuna } from "yunaforseyfert";
