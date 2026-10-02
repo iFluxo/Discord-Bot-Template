@@ -7,7 +7,7 @@ const clientOptions = {
         replied_user: false
     },
     commands: {
-        prefix: () => config.cmdPrefixs,
+        prefix: () => config.commandPrefixs,
         reply: () => true,
         deferReplyResponse: () => ({ content: "Sending request..." }),
         defaults: {
