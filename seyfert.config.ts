@@ -7,6 +7,7 @@ export default config.bot({
         commands: "commands",
         components: "components",
         events: "events",
+        langs: "languages",
     },
     intents: ["Guilds", "GuildMessages", "MessageContent"]
 });

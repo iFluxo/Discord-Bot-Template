@@ -12,32 +12,39 @@ import { colors } from "#data";
 @Declare({
     name: "ping",
     aliases: [],
-    description: "Show client & runtime latency.",
+    description: "ping.description",
     contexts: ["Guild", "BotDM"],
     integrationTypes: ["GuildInstall","UserInstall"],
     botPermissions: ["EmbedLinks"],
     props: {
-        category: "General"
+        category: "ping.category"
     },
 })
 @Cooldown.user(5_000)
 
 export default class PingCommand extends Command {
     async run(ctx: CommandContext) {
+        const translate = ctx.t.get();
+
         const ping = ctx.client?.gateway?.latency;
         const pong = (ctx.interaction?.createdTimestamp ?? ctx.message?.createdTimestamp ?? Date.now());
 
         const embed = new Embed()
             .setColor(colors.Primary)
             .addFields({
-                name: "Client Latency",
-                value: `\`${ping} ms\``,
-                inline: true
+                name: translate.ping.client.title,
+                value: translate.ping.client.value(ping),
+                inline: true,
             },
             {
-                name: "Runtime Latency",
-                value: `\`${Date.now() - pong} ms\``,
-                inline: true
+                name: translate.ping.database.title,
+                value: translate.ping.database.value(Math.round(Math.random()*20+1)),
+                inline: true,
+            }
+            {
+                name: translate.ping.runtime.title,
+                value: translate.ping.runtime.value(Date.now() - pong),
+                inline: true,
             });
 
         await ctx.editOrReply({

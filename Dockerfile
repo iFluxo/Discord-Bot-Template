@@ -6,4 +6,4 @@ RUN bun install
 
 COPY . .
 
-CMD ["bun", "run", "app:start"]
+CMD ["bun", "run", "start"]

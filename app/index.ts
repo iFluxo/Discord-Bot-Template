@@ -23,25 +23,24 @@ const plugins = definePlugins(
 );
 
 declare module "seyfert" {
-    interface SeyfertRegistry { plugins: typeof plugins }
-}
+    interface UsingClient extends ParseClient<Client<true>> {}
 
-declare module "seyfert" {
-    interface SeyfertRegistry { middlewares: CooldownMiddlewares<"cooldown"> & typeof globalMiddlewares }
+    interface SeyfertRegistry {
+        plugins: typeof plugins;
+        middlewares: CooldownMiddlewares<"cooldown">
+        & typeof globalMiddlewares;
+    }
+
     interface GlobalMetadata
     extends ParseGlobalMiddlewares<typeof globalMiddlewares> {}
-}
 
-declare module "seyfert" {
     interface ExtraProps {
         botAdminOnly?: boolean;
         botDeveloperOnly?: boolean;
         disabled?: boolean;
         category?: string;
     }
-}
 
-declare module "seyfert" {
     interface InternalOptions {
         withPrefix: true | false;
     }
@@ -56,8 +55,17 @@ Logger.customize((logger, level, args) => {
     return [formatMemoryUsage(Logger.__memoryCache.rss).replace("RAM Usage ", ""), `${color(Logger.prefixes.get(level) ?? "DEBUG")} >`, ...args];
 });
 
+const client = new Client({
+    globalMiddlewares: Object.keys(globalMiddlewares),
+    plugins,
+})
 
-
-const client = new Client({ globalMiddlewares: Object.keys(globalMiddlewares), plugins })
-
-client.setServices({ middlewares: globalMiddlewares });
+client.setServices({
+    middlewares: globalMiddlewares,
+    langs: {
+        default: "en-US",
+        aliases: {
+            "en-US": ["en"],
+        },
+    },
+});
