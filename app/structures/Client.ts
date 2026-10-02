@@ -4,9 +4,8 @@ import {
     type MenuCommandContext,
     MessageFlags,
     PermissionStrings,
-    type ActivityType,
-    type PresenceUpdateStatus,
 } from "seyfert";
+import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
 import { config } from "#data";
 
 const clientOptions = {
