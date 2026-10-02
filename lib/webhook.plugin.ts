@@ -5,19 +5,22 @@ export type PluginOptions = Record<string, string>;
 export interface WebhookData {
     id: string;
     token: string;
-    url: string;
 }
+
+export type WebhookMessage =
+    | string
+    | Record<string, unknown>;
 
 export interface Webhook {
     data: WebhookData;
 
     send(
-        message: Record<string, unknown>,
+        message: WebhookMessage,
     ): Promise<unknown>;
 
     edit(
         messageId: string,
-        message: Record<string, unknown>,
+        message: WebhookMessage,
     ): Promise<unknown>;
 
     fetch(
@@ -34,35 +37,37 @@ export interface WebhookCollection {
     version: string;
     creator: string;
 
-    [name: string]:
-        | string
-        | Webhook;
+    hooks: Record<string, Webhook>;
 }
 
 export function WebhookPlugin(
     options: PluginOptions = {},
 ) {
-    const hooks: WebhookCollection = {
+    const collection: WebhookCollection = {
         name: "Webhook Client",
         version: "0.0.1-flux",
         creator: "iFluxo (Fluxo)",
+        hooks: {},
     };
 
     return createPlugin({
         name: "WebhookClient",
 
         client: {
-            webhook: () => hooks,
+            webhook: () => collection,
         },
 
         ctx: {
-            webhook: () => hooks,
+            webhook: () => collection,
         },
 
         async setup(client) {
             let size = 0;
 
-            for (const [hookName, webhookUrl] of Object.entries(options)) {
+            for (const [
+                hookName,
+                webhookUrl,
+            ] of Object.entries(options)) {
                 const data = getData(webhookUrl);
 
                 if (!data) {
@@ -73,7 +78,8 @@ export function WebhookPlugin(
                     continue;
                 }
 
-                hooks[hookName] = createWebhook(data);
+                collection.hooks[hookName] =
+                    createWebhook(data);
 
                 size++;
             }
@@ -88,7 +94,7 @@ export function WebhookPlugin(
 }
 
 /**
- * Create a webhook API instance.
+ * Create a webhook instance.
  */
 function createWebhook(
     data: WebhookData,
@@ -99,39 +105,52 @@ function createWebhook(
         data,
 
         /**
-         * Send message
+         * Send webhook message.
          *
-         * POST /webhooks/{id}/{token}?wait=true
+         * String:
+         *   send("Hello")
+         *
+         * Object:
+         *   send({ content: "Hello" })
          */
         async send(message) {
             return request(
                 `/webhooks/${id}/${token}?wait=true`,
                 {
                     method: "POST",
-                    body: message,
+                    body: normalizeMessage(
+                        message,
+                    ),
                 },
             );
         },
 
         /**
-         * Edit message
+         * Edit webhook message.
          *
-         * PATCH /webhooks/{id}/{token}/messages/{message.id}
+         * String:
+         *   edit("Hello")
+         *
+         * Object:
+         *   edit({ content: "Hello" })
          */
-        async edit(messageId, message) {
+        async edit(
+            messageId,
+            message,
+        ) {
             return request(
                 `/webhooks/${id}/${token}/messages/${messageId}`,
                 {
                     method: "PATCH",
-                    body: message,
+                    body: normalizeMessage(
+                        message,
+                    ),
                 },
             );
         },
 
         /**
-         * Fetch message
-         *
-         * GET /webhooks/{id}/{token}/messages/{message.id}
+         * Fetch webhook message.
          */
         async fetch(messageId) {
             return request(
@@ -143,9 +162,7 @@ function createWebhook(
         },
 
         /**
-         * Delete message
-         *
-         * DELETE /webhooks/{id}/{token}/messages/{message.id}
+         * Delete webhook message.
          */
         async delete(messageId) {
             await request(
@@ -159,15 +176,43 @@ function createWebhook(
 }
 
 /**
+ * Convert a string into a Discord message payload.
+ *
+ * "Hello"
+ *
+ * becomes:
+ *
+ * {
+ *     content: "Hello"
+ * }
+ */
+function normalizeMessage(
+    message: WebhookMessage,
+): Record<string, unknown> {
+    if (typeof message === "string") {
+        return {
+            content: message,
+        };
+    }
+
+    return message;
+}
+
+/**
  * Manual Discord REST API request.
  */
-async function request(
+async function request<T = unknown>(
     path: string,
     options: {
-        method: "GET" | "POST" | "PATCH" | "DELETE";
+        method:
+            | "GET"
+            | "POST"
+            | "PATCH"
+            | "DELETE";
+
         body?: Record<string, unknown>;
     },
-): Promise<unknown> {
+): Promise<T> {
     const response = await fetch(
         `https://discord.com/api/v10${path}`,
         {
@@ -195,16 +240,12 @@ async function request(
     );
 
     /**
-     * DELETE normally returns 204 No Content.
+     * DELETE success.
      */
     if (response.status === 204) {
-        return undefined;
+        return undefined as T;
     }
 
-    /**
-     * Discord returns JSON for successful
-     * webhook operations and API errors.
-     */
     const contentType =
         response.headers.get(
             "content-type",
@@ -212,15 +253,18 @@ async function request(
 
     let result: unknown;
 
-    if (contentType.includes("application/json")) {
+    if (
+        contentType.includes(
+            "application/json",
+        )
+    ) {
         result = await response.json();
     } else {
         result = await response.text();
     }
 
     /**
-     * Convert Discord API errors into useful
-     * JavaScript errors.
+     * Discord API error.
      */
     if (!response.ok) {
         const error = new Error(
@@ -236,18 +280,11 @@ async function request(
         throw error;
     }
 
-    return result;
+    return result as T;
 }
 
 /**
  * Parse Discord webhook URL.
- *
- * Supported:
- *
- * https://discord.com/api/webhooks/{id}/{token}
- * https://discord.com/api/v10/webhooks/{id}/{token}
- * https://ptb.discord.com/api/v10/webhooks/{id}/{token}
- * https://canary.discord.com/api/v10/webhooks/{id}/{token}
  */
 function getData(
     webhookUrl: string,
@@ -278,6 +315,5 @@ function getData(
     return {
         id,
         token,
-        url: webhookUrl,
     };
 }
