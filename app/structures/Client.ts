@@ -19,7 +19,7 @@ const clientOptions = {
                 disabled: false,
                 category: "none"
             },
-            onRunError: (context, error) => {
+            onRunError: (context, error: unknown) => {
                 context.editOrReply({ content: 'Something went wrong!', flags: MessageFlags.Ephemeral });
                 context.client.logger.error(error);
             },
@@ -46,14 +46,14 @@ const clientOptions = {
     },
     components: {
         defaults: {
-            onRunError: (context, error) => {
+            onRunError: (context) => {
                 context.editOrReply({ content: 'Component error!', flags: MessageFlags.Ephemeral });
             },
         },
     },
     modals: {
         defaults: {
-            onRunError: (context, error) => {
+            onRunError: (context) => {
                 context.editOrReply({ content: 'Modal error!', flags: MessageFlags.Ephemeral });
             },
         },
@@ -65,7 +65,7 @@ const clientOptions = {
             device: "android"
         }
     },
-    presence: (shardId) => ({
+    presence: () => ({
         status: PresenceUpdateStatus.Online,
         activities: [{
             name: "Custom Status",
@@ -85,7 +85,7 @@ class CustomClient extends Client<true> {
         });
 
         this.start().then(
-            _ => this.uploadCommands()
+            () => this.uploadCommands()
         );
     }
 }

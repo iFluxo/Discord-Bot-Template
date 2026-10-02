@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@types/bun": "^1",
+    "@types/node": "^26",
     "typescript": "^7"
   },
   "dependencies": {
