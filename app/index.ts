@@ -56,6 +56,8 @@ Logger.customize((logger: Logger, level, args) => {
     return [formatMemoryUsage((Logger as any).__memoryCache.rss).replace("RAM Usage ", ""), `${color((Logger as any).prefixes.get(level) ?? "DEBUG")} >`, ...args];
 });
 
+
+
 const client = new Client({ globalMiddlewares: Object.keys(globalMiddlewares), plugins })
 
 client.setServices({ middlewares: globalMiddlewares });

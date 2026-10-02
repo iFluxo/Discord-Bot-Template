@@ -30,7 +30,7 @@ import { colors } from "#data";
 
 export default class HelpCommand extends Command {
     async run(ctx: CommandContext) {
-        if ((ctx.options as { command?: string }).command?.length) helpCommand(ctx);
+        if (ctx.options?.command?.length) helpCommand(ctx);
         else commandsList(ctx);
   }
 }
