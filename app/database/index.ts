@@ -7,9 +7,8 @@ import {
     type SelectCustom, 
     type SelectGuild, 
     type SelectUser, 
-    customTable, 
-    guildTable, 
-    userTable 
+    CustomTable, 
+    GuildTable, 
 } from "./drizzle.schema";
 
 export enum CacheKeys {
