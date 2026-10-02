@@ -29,7 +29,7 @@ export async function WebhookPlugin(
     const hooks: WebhookCollection = {};
 
     return createPlugin({
-        name: "webhook-client",
+        name: "seyfert-webhook-plugin",
 
         client: {
             webhook: () => hooks,
