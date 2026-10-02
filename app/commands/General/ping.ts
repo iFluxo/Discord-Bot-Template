@@ -40,7 +40,7 @@ export default class PingCommand extends Command {
                 name: translate.ping.database.title,
                 value: translate.ping.database.value(Math.round(Math.random()*20+1)),
                 inline: true,
-            }
+            },
             {
                 name: translate.ping.runtime.title,
                 value: translate.ping.runtime.value(Date.now() - pong),
