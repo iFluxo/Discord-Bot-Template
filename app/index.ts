@@ -23,9 +23,8 @@ const plugins = definePlugins(
 );
 
 declare module "seyfert" {
-    interface UsingClient extends ParseClient<Client<true>> {}
-
     interface SeyfertRegistry {
+        client: ParseClient<Client<true>>;
         plugins: typeof plugins;
         middlewares: CooldownMiddlewares<"cooldown">
         & typeof globalMiddlewares;
@@ -35,8 +34,8 @@ declare module "seyfert" {
     extends ParseGlobalMiddlewares<typeof globalMiddlewares> {}
 
     interface ExtraProps {
-        botAdminOnly?: boolean;
-        botDeveloperOnly?: boolean;
+        onlyForAdmins?: boolean;
+        onlyForDev?: boolean;
         disabled?: boolean;
         category?: string;
     }
