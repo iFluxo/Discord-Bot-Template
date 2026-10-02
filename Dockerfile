@@ -6,6 +6,4 @@ RUN bun install
 
 COPY . .
 
-RUN bunx drizzle-kit generate
-
-CMD ["bun", "start"]
+CMD ["bun", "start:db"]
