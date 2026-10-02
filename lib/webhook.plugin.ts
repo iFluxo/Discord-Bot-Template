@@ -29,7 +29,7 @@ export async function WebhookPlugin(
     const hooks: WebhookCollection = {};
 
     return createPlugin({
-        name: "WebhookClient",
+        name: "webhook-client",
 
         client: {
             webhook: () => hooks,
