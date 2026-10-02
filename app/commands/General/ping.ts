@@ -28,6 +28,7 @@ export default class PingCommand extends Command {
 
         const ping = ctx.client?.gateway?.latency;
         const pong = (ctx.interaction?.createdTimestamp ?? ctx.message?.createdTimestamp ?? Date.now());
+        const dbPing = await ctx.db.ping("mongodb");
 
         const embed = new Embed()
             .setColor(colors.Primary)
@@ -38,7 +39,7 @@ export default class PingCommand extends Command {
             },
             {
                 name: translate.ping.database.title,
-                value: translate.ping.database.value(Math.round(Math.random()*20+1)),
+                value: translate.ping.database.value(dbPing),
                 inline: true,
             },
             {
