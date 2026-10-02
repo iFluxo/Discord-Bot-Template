@@ -34,7 +34,7 @@ const clientOptions = {
                 const result = await context?.cooldown?.consume();
                 context.editOrReply({ content: error, flags: MessageFlags.Ephemeral });
                 if (!context.interaction) {
-                    rms = result?.remainingMs ?? 3000;
+                    let rms = result?.remainingMs ?? 3000;
                     setTimeout(() => context.deleteResponse(), rms < 3000 ? rms + 5000 : rms);
                 }
             },
