@@ -3,6 +3,7 @@ import { createPlugin } from "seyfert";
 export type PluginOptions = Record<string, string>;
 
 export interface Webhook {
+    data: Record<string, string>;
     send(
         message: Record<string, unknown>,
     ): Promise<unknown>;
@@ -60,6 +61,7 @@ export function WebhookPlugin(
                 const { id, token } = data;
 
                 hooks[hookName] = {
+                    data,
                     send: async (message) => {
                         return client.webhooks.writeMessage(
                             id,
