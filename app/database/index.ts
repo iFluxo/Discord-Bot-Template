@@ -58,8 +58,8 @@ export class AIODatabase {
      */
     protected readonly drizzle({
         connection: {
-            url: process.env.TursoUrl!,
-            authToken: process.env.TursoAuthToken!,
+            url: process.env.TursoUrl,
+            authToken: process.env.TursoAuthToken,
         },
     });
 
