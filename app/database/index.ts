@@ -111,7 +111,7 @@ export class AIODatabase {
             );
         }
 
-        drizzle({
+        this.drizzle = drizzle({
             connection: {
                 url: tursoUrl,
                 authToken: tursoAuthToken,
