@@ -26,9 +26,9 @@
     "rootDir": "./app",
     "outDir": "./dist",
 
-    "baseUrl": ".",
     "paths": {
-      "#data": ["data/index.ts"]
+      "*": ["./*"],
+      "#data": ["./data/index.ts"]
     }
   },
 
