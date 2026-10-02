@@ -6,4 +6,4 @@ RUN bun install
 
 COPY . .
 
-CMD ["bun", "start:db"]
+CMD ["bun", "start"]
