@@ -1,2 +1,2 @@
-export * from "./config";
-export * from "./emoji";
+export * from "./config.js";
+export * from "./emoji.js";

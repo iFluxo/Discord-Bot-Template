@@ -3,6 +3,7 @@
     "target": "ESNext",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "types": ["node"],
 
     "strict": true,
     // "noImplicitAny": true,
@@ -26,7 +27,6 @@
     "outDir": "./dist",
 
     "paths": {
-      "*": ["./*"],
       "#data": ["./app/assets/index.ts"]
     }
   },

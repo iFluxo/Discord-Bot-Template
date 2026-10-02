@@ -3,7 +3,7 @@ export const config = {
     cmdPrefix: process.env.CmdPrefix ?? [...generateCases("freya"), ...generateCases("fry")]
 } as const;
 
-function generateCases(word) {
+function generateCases(word: string) {
     const result = [];
     const total = 1 << word.length;
 
@@ -21,5 +21,5 @@ function generateCases(word) {
         result.push(str);
     }
 
-    return result
+    return result;
 };
