@@ -57,7 +57,7 @@ async function helpSpesific(ctx: CommandContext) {
     const translate = ctx.t.get();
 
     const commands = ctx.client.commands.values;
-    const commandOwned = commands.find(cmd => cmd.name === cmdToSearch) ?? commands.find(cmd => cmd.aliases.includes(cmdToSearch));
+    const commandOwned = commands.find(cmd => !cmd.props.onlyForDev && cmd.name === cmdToSearch) ?? commands.find(cmd => !cmd.props.onlyForDev && cmd.aliases.includes(cmdToSearch));
 
     if (!commandOwned) return ctx.editOrReply({ embeds: [embed.setColor("Red").setDescription(`Command with name \`${cmdToSearch}\` is not found.`)] });
 
@@ -82,5 +82,5 @@ async function commandsList(ctx: CommandContext) {
 }
 
 function msToSecond(ms: number) {
-    return Math.floor(ms % 60);
+    return Math.floor(ms / 1000 % 60);
 }
