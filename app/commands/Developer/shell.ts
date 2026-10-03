@@ -15,6 +15,7 @@ import {
     Yuna,
 } from "yunaforseyfert";
 
+import { DevGuilds } from "#config";
 import { execSync } from "node:child_process";
 const { inspect } = Bun;
 
@@ -25,6 +26,7 @@ const { inspect } = Bun;
     defaultMemberPermissions: ["ManageGuild", "Administrator"],
     integrationTypes: ["GuildInstall"],
     contexts: ["Guild"],
+    guildId: DevGuilds,
     props: {
         category: "Developer"
     },
@@ -38,7 +40,6 @@ const { inspect } = Bun;
 
 export default class EvalCommand extends Command {
     @Watch({
-        idle: 60_000,
         beforeCreate(ctx) {
             const watcher = Yuna.watchers.find(ctx.client, {
                 userId: ctx.author.id,
@@ -96,7 +97,7 @@ export default class EvalCommand extends Command {
                     new Embed()
                         .setColor("Red")
                         .setTitle(`> \`${cmd}\``)
-                        .setDescription(Formatter.codeBlock(inspect(error).slice(0, 4080), "js"))
+                        .setDescription(Formatter.codeBlock(inspect(error).slice(0, 4080), "bash"))
                         .setFooter({ text: `Error | ${Math.floor(Date.now() - start)} ms` })
                 ],
                 flags: MessageFlags.Ephemeral

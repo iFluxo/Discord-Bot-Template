@@ -1,5 +1,5 @@
 import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
-import { colors, config } from "#data";
+import { Locale, CommandPrefixs, colors } from "#config";
 
 export const CustomTable = sqliteTable("custom", {
     id: text("id").primaryKey(),
@@ -9,8 +9,8 @@ export const CustomTable = sqliteTable("custom", {
 export const GuildTable = sqliteTable("guild", {
     id: text("id").primaryKey(),
     color: integer("color").notNull().default(colors.Primary),
-    locale: text("locale").notNull().default(config.Locale),
-    prefix: text("prefix").notNull().default(config.CommandPrefixs[0]),
+    locale: text("locale").notNull().default(Locale),
+    prefix: text("prefixs").array().notNull().default(CommandPrefixs),
 });
 
 export type SelectCustom = typeof CustomTable.$inferSelect;

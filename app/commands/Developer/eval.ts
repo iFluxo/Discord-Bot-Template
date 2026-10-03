@@ -16,15 +16,17 @@ import {
     Yuna,
 } from "yunaforseyfert";
 
+import { DevGuilds } from "#config";
 const { inspect } = Bun;
 
 @Declare({
     name: "eval",
-    description: "No explanation.",
     aliases: [],
+    description: "No explanation.",
     defaultMemberPermissions: ["ManageGuild", "Administrator"],
     integrationTypes: ["GuildInstall"],
     contexts: ["Guild"],
+    guildId: DevGuilds,
     props: {
         category: "Developer"
     },
@@ -42,7 +44,6 @@ const { inspect } = Bun;
 
 export default class EvalCommand extends Command {
     @Watch({
-        idle: 60_000,
         beforeCreate(ctx) {
             const watcher = Yuna.watchers.find(ctx.client, {
                 userId: ctx.author.id,

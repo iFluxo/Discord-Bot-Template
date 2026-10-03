@@ -28,7 +28,7 @@
     "paths": {
       "app/*": ["./app/*"],
       "lib/*": ["./lib/*"],
-      "#data": ["./app/assets/index.ts"]
+      "#config": ["./app/assets/config.ts"]
     }
   },
 

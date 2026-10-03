@@ -1,1 +1,1 @@
-export * from "./command.logger";
+export * from "./command.interface";

@@ -8,7 +8,7 @@ import {
 } from "seyfert";
 import { Cooldown } from "@slipher/cooldown";
 
-import { colors } from "#data";
+import { colors } from "#config";
 
 @Declare({
     name: "help",
@@ -21,7 +21,7 @@ import { colors } from "#data";
         category: "help.category"
     },
 })
-@Cooldown.user(10_000)
+@Cooldown.user(3_000)
 @Options({
     command: createStringOption({
         description: "help.options.command"
@@ -37,7 +37,6 @@ export default class HelpCommand extends Command {
 
 async function helpSpesific(ctx: CommandContext) {
     const translate = ctx.t.get();
-    
     const embed = new Embed()
         .setColor(colors.Secondary)
         .setTitle(translate.help.spesific.title)
@@ -48,7 +47,6 @@ async function helpSpesific(ctx: CommandContext) {
 
 async function commandsList(ctx: CommandContext) {
     const translate = ctx.t.get();
-    
     const embed = new Embed()
         .setColor(colors.Primary)
         .setTitle(translate.help.list.title)

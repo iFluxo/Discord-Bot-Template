@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 import { Client } from "../structures/Client";
 
-import { colors, config } from "#data";
+import { colors, Locale, CommandPrefixs } from "#config";
 
 import {
     type SelectCustom,
@@ -22,7 +22,7 @@ export enum CacheKeys {
     Guild = "guild",
     Color = "guild:color",
     Locale = "guild:locale",
-    Prefix = "guild:prefix",
+    Prefixs = "guild:prefixs",
 }
 
 /**
@@ -594,7 +594,7 @@ export class AIODatabase {
 
         return (
             guild?.locale ??
-            config.Locale
+            Locale
         );
     }
 
@@ -610,8 +610,8 @@ export class AIODatabase {
         const guild = await this.getGuildById(id);
 
         return (
-            guild?.prefix ??
-            config.CommandPrefixs
+            guild?.prefixs ??
+            CommandPrefixs
         );
     }
 
@@ -689,15 +689,15 @@ export class AIODatabase {
      * Updates the guild prefix and refreshes the guild cache.
      *
      * @param id Guild identifier.
-     * @param prefix New guild prefix.
+     * @param prefixs New guild prefix.
      * @returns The configured prefix.
      */
     public async setPrefix(
         id: SelectGuild["id"],
-        prefix: SelectGuild["prefix"],
+        prefixs: SelectGuild["prefixs"],
     ): Promise<string> {
         await this.upsertGuild(id, {
-            prefix,
+            prefixs,
         });
 
         const guild = await this.getGuildById(id);
@@ -707,17 +707,17 @@ export class AIODatabase {
             id,
             {
                 ...(guild ?? { id }),
-                prefix,
+                prefixs,
             },
         );
 
         await this.setCache(
-            CacheKeys.Prefix,
+            CacheKeys.Prefixs,
             id,
-            prefix,
+            prefixs,
         );
 
-        return prefix;
+        return prefixs;
     }
 
     /**
@@ -748,7 +748,7 @@ export class AIODatabase {
                 id,
             ),
             this.deleteCache(
-                CacheKeys.Prefix,
+                CacheKeys.Prefixs,
                 id,
             ),
         ]);

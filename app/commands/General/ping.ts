@@ -7,7 +7,7 @@ import {
 } from "seyfert";
 import { Cooldown } from "@slipher/cooldown";
 
-import { colors } from "#data";
+import { colors } from "#config";
 
 @Declare({
     name: "ping",
@@ -20,7 +20,7 @@ import { colors } from "#data";
         category: "ping.category"
     },
 })
-@Cooldown.user(5_000)
+@Cooldown.user(1_000)
 
 export default class PingCommand extends Command {
     async run(ctx: CommandContext) {
@@ -28,7 +28,7 @@ export default class PingCommand extends Command {
 
         const ping = ctx.client?.gateway?.latency;
         const pong = (ctx.interaction?.createdTimestamp ?? ctx.message?.createdTimestamp ?? Date.now());
-        const dbPing = await ctx.db.ping("mongodb");
+        const dbPing = await ctx.db.ping();
 
         const embed = new Embed()
             .setColor(colors.Primary)

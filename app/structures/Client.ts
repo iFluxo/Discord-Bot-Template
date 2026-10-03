@@ -6,7 +6,7 @@ import {
     PermissionStrings,
 } from "seyfert";
 import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
-import { config } from "#data";
+import config from "#config";
 
 const clientOptions = {
     allowedMentions: {
@@ -14,6 +14,7 @@ const clientOptions = {
         replied_user: false
     },
     commands: {
+        context: { config },
         prefix: () => config.CommandPrefixs,
         reply: () => true,
         deferReplyResponse: () => ({ content: "Sending request..." }),
@@ -71,9 +72,6 @@ const clientOptions = {
             state: "Made with ❤️ by Surya",
             type: ActivityType.Custom,
         },{
-            name: "Surya my Suami 😍",
-            type: ActivityType.Listening,
-        },{
             name: `Total ${shardId} shard!`,
             type: ActivityType.Watching,
         }],
@@ -88,6 +86,8 @@ class CustomClient extends Client<true> {
             ...clientOptions,
             ...extendedOptions
         });
+
+        this.config = config;
 
         this.start().then(
             () => this.uploadCommands()

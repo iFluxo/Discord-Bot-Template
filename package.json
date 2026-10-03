@@ -13,7 +13,6 @@
     "db:push": "bunx drizzle-kit push",
     "db:studio": "bunx drizzle-kit studio",
     "start": "bun app/index.ts",
-    "start:db": "bun db:generate && bun db:migrate && bun start",
     "ts:build": "bunx tsc",
     "ts:check": "bunx tsc --noEmit",
     "ts:dev": "bunx tsc -w"
