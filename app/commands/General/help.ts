@@ -1,3 +1,4 @@
+import { readdirSync } from "node:fs";
 import { Cooldown } from "@slipher/cooldown";
 import { Command, type CommandContext, createStringOption, Declare, Embed, Options } from "seyfert";
 
