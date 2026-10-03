@@ -84,7 +84,7 @@ async function commandsList(ctx: CommandContext) {
 
     const categories = readdirSync("app/commands").filter(name => name !== "Developer");
     for (const category of categories) {
-        embed.addFields({ name: category, value: commands.filter(cmd => cmd.category === category).map(cmd => `\`/${cmd.name}\``).join(", "), inline: true });
+        embed.addFields({ name: category, value: commands.filter(cmd => cmd.props?.category === category).map(cmd => `\`/${cmd.name}\``).join(", "), inline: true });
     }
 
     ctx.editOrReply({ embeds: [embed] });
