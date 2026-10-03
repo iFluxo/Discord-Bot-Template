@@ -63,7 +63,7 @@ async function helpSpesific(ctx: CommandContext) {
 
     embed.setColor(colors.Primary)
         .setTitle(commandOwned.name)
-        .setDescription(`*${translate[commandHas.name].description}*`)
+        .setDescription(`*${translate[commandOwned.name].description}*`)
         .setFooter({ text: translate[commandOwned.name].category });
     if (commandOwned.aliases?.length > 0) embed.setAuthor({ name: `( ${commandOwned.map(n => n).join(", ")} )` });
 
