@@ -3,6 +3,12 @@ import { Command, type CommandContext, createStringOption, Declare, Embed, Optio
 
 import { colors } from "#config";
 
+const helpOptions = {
+    command: createStringOption({
+        description: "help.options.command",
+    }),
+};
+
 @Declare({
     name: "help",
     aliases: ["h"],
@@ -15,13 +21,9 @@ import { colors } from "#config";
     },
 })
 @Cooldown.user(3_000)
-@Options({
-    command: createStringOption({
-        description: "help.options.command",
-    }),
-})
+@Options(helpOptions)
 export default class HelpCommand extends Command {
-    async run(ctx: CommandContext) {
+    async run(ctx: CommandContext<typeof helpOptions>) {
         if (ctx.options?.command?.length) helpSpesific(ctx);
         else commandsList(ctx);
     }

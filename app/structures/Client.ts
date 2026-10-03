@@ -1,11 +1,22 @@
-import { Client, type CommandContext, extendContext, type MenuCommandContext, MessageFlags, type PermissionStrings } from "seyfert";
+import {
+    Client,
+    type CommandContext,
+    type ComponentContext,
+    extendContext,
+    type MenuCommandContext,
+    type MessageCommandInteraction,
+    MessageFlags,
+    type ModalContext,
+    type PermissionStrings,
+    type UserCommandInteraction,
+} from "seyfert";
 import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
 import * as config from "#config";
 
 const clientOptions = {
     context: extendContext(() => ({ config })),
     allowedMentions: {
-        parse: ["everyone", "roles", "users"],
+        parse: ["everyone", "roles", "users"] as ("everyone" | "roles" | "users")[],
         replied_user: false,
     },
     commands: {
@@ -19,7 +30,10 @@ const clientOptions = {
                 disabled: false,
                 category: "none",
             },
-            onRunError: (context: CommandContext | MenuCommandContext, error: unknown) => {
+            onRunError: (
+                context: CommandContext | MenuCommandContext<MessageCommandInteraction | UserCommandInteraction>,
+                error: unknown,
+            ) => {
                 context.editOrReply({
                     content: "Something went wrong!",
                     flags: MessageFlags.Ephemeral,
@@ -38,13 +52,19 @@ const clientOptions = {
                     flags: MessageFlags.Ephemeral,
                 });
             },
-            onBotPermissionsFail: (context: CommandContext, permissions: PermissionStrings) => {
+            onBotPermissionsFail: (
+                context: CommandContext | MenuCommandContext<MessageCommandInteraction | UserCommandInteraction>,
+                permissions: PermissionStrings,
+            ) => {
                 context.editOrReply({
                     content: `I need ${permissions.join(", ")} permissions to run this command.`,
                     flags: MessageFlags.Ephemeral,
                 });
             },
-            onMiddlewaresError: async (context: CommandContext, error: string) => {
+            onMiddlewaresError: async (
+                context: CommandContext | MenuCommandContext<MessageCommandInteraction | UserCommandInteraction>,
+                error: string,
+            ) => {
                 const result = await context?.cooldown?.consume();
                 context.editOrReply({ content: error, flags: MessageFlags.Ephemeral });
                 if (!context.interaction) {
@@ -59,7 +79,7 @@ const clientOptions = {
     },
     components: {
         defaults: {
-            onRunError: (context: CommandContext) => {
+            onRunError: (context: ComponentContext) => {
                 context.editOrReply({
                     content: "Component error!",
                     flags: MessageFlags.Ephemeral,
@@ -69,7 +89,7 @@ const clientOptions = {
     },
     modals: {
         defaults: {
-            onRunError: (context: CommandContext) => {
+            onRunError: (context: ModalContext) => {
                 context.editOrReply({
                     content: "Modal error!",
                     flags: MessageFlags.Ephemeral,
@@ -77,7 +97,7 @@ const clientOptions = {
             },
         },
     },
-    presence: (shardId) => ({
+    presence: (shardId: number) => ({
         status: PresenceUpdateStatus.Online,
         activities: [
             {
@@ -96,6 +116,8 @@ const clientOptions = {
 };
 
 class CustomClient extends Client<true> {
+    declare config: typeof config;
+
     constructor(extendedOptions = {}) {
         super({
             ...clientOptions,

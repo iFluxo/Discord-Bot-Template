@@ -5,6 +5,12 @@ import { config } from "#config";
 
 const { inspect } = Bun;
 
+const shellOptions = {
+    cmd: createStringOption({
+        description: "Some command.",
+    }),
+};
+
 @Declare({
     name: "shell",
     aliases: ["sh"],
@@ -17,11 +23,8 @@ const { inspect } = Bun;
         category: "Developer",
     },
 })
-@Options({
-    cmd: createStringOption({
-        description: "Some command.",
-    }),
-})
+
+@Options(shellOptions)
 @DeclareParserConfig(ParserRecommendedConfig.Eval)
 export default class EvalCommand extends Command {
     @Watch({
@@ -45,7 +48,7 @@ export default class EvalCommand extends Command {
             });
         },
     })
-    async run(ctx: CommandContext) {
+    async run(ctx: CommandContext<typeof shellOptions>) {
         const { client, options, channelId } = ctx;
 
         const start = Date.now();
@@ -55,14 +58,14 @@ export default class EvalCommand extends Command {
 
         await client.channels.typing(channelId);
 
-        if (!cmd && !cmd?.length)
+        if (!cmd?.length)
             return ctx.editOrReply({
                 embeds: [new Embed().setDescription("`❌` Input command!").setColor("Red")],
                 flags: MessageFlags.Ephemeral,
             });
 
         try {
-            output = execSync(cmd);
+            output = execSync(cmd).toString();
             await ctx.editOrReply({
                 embeds: [
                     new Embed()

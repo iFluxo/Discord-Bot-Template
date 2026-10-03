@@ -50,7 +50,7 @@ export class AIODatabase {
     /**
      * Drizzle ORM instance connected to the Turso/libSQL database.
      */
-    protected readonly drizzle: drizzle;
+    protected readonly drizzle: ReturnType<typeof drizzle>;
     /**
      * Redis client used for application caching.
      */
@@ -459,10 +459,10 @@ export class AIODatabase {
      * @param id Guild identifier.
      * @returns Guild prefix or the application default prefix.
      */
-    public async getPrefix(id: SelectGuild["id"]): Promise<string> {
+    public async getPrefix(id: SelectGuild["id"]): Promise<string[]> {
         const guild = await this.getGuildById(id);
 
-        return guild?.prefixs ?? CommandPrefixs;
+        return guild?.prefixs ?? config.CommandPrefixs;
     }
 
     /**
@@ -520,7 +520,7 @@ export class AIODatabase {
      * @param prefixs New guild prefix.
      * @returns The configured prefix.
      */
-    public async setPrefix(id: SelectGuild["id"], prefixs: SelectGuild["prefixs"]): Promise<string> {
+    public async setPrefix(id: SelectGuild["id"], prefixs: SelectGuild["prefixs"]): Promise<string[]> {
         await this.upsertGuild(id, {
             prefixs,
         });

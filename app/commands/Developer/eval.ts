@@ -15,6 +15,16 @@ import { config } from "#config";
 
 const { inspect } = Bun;
 
+const evalOptions = {
+    code: createStringOption({
+        description: "Some code.",
+    }),
+    depth: createIntegerOption({
+        description: "Depth of the result.",
+        min_value: 0,
+    }),
+};
+
 @Declare({
     name: "eval",
     aliases: [],
@@ -27,15 +37,8 @@ const { inspect } = Bun;
         category: "Developer",
     },
 })
-@Options({
-    code: createStringOption({
-        description: "Some code.",
-    }),
-    depth: createIntegerOption({
-        description: "Depth of the result.",
-        min_value: 0,
-    }),
-})
+
+@Options(evalOptions)
 @DeclareParserConfig(ParserRecommendedConfig.Eval)
 export default class EvalCommand extends Command {
     @Watch({
@@ -59,7 +62,7 @@ export default class EvalCommand extends Command {
             });
         },
     })
-    async run(ctx: CommandContext) {
+    async run(ctx: CommandContext<typeof evalOptions>) {
         const { client, options, channelId } = ctx;
 
         const start = Date.now();
@@ -67,11 +70,11 @@ export default class EvalCommand extends Command {
 
         let code = options?.code;
         let output = null;
-        let typecode: string;
+        let typecode: string | undefined;
 
         await client.channels.typing(channelId);
 
-        if (!code && !code?.length)
+        if (!code?.length)
             return ctx.editOrReply({
                 embeds: [new Embed().setDescription("`❌` Input code!").setColor("Red")],
                 flags: MessageFlags.Ephemeral,

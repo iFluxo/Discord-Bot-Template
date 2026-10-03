@@ -26,7 +26,7 @@ export interface WebhookCollection {
     version: string;
     creator: string;
 
-    [hookName: string]: Record<string, Webhook>;
+    [hookName: string]: Webhook | string;
 }
 
 export function WebhookPlugin(options: PluginOptions = {}) {
@@ -65,8 +65,6 @@ export function WebhookPlugin(options: PluginOptions = {}) {
             }
 
             client.logger.info(`[${this.name}-Plugin] ${size} Loaded.`);
-
-            return this;
         },
     });
 }

@@ -16,13 +16,14 @@
 
         "esModuleInterop": true,
         "resolveJsonModule": true,
+        "preserveSymlinks": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
 
         "skipLibCheck": true,
         "noErrorTruncation": true,
 
-        "rootDir": "./app",
+        "rootDir": ".",
         "outDir": "./dist",
 
         "paths": {
