@@ -28,7 +28,7 @@ export default class PingCommand extends Command {
 
         const ping = ctx.client?.gateway?.latency;
         const pong = ctx.globalMetadata.commandInterface?.createdTimestamp ?? Date.now();
-        const dbPing = await ctx.db.ping();
+        const dbPing = await ctx.db.ping("mongodb");
 
         const embed = new Embed()
             .setColor(colors.Primary)
