@@ -4,6 +4,7 @@ import {
     type MenuCommandContext,
     MessageFlags,
     PermissionStrings,
+    extendContext,
 } from "seyfert";
 import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
 import * as config from "#config";
@@ -14,7 +15,7 @@ const clientOptions = {
         replied_user: false
     },
     commands: {
-        context: { config },
+        context: extendContext(() => ({ config })),
         prefix: () => config.config.CommandPrefixs,
         reply: () => true,
         deferReplyResponse: () => ({ content: "Sending request..." }),
