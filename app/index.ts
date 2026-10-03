@@ -28,7 +28,7 @@ const plugins = definePlugins(
     }),
     DatabasePlugin(),
     WebhookPlugin({
-        log: process.env.WebhookLogUrl,
+        log: Bun.env.WebhookLogUrl,
     }),
     cooldown({
         middleware: { global: true },
