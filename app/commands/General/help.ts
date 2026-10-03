@@ -52,12 +52,11 @@ async function helpSpesific(ctx: CommandContext) {
         .setColor(colors.Secondary)
         .setDescription(`*Searching command with name \`${cmdToSearch}\`...*`);
 
-    await ctx.editOrReply({ embeds: [embed] });
+    ctx.editOrReply({ embeds: [embed] });
 
     const translate = ctx.t.get();
 
-    const commands = ctx.client.commands.values();
-
+    const commands = ctx.client.commands.values;
     const commandOwned = commands.find(cmd => cmd.name === cmdToSearch) ?? commands.find(cmd => cmd.aliases.includes(cmdToSearch));
 
     if (!commandOwned) return ctx.editOrReply({ embeds: [embed.setColor("Red").setDescription(`Command with name \`${cmdToSearch}\` is not found.`)] })
