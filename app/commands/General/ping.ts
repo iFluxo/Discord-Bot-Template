@@ -9,7 +9,7 @@ import { colors } from "#config";
 @Declare({
     name: "ping",
     aliases: [],
-    description: "ping.description",
+    description: "Showing client, database, and runtime latency.",
     contexts: ["Guild", "BotDM"],
     integrationTypes: ["GuildInstall", "UserInstall"],
     botPermissions: ["EmbedLinks"],

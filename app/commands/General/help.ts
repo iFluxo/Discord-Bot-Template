@@ -9,7 +9,7 @@ import { colors } from "#config";
  */
 const helpOptions = {
     command: createStringOption({
-        description: "help.options.command",
+        description: "Input a command name.",
     }),
 };
 
@@ -17,10 +17,12 @@ const helpOptions = {
  * Displays the full command list, or targeted information about a single
  * command when a command name is provided.
  */
+
+
 @Declare({
     name: "help",
     aliases: ["h"],
-    description: "help.description",
+    description: "Displaying commands list and usage helper.",
     contexts: ["Guild"],
     integrationTypes: ["GuildInstall"],
     botPermissions: ["EmbedLinks"],
