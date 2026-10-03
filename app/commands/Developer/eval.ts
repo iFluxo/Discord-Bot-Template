@@ -16,7 +16,7 @@ import {
     Yuna,
 } from "yunaforseyfert";
 
-import { DevGuilds } from "#config";
+import { config } from "#config";
 const { inspect } = Bun;
 
 @Declare({
@@ -26,7 +26,7 @@ const { inspect } = Bun;
     defaultMemberPermissions: ["ManageGuild", "Administrator"],
     integrationTypes: ["GuildInstall"],
     contexts: ["Guild"],
-    guildId: DevGuilds,
+    guildId: config.DevGuilds,
     props: {
         category: "Developer"
     },

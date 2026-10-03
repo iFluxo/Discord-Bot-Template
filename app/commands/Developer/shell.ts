@@ -15,7 +15,7 @@ import {
     Yuna,
 } from "yunaforseyfert";
 
-import { DevGuilds } from "#config";
+import { config } from "#config";
 import { execSync } from "node:child_process";
 const { inspect } = Bun;
 
@@ -26,7 +26,7 @@ const { inspect } = Bun;
     defaultMemberPermissions: ["ManageGuild", "Administrator"],
     integrationTypes: ["GuildInstall"],
     contexts: ["Guild"],
-    guildId: DevGuilds,
+    guildId: config.DevGuilds,
     props: {
         category: "Developer"
     },

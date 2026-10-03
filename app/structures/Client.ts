@@ -6,7 +6,7 @@ import {
     PermissionStrings,
 } from "seyfert";
 import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
-import config from "#config";
+import * as config from "#config";
 
 const clientOptions = {
     allowedMentions: {

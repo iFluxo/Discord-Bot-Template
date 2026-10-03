@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 import { Client } from "../structures/Client";
 
-import { colors, Locale, CommandPrefixs } from "#config";
+import { config, colors } from "#config";
 
 import {
     type SelectCustom,
@@ -594,7 +594,7 @@ export class AIODatabase {
 
         return (
             guild?.locale ??
-            Locale
+            config.Locale
         );
     }
 

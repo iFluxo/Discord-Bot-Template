@@ -1,18 +1,18 @@
-export default {
+export const config = {
     CommandPrefixs: ["-", ...generateCases("ai"), ...generateCases("aichan")],
     Locale: "en-US",
     Developers: ["561170896480501790"],
     DevGuilds: ["1041813867640131665"],
+};
 
-    colors: {
-        Primary: 0xE0E3FF,
-        Secondary: 0x5865F2,
-    },
+export const colors = {
+    Primary: 0xE0E3FF,
+    Secondary: 0x5865F2,
+};
 
-    emojis: {
-        "#Developer": "🔐",
-        "#General": "ℹ️",
-    },
+export const emojis = {
+    "#Developer": "🔐",
+    "#General": "ℹ️",
 };
 
 function generateCases(word: string) {
