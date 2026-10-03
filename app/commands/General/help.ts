@@ -56,8 +56,8 @@ async function helpSpesific(ctx: CommandContext) {
 
     const translate = ctx.t.get();
 
-    const commands = ctx.client.commands.values;
-    const commandOwned = commands.find(cmd => !cmd.props.onlyForDev && cmd.name === cmdToSearch) ?? commands.find(cmd => !cmd.props.onlyForDev && cmd.aliases.includes(cmdToSearch));
+    const commands = ctx.client.commands.values.filter(cmd => !cmd.props.onlyForDev)
+    const commandOwned = commands.find(cmd => cmd.name === cmdToSearch) ?? commands.find(cmd => cmd.aliases.includes(cmdToSearch));
 
     if (!commandOwned) return ctx.editOrReply({ embeds: [embed.setColor("Red").setDescription(`Command with name \`${cmdToSearch}\` is not found.`)] });
 
@@ -77,8 +77,16 @@ async function helpSpesific(ctx: CommandContext) {
  */
 async function commandsList(ctx: CommandContext) {
     const translate = ctx.t.get();
+
+    const commands = ctx.client.commands.values.filter(cmd => !cmd.props.onlyForDev);
     const embed = new Embed().setColor(colors.Primary).setTitle(translate.help.list.title).setDescription(translate.help.list.description);
-    ctx.write({ embeds: [embed] });
+
+    const categories = readdirSync("app/commands").filter(name => name !== "Developer");
+    for (const category of categories) {
+        embed.addFields({ name: categoryName, values: commands.filter(cmd => cmd.category === category).map(cmd => `\`/${cmd.name}\``).join(", "), inline: true });
+    }
+
+    ctx.editOrReply({ embeds: [embed] });
 }
 
 function msToSecond(ms: number) {
