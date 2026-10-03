@@ -1,3 +1,7 @@
+/**
+ * English (en-US) language resource bundle. Accessed through the
+ * localized context helpers such as `ctx.t.get()`.
+ */
 export default {
     metadata: {
         name: "English",

@@ -1,3 +1,6 @@
+/*
+ * Drizzle ORM table definitions with their inferred row types.
+ */
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { colors, config } from "#config";
 

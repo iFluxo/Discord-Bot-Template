@@ -3,6 +3,9 @@ import { Command, type CommandContext, Declare, Embed, MessageFlags } from "seyf
 
 import { colors } from "#config";
 
+/**
+ * Reports gateway, database, and round-trip runtime latency.
+ */
 @Declare({
     name: "ping",
     aliases: [],
@@ -19,6 +22,10 @@ export default class PingCommand extends Command {
     async run(ctx: CommandContext) {
         const translate = ctx.t.get();
 
+        /*
+         * Fall back to message timestamp and then wall-clock time so the
+         * runtime latency figure remains meaningful across interaction types.
+         */
         const ping = ctx.client?.gateway?.latency;
         const pong = ctx.interaction?.createdTimestamp ?? ctx.message?.createdTimestamp ?? Date.now();
         const dbPing = await ctx.db.ping();

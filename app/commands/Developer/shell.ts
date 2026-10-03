@@ -5,12 +5,19 @@ import { config } from "#config";
 
 const { inspect } = Bun;
 
+/**
+ * Command options for the shell developer command.
+ */
 const shellOptions = {
     cmd: createStringOption({
         description: "Some command.",
     }),
 };
 
+/**
+ * Developer-only command that executes a system shell command on the host
+ * machine and returns its output. Restricted to administrators in dev guilds.
+ */
 @Declare({
     name: "shell",
     aliases: ["sh"],
@@ -28,6 +35,10 @@ const shellOptions = {
 @DeclareParserConfig(ParserRecommendedConfig.Eval)
 export default class EvalCommand extends Command {
     @Watch({
+        /*
+         * Only one active watcher is allowed per user and command; starting a
+         * new execution stops the previous watcher with a user-visible notice.
+         */
         beforeCreate(ctx) {
             const watcher = Yuna.watchers.find(ctx.client, {
                 userId: ctx.author.id,

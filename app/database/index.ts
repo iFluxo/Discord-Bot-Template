@@ -1,3 +1,7 @@
+/*
+ * Database layer: provides a unified API over Turso/libSQL (Drizzle),
+ * Redis caching, and MongoDB, plus health-check utilities.
+ */
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/libsql";
 import mongoose from "mongoose";

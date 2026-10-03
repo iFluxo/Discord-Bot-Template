@@ -29,6 +29,13 @@ export interface WebhookCollection {
     [hookName: string]: Webhook | string;
 }
 
+/**
+ * Parses every provided webhook URL during setup and exposes the resulting
+ * webhook collection on both the client and command contexts.
+ *
+ * @param options Map of hook name to Discord webhook URL.
+ * @returns The configured Seyfert plugin definition.
+ */
 export function WebhookPlugin(options: PluginOptions = {}) {
     const collection: WebhookCollection = {
         name: "Webhook Client",

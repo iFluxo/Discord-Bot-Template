@@ -1,5 +1,8 @@
 import { ComponentCommand, type ComponentContext } from "seyfert";
 
+/**
+ * Default string-select menu component handler used as a template for new select menus.
+ */
 export default class Default extends ComponentCommand {
     componentType = "StringSelect" as const;
 

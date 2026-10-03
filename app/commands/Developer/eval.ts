@@ -15,6 +15,9 @@ import { config } from "#config";
 
 const { inspect } = Bun;
 
+/**
+ * Slash-command options for the eval developer command.
+ */
 const evalOptions = {
     code: createStringOption({
         description: "Some code.",
@@ -25,6 +28,10 @@ const evalOptions = {
     }),
 };
 
+/**
+ * Developer-only command that evaluates arbitrary JavaScript in the bot process.
+ * Intended for trusted developers for debugging purposes only.
+ */
 @Declare({
     name: "eval",
     aliases: [],
@@ -42,6 +49,10 @@ const evalOptions = {
 @DeclareParserConfig(ParserRecommendedConfig.Eval)
 export default class EvalCommand extends Command {
     @Watch({
+        /*
+         * Only one active watcher is allowed per user and command; starting a
+         * new execution stops the previous watcher with a user-visible notice.
+         */
         beforeCreate(ctx) {
             const watcher = Yuna.watchers.find(ctx.client, {
                 userId: ctx.author.id,
@@ -80,6 +91,10 @@ export default class EvalCommand extends Command {
                 flags: MessageFlags.Ephemeral,
             });
 
+        /*
+         * Wrap top-level await expressions in an async IIFE so that snippets
+         * such as "await foo()" can be evaluated without a surrounding block.
+         */
         try {
             if (typeof output !== "string") {
                 if (/^(?:\(?)\s*await\b/.test(code.toLowerCase())) code = `(async () => ${code})()`;
@@ -89,6 +104,10 @@ export default class EvalCommand extends Command {
                 output = inspect(output, { depth }).replace(Bun.env.Token ?? "No Token Found!?", "X".repeat(Bun.env.Token?.length ?? 1));
             }
 
+            /*
+             * Discord caps embed descriptions at 4096 characters; truncate long
+             * outputs to stay within the limit while keeping a code block intact.
+             */
             await ctx.editOrReply({
                 embeds: [
                     new Embed()
