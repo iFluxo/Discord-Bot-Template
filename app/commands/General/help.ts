@@ -67,7 +67,7 @@ async function helpSpesific(ctx: CommandContext) {
         .setFooter({ text: translate[commandOwned.name].category });
     if (commandOwned.aliases?.length > 0) embed.setAuthor({ name: `( ${commandOwned.map(n => n).join(", ")} )` });
 
-    ctx.write({ embeds: [embed] });
+    ctx.editOrReply{ embeds: [embed] });
 }
 
 /**
