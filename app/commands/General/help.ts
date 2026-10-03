@@ -81,6 +81,6 @@ async function commandsList(ctx: CommandContext) {
     ctx.write({ embeds: [embed] });
 }
 
-functon msToSecond(ms: number) {
+function msToSecond(ms: number) {
     return Math.floor(ms / 60 %);
 }
