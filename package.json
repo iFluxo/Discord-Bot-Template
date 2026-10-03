@@ -30,6 +30,6 @@
         "@types/bun": "^1",
         "@types/node": "^26",
         "drizzle-kit": "^0",
-        "typescript": "^5"
+        "typescript": "^7"
     }
 }
