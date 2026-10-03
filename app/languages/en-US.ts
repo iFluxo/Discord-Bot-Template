@@ -9,7 +9,6 @@ export default {
     },
 
     help: {
-        category: "General",
         description: "Displaying commands list and usage helper.",
         list: {
             title: "Commands list",
@@ -24,7 +23,6 @@ export default {
         },
     },
     ping: {
-        category: "General",
         description: "Showing client and runtime latency.",
         client: {
             title: "Client latency",

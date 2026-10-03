@@ -14,7 +14,7 @@ import { colors } from "#config";
     integrationTypes: ["GuildInstall", "UserInstall"],
     botPermissions: ["EmbedLinks"],
     props: {
-        category: "ping.category",
+        category: "General",
     },
 })
 @Cooldown.user(1_000)

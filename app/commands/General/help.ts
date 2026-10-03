@@ -25,7 +25,7 @@ const helpOptions = {
     integrationTypes: ["GuildInstall"],
     botPermissions: ["EmbedLinks"],
     props: {
-        category: "help.category",
+        category: "General",
     },
 })
 @Cooldown.user(3_000)
@@ -63,7 +63,7 @@ async function helpSpesific(ctx: CommandContext) {
     if (!commandOwned) return ctx.editOrReply({ embeds: [embed.setColor("Red").setDescription(`Command with name \`${cmdToSearch}\` is not found.`)] });
 
     embed.setColor(colors.Primary)
-        .setAuthor({ name: translate[commandOwned.name].category })
+        .setAuthor({ name: commandOwned.props?.category })
         .setTitle(commandOwned.name)
         .setDescription(`*${translate[commandOwned.name].description}*`);
     if (commandOwned.aliases?.length > 0) embed.setFooter({ text: `Aliases: ${commandOwned.aliases.map(n => n).join(", ")} | Cooldown: ${msToSecond(commandOwned.cooldown?.interval ?? 1000)} second` });
