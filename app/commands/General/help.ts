@@ -62,10 +62,10 @@ async function helpSpesific(ctx: CommandContext) {
     if (!commandOwned) return ctx.editOrReply({ embeds: [embed.setColor("Red").setDescription(`Command with name \`${cmdToSearch}\` is not found.`)] });
 
     embed.setColor(colors.Primary)
+        .setAuthor({ name: translate[commandOwned.name].category })
         .setTitle(commandOwned.name)
-        .setDescription(`*${translate[commandOwned.name].description}*`)
-        .setFooter({ text: translate[commandOwned.name].category });
-    if (commandOwned.aliases?.length > 0) embed.setAuthor({ name: `( ${commandOwned.map(n => n).join(", ")} )` });
+        .setDescription(`*${translate[commandOwned.name].description}*`);
+    if (commandOwned.aliases?.length > 0) embed.setFooter({ text: `( ${commandOwned.aliases.map(n => n).join(", ")} )` });
 
     ctx.editOrReply({ embeds: [embed] });
 }
