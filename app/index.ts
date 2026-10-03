@@ -28,7 +28,7 @@ const plugins = definePlugins(
     }),
     DatabasePlugin(),
     WebhookPlugin({
-        log: "https://discord.com/api/webhooks/1231915746666352670/etkARVaRE_D81COoihRcJQYjtlxjiG3vPtxfPkplcAvg6jJ_x_9v9Qq9CsbszSKTpte4",
+        log: process.env.WebhookLogUrl,
     }),
     cooldown({
         middleware: { global: true },
