@@ -65,7 +65,7 @@ async function helpSpesific(ctx: CommandContext) {
         .setAuthor({ name: translate[commandOwned.name].category })
         .setTitle(commandOwned.name)
         .setDescription(`*${translate[commandOwned.name].description}*`);
-    if (commandOwned.aliases?.length > 0) embed.setFooter({ text: `Aliases: ${commandOwned.aliases.map(n => n).join(", ")} | Cooldown: ${msToSecond(commandOwned.cooldown ?? 1000)} second` });
+    if (commandOwned.aliases?.length > 0) embed.setFooter({ text: `Aliases: ${commandOwned.aliases.map(n => n).join(", ")} | Cooldown: ${msToSecond(commandOwned.cooldown?.interval ?? 1000)} second` });
 
     ctx.editOrReply({ embeds: [embed] });
 }
