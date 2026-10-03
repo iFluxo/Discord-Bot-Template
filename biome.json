@@ -49,7 +49,7 @@
         "indentWidth": 4,
         "indentStyle": "space",
         "lineWidth": 140,
-        "lineEnding": "crlf",
+        "lineEnding": "lf",
         "formatWithErrors": true
     },
     "javascript": {
