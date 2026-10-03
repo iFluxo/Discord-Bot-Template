@@ -65,7 +65,7 @@ async function helpSpesific(ctx: CommandContext) {
         .setAuthor({ name: translate[commandOwned.name].category })
         .setTitle(commandOwned.name)
         .setDescription(`*${translate[commandOwned.name].description}*`);
-    if (commandOwned.aliases?.length > 0) embed.setFooter({ text: `Aliases: ${commandOwned.aliases.map(n => n).join(", ")} | Cooldown: ${msToSecond(commandOwned.cooldown)} second` });
+    if (commandOwned.aliases?.length > 0) embed.setFooter({ text: `Aliases: ${commandOwned.aliases.map(n => n).join(", ")} | Cooldown: ${msToSecond(commandOwned.cooldown ?? 1000)} second` });
 
     ctx.editOrReply({ embeds: [embed] });
 }
@@ -81,6 +81,6 @@ async function commandsList(ctx: CommandContext) {
     ctx.write({ embeds: [embed] });
 }
 
-functon msToSecond(ms?: number = 1000) {
+functon msToSecond(ms: number) {
     return Math.floor(ms / 60 %);
 }
