@@ -65,7 +65,7 @@ async function helpSpesific(ctx: CommandContext) {
         .setAuthor({ name: translate[commandOwned.name].category })
         .setTitle(commandOwned.name)
         .setDescription(`*${translate[commandOwned.name].description}*`);
-    if (commandOwned.aliases?.length > 0) embed.setFooter({ text: `( ${commandOwned.aliases.map(n => n).join(", ")} )` });
+    if (commandOwned.aliases?.length > 0) embed.setFooter({ text: `Aliases: ${commandOwned.aliases.map(n => n).join(", ")} | Cooldown: ${msToSecond(commandOwned.cooldown)} second` });
 
     ctx.editOrReply({ embeds: [embed] });
 }
@@ -79,4 +79,8 @@ async function commandsList(ctx: CommandContext) {
     const translate = ctx.t.get();
     const embed = new Embed().setColor(colors.Primary).setTitle(translate.help.list.title).setDescription(translate.help.list.description);
     ctx.write({ embeds: [embed] });
+}
+
+functon msToSecond(ms?: number = 1000) {
+    return Math.floor(ms / 60 %);
 }
