@@ -59,7 +59,7 @@ async function helpSpesific(ctx: CommandContext) {
     const commands = ctx.client.commands.values;
     const commandOwned = commands.find(cmd => cmd.name === cmdToSearch) ?? commands.find(cmd => cmd.aliases.includes(cmdToSearch));
 
-    if (!commandOwned) return ctx.editOrReply({ embeds: [embed.setColor("Red").setDescription(`Command with name \`${cmdToSearch}\` is not found.`)] })
+    if (!commandOwned) return ctx.editOrReply({ embeds: [embed.setColor("Red").setDescription(`Command with name \`${cmdToSearch}\` is not found.`)] });
 
     embed.setColor(colors.Primary)
         .setTitle(commandOwned.name)
@@ -67,7 +67,7 @@ async function helpSpesific(ctx: CommandContext) {
         .setFooter({ text: translate[commandOwned.name].category });
     if (commandOwned.aliases?.length > 0) embed.setAuthor({ name: `( ${commandOwned.map(n => n).join(", ")} )` });
 
-    ctx.editOrReply{ embeds: [embed] });
+    ctx.editOrReply({ embeds: [embed] });
 }
 
 /**
