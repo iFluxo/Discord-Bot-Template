@@ -15,7 +15,7 @@ const clientOptions = {
     },
     commands: {
         context: { config },
-        prefix: () => config.CommandPrefixs,
+        prefix: () => config.config.CommandPrefixs,
         reply: () => true,
         deferReplyResponse: () => ({ content: "Sending request..." }),
         defaults: {
