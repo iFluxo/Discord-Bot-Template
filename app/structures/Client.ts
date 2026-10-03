@@ -10,12 +10,12 @@ import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
 import * as config from "#config";
 
 const clientOptions = {
+    context: extendContext(() => ({ config })),
     allowedMentions: {
         parse: ["everyone", "roles", "users"],
         replied_user: false
     },
     commands: {
-        context: extendContext(() => ({ config })),
         prefix: () => config.config.CommandPrefixs,
         reply: () => true,
         deferReplyResponse: () => ({ content: "Sending request..." }),
