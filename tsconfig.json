@@ -28,11 +28,10 @@
 
         "paths": {
             "app/*": ["./app/*"],
-            "lib/*": ["./lib/*"],
             "#config": ["./app/assets/config.ts"]
         }
     },
 
-    "include": ["app/**/*", "lib/**/*"],
+    "include": ["app/**/*"],
     "exclude": ["node_modules", "dist"]
 }

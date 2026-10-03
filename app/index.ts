@@ -6,8 +6,8 @@ process.on("unhandledRejection", (info) => console.error("UnhandledRejection?!",
 process.on("uncaughtException", (info) => console.error("UncaughtException?!", info as unknown));
 
 import { type CooldownMiddlewares, cooldown } from "@slipher/cooldown";
-import { DatabasePlugin } from "lib/database.plugin";
-import { WebhookPlugin } from "lib/webhook.plugin";
+import { DatabasePlugin } from "app/plugins/database.plugin";
+import { WebhookPlugin } from "app/plugins/webhook.plugin";
 import type { LocaleString, Client as SeyfertClient } from "seyfert";
 import { definePlugins, Logger, type ParseClient, type ParseGlobalMiddlewares } from "seyfert";
 import { formatMemoryUsage } from "seyfert/lib/common/it/logger";
