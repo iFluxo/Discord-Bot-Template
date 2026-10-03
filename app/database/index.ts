@@ -9,7 +9,6 @@ import { config, colors } from "#config";
 import {
     type SelectCustom,
     type SelectGuild,
-    type SelectUser,
     CustomTable,
     GuildTable,
 } from "./drizzle.schema";

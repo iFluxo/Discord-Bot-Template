@@ -5,7 +5,7 @@ export default defineConfig({
     out: "./drizzle",
     dialect: "turso",
     dbCredentials: {
-        url: Bun.env.TursoUrl!,
-        authToken: Bun.env.TursoAuthToken!,
+        url: Bun.env.TursoUrl,
+        authToken: Bun.env.TursoAuthToken,
     },
 });

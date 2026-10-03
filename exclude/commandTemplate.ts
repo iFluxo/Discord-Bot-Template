@@ -17,6 +17,6 @@ import { Cooldown } from "@slipher/cooldown";
 
 export default class Template extends Command {
     async run(ctx: CommandContext) {
-        
+        ctx.write({ content: "Hi, from template" })
     }
 }
