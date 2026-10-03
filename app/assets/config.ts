@@ -6,8 +6,8 @@ export const config = {
 };
 
 export const colors = {
-    Primary: 0xE0E3FF,
-    Secondary: 0x5865F2,
+    Primary: 0xe0e3ff,
+    Secondary: 0x5865f2,
 };
 
 export const emojis = {
@@ -34,4 +34,4 @@ function generateCases(word: string) {
     }
 
     return result;
-};
+}

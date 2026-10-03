@@ -1,22 +1,8 @@
-import {
-    Command,
-    MessageFlags,
-    Declare,
-    Embed,
-    Options,
-    Formatter,
-    type CommandContext,
-    createStringOption,
-} from "seyfert";
-import {
-    DeclareParserConfig,
-    ParserRecommendedConfig,
-    Watch,
-    Yuna,
-} from "yunaforseyfert";
-
-import { config } from "#config";
 import { execSync } from "node:child_process";
+import { Command, type CommandContext, createStringOption, Declare, Embed, Formatter, MessageFlags, Options } from "seyfert";
+import { DeclareParserConfig, ParserRecommendedConfig, Watch, Yuna } from "yunaforseyfert";
+import { config } from "#config";
+
 const { inspect } = Bun;
 
 @Declare({
@@ -28,7 +14,7 @@ const { inspect } = Bun;
     contexts: ["Guild"],
     guildId: config.DevGuilds,
     props: {
-        category: "Developer"
+        category: "Developer",
     },
 })
 @Options({
@@ -37,7 +23,6 @@ const { inspect } = Bun;
     }),
 })
 @DeclareParserConfig(ParserRecommendedConfig.Eval)
-
 export default class EvalCommand extends Command {
     @Watch({
         beforeCreate(ctx) {
@@ -65,19 +50,15 @@ export default class EvalCommand extends Command {
 
         const start = Date.now();
 
-        let cmd = options?.cmd;
+        const cmd = options?.cmd;
         let output = null;
 
         await client.channels.typing(channelId);
 
         if (!cmd && !cmd?.length)
             return ctx.editOrReply({
-                embeds: [
-                    new Embed()
-                        .setDescription("`❌` Input command!")
-                        .setColor("Red"),
-                ],
-                flags: MessageFlags.Ephemeral
+                embeds: [new Embed().setDescription("`❌` Input command!").setColor("Red")],
+                flags: MessageFlags.Ephemeral,
             });
 
         try {
@@ -88,7 +69,9 @@ export default class EvalCommand extends Command {
                         .setColor("Green")
                         .setTitle(`> \`${cmd}\``)
                         .setDescription(`${Formatter.codeBlock(output ?? "", "bash")}`)
-                        .setFooter({ text: `Unix Shell | ${Math.floor(Date.now() - start)} ms` })
+                        .setFooter({
+                            text: `Unix Shell | ${Math.floor(Date.now() - start)} ms`,
+                        }),
                 ],
             });
         } catch (error: unknown) {
@@ -98,9 +81,11 @@ export default class EvalCommand extends Command {
                         .setColor("Red")
                         .setTitle(`> \`${cmd}\``)
                         .setDescription(Formatter.codeBlock(inspect(error).slice(0, 4080), "bash"))
-                        .setFooter({ text: `Error | ${Math.floor(Date.now() - start)} ms` })
+                        .setFooter({
+                            text: `Error | ${Math.floor(Date.now() - start)} ms`,
+                        }),
                 ],
-                flags: MessageFlags.Ephemeral
+                flags: MessageFlags.Ephemeral,
             });
         }
     }

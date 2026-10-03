@@ -1,9 +1,9 @@
-import { ComponentCommand, type ComponentContext } from 'seyfert';
+import { ComponentCommand, type ComponentContext } from "seyfert";
 
 export default class Default extends ComponentCommand {
-    componentType = 'Button' as const;
+    componentType = "Button" as const;
 
     async run(ctx: ComponentContext<typeof this.componentType>) {
-        return ctx.editOrReply({ content: 'Hello World from Button' });
+        return ctx.editOrReply({ content: "Hello World from Button" });
     }
 }

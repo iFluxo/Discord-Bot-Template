@@ -1,37 +1,37 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "CommonJS",
-    "types": ["bun", "node"],
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "CommonJS",
+        "types": ["bun", "node"],
 
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "noImplicitThis": true,
-    "noImplicitReturns": true,
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "noImplicitThis": true,
+        "noImplicitReturns": true,
 
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
 
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
 
-    "skipLibCheck": true,
-    "noErrorTruncation": true,
+        "skipLibCheck": true,
+        "noErrorTruncation": true,
 
-    "rootDir": "./app",
-    "outDir": "./dist",
+        "rootDir": "./app",
+        "outDir": "./dist",
 
-    "paths": {
-      "app/*": ["./app/*"],
-      "lib/*": ["./lib/*"],
-      "#config": ["./app/assets/config.ts"]
-    }
-  },
+        "paths": {
+            "app/*": ["./app/*"],
+            "lib/*": ["./lib/*"],
+            "#config": ["./app/assets/config.ts"]
+        }
+    },
 
-  "include": ["app/**/*", "lib/**/*"],
-  "exclude": ["node_modules", "dist"]
+    "include": ["app/**/*", "lib/**/*"],
+    "exclude": ["node_modules", "dist"]
 }

@@ -1,9 +1,5 @@
-import {
-    Declare,
-    Command,
-    type CommandContext,
-} from "seyfert";
 import { Cooldown } from "@slipher/cooldown";
+import { Command, type CommandContext, Declare } from "seyfert";
 
 @Declare({
     name: "",
@@ -14,9 +10,8 @@ import { Cooldown } from "@slipher/cooldown";
     botPermissions: ["EmbedLinks"],
 })
 @Cooldown.user(3_000)
-
 export default class Template extends Command {
     async run(ctx: CommandContext) {
-        ctx.write({ content: "Hi, from template" })
+        ctx.write({ content: "Hi, from template" });
     }
 }

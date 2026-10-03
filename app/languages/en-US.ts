@@ -9,11 +9,11 @@ export default {
         description: "Displaying commands list and usage helper.",
         list: {
             title: "Commands list",
-            description: "This is a list of commands. Use `/help :command name` for spesific command info."
+            description: "This is a list of commands. Use `/help :command name` for spesific command info.",
         },
         spesific: {
             title: "Help command",
-            description: "Specific command information. Usage is \`/help\` or \`/help :command name\`.",
+            description: "Specific command information. Usage is `/help` or `/help :command name`.",
         },
         options: {
             command: "Input a command name.",
@@ -32,7 +32,7 @@ export default {
         },
         runtime: {
             title: "Runtime latency",
-            value:(ping) => `\`${ping ?? 0} ms\``,
+            value: (ping) => `\`${ping ?? 0} ms\``,
         },
     },
 };

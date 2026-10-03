@@ -1,17 +1,10 @@
-import { drizzle } from "drizzle-orm/libsql";
 import { eq } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/libsql";
 import mongoose from "mongoose";
+import { colors, config } from "#config";
+import type { Client } from "../structures/Client";
 
-import { Client } from "../structures/Client";
-
-import { config, colors } from "#config";
-
-import {
-    type SelectCustom,
-    type SelectGuild,
-    CustomTable,
-    GuildTable,
-} from "./drizzle.schema";
+import { CustomTable, GuildTable, type SelectCustom, type SelectGuild } from "./drizzle.schema";
 
 /**
  * Defines the cache namespaces used by the database layer.
@@ -89,27 +82,19 @@ export class AIODatabase {
         const mongoUrl = Bun.env.MongoUrl;
 
         if (!tursoUrl) {
-            throw new Error(
-                "Missing environment variable: TursoUrl",
-            );
+            throw new Error("Missing environment variable: TursoUrl");
         }
 
         if (!tursoAuthToken) {
-            throw new Error(
-                "Missing environment variable: TursoAuthToken",
-            );
+            throw new Error("Missing environment variable: TursoAuthToken");
         }
 
         if (!redisUrl) {
-            throw new Error(
-                "Missing environment variable: RedisUrl",
-            );
+            throw new Error("Missing environment variable: RedisUrl");
         }
 
         if (!mongoUrl) {
-            throw new Error(
-                "Missing environment variable: MongoUrl",
-            );
+            throw new Error("Missing environment variable: MongoUrl");
         }
 
         this.drizzle = drizzle({
@@ -121,14 +106,9 @@ export class AIODatabase {
 
         this.cache = new Bun.RedisClient(redisUrl);
 
-        mongoose
-            .connect(mongoUrl)
-            .catch((error) => {
-                console.error(
-                    "[MongoDB] Connection error:",
-                    error,
-                );
-            });
+        mongoose.connect(mongoUrl).catch((error) => {
+            console.error("[MongoDB] Connection error:", error);
+        });
     }
 
     /**
@@ -138,10 +118,7 @@ export class AIODatabase {
      * @param id Resource identifier.
      * @returns A fully qualified Redis key.
      */
-    private getCacheKey(
-        namespace: CacheKeys,
-        id: string,
-    ): string {
+    private getCacheKey(namespace: CacheKeys, id: string): string {
         return `${namespace}:${id}`;
     }
 
@@ -152,10 +129,7 @@ export class AIODatabase {
      * @param id Resource identifier.
      * @returns Cached value or null when the key does not exist.
      */
-    private async getCache<T>(
-        namespace: CacheKeys,
-        id: string,
-    ): Promise<T | null> {
+    private async getCache<T>(namespace: CacheKeys, id: string): Promise<T | null> {
         const key = this.getCacheKey(namespace, id);
         const value = await this.cache.get(key);
 
@@ -177,17 +151,10 @@ export class AIODatabase {
      * @param id Resource identifier.
      * @param value Value to cache.
      */
-    private async setCache(
-        namespace: CacheKeys,
-        id: string,
-        value: unknown,
-    ): Promise<void> {
+    private async setCache(namespace: CacheKeys, id: string, value: unknown): Promise<void> {
         const key = this.getCacheKey(namespace, id);
 
-        await this.cache.set(
-            key,
-            JSON.stringify(value),
-        );
+        await this.cache.set(key, JSON.stringify(value));
     }
 
     /**
@@ -196,10 +163,7 @@ export class AIODatabase {
      * @param namespace Cache namespace.
      * @param id Resource identifier.
      */
-    private async deleteCache(
-        namespace: CacheKeys,
-        id: string,
-    ): Promise<void> {
+    private async deleteCache(namespace: CacheKeys, id: string): Promise<void> {
         const key = this.getCacheKey(namespace, id);
 
         await this.cache.del(key);
@@ -221,20 +185,14 @@ export class AIODatabase {
      * await database.ping("redis");
      * ```
      */
-    public async ping(
-        target: PingTarget = "drizzle",
-    ): Promise<PingResult> {
+    public async ping(target: PingTarget = "drizzle"): Promise<PingResult> {
         const start = performance.now();
 
         try {
             switch (target) {
                 case "mongodb": {
-                    if (
-                        mongoose.connection.readyState !== 1
-                    ) {
-                        throw new Error(
-                            "MongoDB is not connected",
-                        );
+                    if (mongoose.connection.readyState !== 1) {
+                        throw new Error("MongoDB is not connected");
                     }
 
                     await mongoose.connection.db?.command({
@@ -268,48 +226,27 @@ export class AIODatabase {
                             },
                         });
 
-                    await this.drizzle
-                        .select()
-                        .from(CustomTable)
-                        .where(
-                            eq(
-                                CustomTable.id,
-                                "ping-test",
-                            ),
-                        );
+                    await this.drizzle.select().from(CustomTable).where(eq(CustomTable.id, "ping-test"));
 
-                    await this.drizzle
-                        .delete(CustomTable)
-                        .where(
-                            eq(
-                                CustomTable.id,
-                                "ping-test",
-                            ),
-                        );
+                    await this.drizzle.delete(CustomTable).where(eq(CustomTable.id, "ping-test"));
 
                     break;
                 }
 
                 default: {
-                    throw new Error(
-                        `Unsupported ping target: ${target}`,
-                    );
+                    throw new Error(`Unsupported ping target: ${target}`);
                 }
             }
 
             return {
                 target,
-                latency: Math.round(
-                    performance.now() - start,
-                ),
+                latency: Math.round(performance.now() - start),
                 connected: true,
             };
         } catch {
             return {
                 target,
-                latency: Math.round(
-                    performance.now() - start,
-                ),
+                latency: Math.round(performance.now() - start),
                 connected: false,
             };
         }
@@ -321,9 +258,7 @@ export class AIODatabase {
      * @returns All custom database records.
      */
     public async getCustoms(): Promise<SelectCustom[]> {
-        return this.drizzle
-            .select()
-            .from(CustomTable);
+        return this.drizzle.select().from(CustomTable);
     }
 
     /**
@@ -332,9 +267,7 @@ export class AIODatabase {
      * @returns All guild database records.
      */
     public async getGuilds(): Promise<SelectGuild[]> {
-        return this.drizzle
-            .select()
-            .from(GuildTable);
+        return this.drizzle.select().from(GuildTable);
     }
 
     /**
@@ -343,10 +276,7 @@ export class AIODatabase {
      * @param id Custom record identifier.
      * @param data Custom record data.
      */
-    private async upsertCustom(
-        id: SelectCustom["id"],
-        data: SelectCustom["data"],
-    ): Promise<void> {
+    private async upsertCustom(id: SelectCustom["id"], data: SelectCustom["data"]): Promise<void> {
         await this.drizzle
             .insert(CustomTable)
             .values({
@@ -372,26 +302,15 @@ export class AIODatabase {
      * @param data Data to add.
      * @returns The resulting custom value.
      */
-    public async addCustom(
-        id: SelectCustom["id"],
-        data: SelectCustom["data"],
-    ): Promise<SelectCustom["data"]> {
+    public async addCustom(id: SelectCustom["id"], data: SelectCustom["data"]): Promise<SelectCustom["data"]> {
         const oldData = await this.getCustom(id);
 
         let newData: SelectCustom["data"];
 
         if (Array.isArray(oldData)) {
-            newData = [
-                ...oldData,
-                data,
-            ] as SelectCustom["data"];
-        } else if (
-            typeof oldData === "number" &&
-            typeof data === "number"
-        ) {
-            newData = (
-                oldData + data
-            ) as SelectCustom["data"];
+            newData = [...oldData, data] as SelectCustom["data"];
+        } else if (typeof oldData === "number" && typeof data === "number") {
+            newData = (oldData + data) as SelectCustom["data"];
         } else if (
             typeof oldData === "object" &&
             oldData !== null &&
@@ -410,11 +329,7 @@ export class AIODatabase {
 
         await this.upsertCustom(id, newData);
 
-        await this.setCache(
-            CacheKeys.Custom,
-            id,
-            newData,
-        );
+        await this.setCache(CacheKeys.Custom, id, newData);
 
         return newData;
     }
@@ -425,35 +340,20 @@ export class AIODatabase {
      * @param id Custom record identifier.
      * @returns Custom data or null when it does not exist.
      */
-    public async getCustom(
-        id: SelectCustom["id"],
-    ): Promise<SelectCustom["data"] | null> {
-        const cached =
-            await this.getCache<SelectCustom["data"]>(
-                CacheKeys.Custom,
-                id,
-            );
+    public async getCustom(id: SelectCustom["id"]): Promise<SelectCustom["data"] | null> {
+        const cached = await this.getCache<SelectCustom["data"]>(CacheKeys.Custom, id);
 
         if (cached !== null) {
             return cached;
         }
 
-        const [row] = await this.drizzle
-            .select()
-            .from(CustomTable)
-            .where(
-                eq(CustomTable.id, id),
-            );
+        const [row] = await this.drizzle.select().from(CustomTable).where(eq(CustomTable.id, id));
 
         if (!row) {
             return null;
         }
 
-        await this.setCache(
-            CacheKeys.Custom,
-            id,
-            row.data,
-        );
+        await this.setCache(CacheKeys.Custom, id, row.data);
 
         return row.data;
     }
@@ -465,17 +365,10 @@ export class AIODatabase {
      * @param data Custom data.
      * @returns The stored data.
      */
-    public async setCustom(
-        id: SelectCustom["id"],
-        data: SelectCustom["data"],
-    ): Promise<SelectCustom["data"]> {
+    public async setCustom(id: SelectCustom["id"], data: SelectCustom["data"]): Promise<SelectCustom["data"]> {
         await this.upsertCustom(id, data);
 
-        await this.setCache(
-            CacheKeys.Custom,
-            id,
-            data,
-        );
+        await this.setCache(CacheKeys.Custom, id, data);
 
         return data;
     }
@@ -485,19 +378,10 @@ export class AIODatabase {
      *
      * @param id Custom record identifier.
      */
-    public async deleteCustom(
-        id: SelectCustom["id"],
-    ): Promise<void> {
-        await this.drizzle
-            .delete(CustomTable)
-            .where(
-                eq(CustomTable.id, id),
-            );
+    public async deleteCustom(id: SelectCustom["id"]): Promise<void> {
+        await this.drizzle.delete(CustomTable).where(eq(CustomTable.id, id));
 
-        await this.deleteCache(
-            CacheKeys.Custom,
-            id,
-        );
+        await this.deleteCache(CacheKeys.Custom, id);
     }
 
     /**
@@ -506,10 +390,7 @@ export class AIODatabase {
      * @param id Guild identifier.
      * @param data Guild data to update.
      */
-    private async upsertGuild(
-        id: SelectGuild["id"],
-        data: Partial<Omit<SelectGuild, "id">>,
-    ): Promise<void> {
+    private async upsertGuild(id: SelectGuild["id"], data: Partial<Omit<SelectGuild, "id">>): Promise<void> {
         await this.drizzle
             .insert(GuildTable)
             .values({
@@ -530,35 +411,20 @@ export class AIODatabase {
      * @param id Guild identifier.
      * @returns Guild record or null when it does not exist.
      */
-    public async getGuildById(
-        id: SelectGuild["id"],
-    ): Promise<SelectGuild | null> {
-        const cached =
-            await this.getCache<SelectGuild>(
-                CacheKeys.Guild,
-                id,
-            );
+    public async getGuildById(id: SelectGuild["id"]): Promise<SelectGuild | null> {
+        const cached = await this.getCache<SelectGuild>(CacheKeys.Guild, id);
 
         if (cached !== null) {
             return cached;
         }
 
-        const [row] = await this.drizzle
-            .select()
-            .from(GuildTable)
-            .where(
-                eq(GuildTable.id, id),
-            );
+        const [row] = await this.drizzle.select().from(GuildTable).where(eq(GuildTable.id, id));
 
         if (!row) {
             return null;
         }
 
-        await this.setCache(
-            CacheKeys.Guild,
-            id,
-            row,
-        );
+        await this.setCache(CacheKeys.Guild, id, row);
 
         return row;
     }
@@ -569,15 +435,10 @@ export class AIODatabase {
      * @param id Guild identifier.
      * @returns Guild color or the application default color.
      */
-    public async getColor(
-        id: SelectGuild["id"],
-    ): Promise<number> {
+    public async getColor(id: SelectGuild["id"]): Promise<number> {
         const guild = await this.getGuildById(id);
 
-        return (
-            guild?.color ??
-            colors.Primary
-        );
+        return guild?.color ?? colors.Primary;
     }
 
     /**
@@ -586,15 +447,10 @@ export class AIODatabase {
      * @param id Guild identifier.
      * @returns Guild locale or the application default locale.
      */
-    public async getLocale(
-        id: SelectGuild["id"],
-    ): Promise<string> {
+    public async getLocale(id: SelectGuild["id"]): Promise<string> {
         const guild = await this.getGuildById(id);
 
-        return (
-            guild?.locale ??
-            config.Locale
-        );
+        return guild?.locale ?? config.Locale;
     }
 
     /**
@@ -603,15 +459,10 @@ export class AIODatabase {
      * @param id Guild identifier.
      * @returns Guild prefix or the application default prefix.
      */
-    public async getPrefix(
-        id: SelectGuild["id"],
-    ): Promise<string> {
+    public async getPrefix(id: SelectGuild["id"]): Promise<string> {
         const guild = await this.getGuildById(id);
 
-        return (
-            guild?.prefixs ??
-            CommandPrefixs
-        );
+        return guild?.prefixs ?? CommandPrefixs;
     }
 
     /**
@@ -621,30 +472,19 @@ export class AIODatabase {
      * @param color New guild color.
      * @returns The configured color.
      */
-    public async setColor(
-        id: SelectGuild["id"],
-        color: SelectGuild["color"],
-    ): Promise<number> {
+    public async setColor(id: SelectGuild["id"], color: SelectGuild["color"]): Promise<number> {
         await this.upsertGuild(id, {
             color,
         });
 
         const guild = await this.getGuildById(id);
 
-        await this.setCache(
-            CacheKeys.Guild,
-            id,
-            {
-                ...(guild ?? { id }),
-                color,
-            },
-        );
-
-        await this.setCache(
-            CacheKeys.Color,
-            id,
+        await this.setCache(CacheKeys.Guild, id, {
+            ...(guild ?? { id }),
             color,
-        );
+        });
+
+        await this.setCache(CacheKeys.Color, id, color);
 
         return color;
     }
@@ -656,30 +496,19 @@ export class AIODatabase {
      * @param locale New guild locale.
      * @returns The configured locale.
      */
-    public async setLocale(
-        id: SelectGuild["id"],
-        locale: SelectGuild["locale"],
-    ): Promise<string> {
+    public async setLocale(id: SelectGuild["id"], locale: SelectGuild["locale"]): Promise<string> {
         await this.upsertGuild(id, {
             locale,
         });
 
         const guild = await this.getGuildById(id);
 
-        await this.setCache(
-            CacheKeys.Guild,
-            id,
-            {
-                ...(guild ?? { id }),
-                locale,
-            },
-        );
-
-        await this.setCache(
-            CacheKeys.Locale,
-            id,
+        await this.setCache(CacheKeys.Guild, id, {
+            ...(guild ?? { id }),
             locale,
-        );
+        });
+
+        await this.setCache(CacheKeys.Locale, id, locale);
 
         return locale;
     }
@@ -691,30 +520,19 @@ export class AIODatabase {
      * @param prefixs New guild prefix.
      * @returns The configured prefix.
      */
-    public async setPrefix(
-        id: SelectGuild["id"],
-        prefixs: SelectGuild["prefixs"],
-    ): Promise<string> {
+    public async setPrefix(id: SelectGuild["id"], prefixs: SelectGuild["prefixs"]): Promise<string> {
         await this.upsertGuild(id, {
             prefixs,
         });
 
         const guild = await this.getGuildById(id);
 
-        await this.setCache(
-            CacheKeys.Guild,
-            id,
-            {
-                ...(guild ?? { id }),
-                prefixs,
-            },
-        );
-
-        await this.setCache(
-            CacheKeys.Prefixs,
-            id,
+        await this.setCache(CacheKeys.Guild, id, {
+            ...(guild ?? { id }),
             prefixs,
-        );
+        });
+
+        await this.setCache(CacheKeys.Prefixs, id, prefixs);
 
         return prefixs;
     }
@@ -724,32 +542,14 @@ export class AIODatabase {
      *
      * @param id Guild identifier.
      */
-    public async deleteGuild(
-        id: SelectGuild["id"],
-    ): Promise<void> {
-        await this.drizzle
-            .delete(GuildTable)
-            .where(
-                eq(GuildTable.id, id),
-            );
+    public async deleteGuild(id: SelectGuild["id"]): Promise<void> {
+        await this.drizzle.delete(GuildTable).where(eq(GuildTable.id, id));
 
         await Promise.all([
-            this.deleteCache(
-                CacheKeys.Guild,
-                id,
-            ),
-            this.deleteCache(
-                CacheKeys.Color,
-                id,
-            ),
-            this.deleteCache(
-                CacheKeys.Locale,
-                id,
-            ),
-            this.deleteCache(
-                CacheKeys.Prefixs,
-                id,
-            ),
+            this.deleteCache(CacheKeys.Guild, id),
+            this.deleteCache(CacheKeys.Color, id),
+            this.deleteCache(CacheKeys.Locale, id),
+            this.deleteCache(CacheKeys.Prefixs, id),
         ]);
     }
 }

@@ -7,29 +7,18 @@ export interface WebhookData {
     token: string;
 }
 
-export type WebhookMessage =
-    | string
-    | Record<string, unknown>;
+export type WebhookMessage = string | Record<string, unknown>;
 
 export interface Webhook {
     data: WebhookData;
 
-    send(
-        message: WebhookMessage,
-    ): Promise<unknown>;
+    send(message: WebhookMessage): Promise<unknown>;
 
-    edit(
-        messageId: string,
-        message: WebhookMessage,
-    ): Promise<unknown>;
+    edit(messageId: string, message: WebhookMessage): Promise<unknown>;
 
-    fetch(
-        messageId: string,
-    ): Promise<unknown>;
+    fetch(messageId: string): Promise<unknown>;
 
-    delete(
-        messageId: string,
-    ): Promise<void>;
+    delete(messageId: string): Promise<void>;
 }
 
 export interface WebhookCollection {
@@ -37,12 +26,10 @@ export interface WebhookCollection {
     version: string;
     creator: string;
 
-    [hookName:string]: Record<string, Webhook>;
+    [hookName: string]: Record<string, Webhook>;
 }
 
-export function WebhookPlugin(
-    options: PluginOptions = {},
-) {
+export function WebhookPlugin(options: PluginOptions = {}) {
     const collection: WebhookCollection = {
         name: "Webhook Client",
         version: "0.0.1-flux",
@@ -63,29 +50,21 @@ export function WebhookPlugin(
         async setup(client) {
             let size = 0;
 
-            for (const [
-                hookName,
-                webhookUrl,
-            ] of Object.entries(options)) {
+            for (const [hookName, webhookUrl] of Object.entries(options)) {
                 const data = getData(webhookUrl);
 
                 if (!data) {
-                    client.logger.warn(
-                        `[${this.name}-Plugin] WEBHOOK URL for "${hookName}" is not valid!`,
-                    );
+                    client.logger.warn(`[${this.name}-Plugin] WEBHOOK URL for "${hookName}" is not valid!`);
 
                     continue;
                 }
 
-                collection[hookName] =
-                    createWebhook(data);
+                collection[hookName] = createWebhook(data);
 
                 size++;
             }
 
-            client.logger.info(
-                `[${this.name}-Plugin] ${size} Loaded.`,
-            );
+            client.logger.info(`[${this.name}-Plugin] ${size} Loaded.`);
 
             return this;
         },
@@ -95,9 +74,7 @@ export function WebhookPlugin(
 /**
  * Create a webhook instance.
  */
-function createWebhook(
-    data: WebhookData,
-): Webhook {
+function createWebhook(data: WebhookData): Webhook {
     const { id, token } = data;
 
     return {
@@ -113,15 +90,10 @@ function createWebhook(
          *   send({ content: "Hello" })
          */
         async send(message) {
-            return request(
-                `/webhooks/${id}/${token}?wait=true`,
-                {
-                    method: "POST",
-                    body: normalizeMessage(
-                        message,
-                    ),
-                },
-            );
+            return request(`/webhooks/${id}/${token}?wait=true`, {
+                method: "POST",
+                body: normalizeMessage(message),
+            });
         },
 
         /**
@@ -133,43 +105,29 @@ function createWebhook(
          * Object:
          *   edit({ content: "Hello" })
          */
-        async edit(
-            messageId,
-            message,
-        ) {
-            return request(
-                `/webhooks/${id}/${token}/messages/${messageId}`,
-                {
-                    method: "PATCH",
-                    body: normalizeMessage(
-                        message,
-                    ),
-                },
-            );
+        async edit(messageId, message) {
+            return request(`/webhooks/${id}/${token}/messages/${messageId}`, {
+                method: "PATCH",
+                body: normalizeMessage(message),
+            });
         },
 
         /**
          * Fetch webhook message.
          */
         async fetch(messageId) {
-            return request(
-                `/webhooks/${id}/${token}/messages/${messageId}`,
-                {
-                    method: "GET",
-                },
-            );
+            return request(`/webhooks/${id}/${token}/messages/${messageId}`, {
+                method: "GET",
+            });
         },
 
         /**
          * Delete webhook message.
          */
         async delete(messageId) {
-            await request(
-                `/webhooks/${id}/${token}/messages/${messageId}`,
-                {
-                    method: "DELETE",
-                },
-            );
+            await request(`/webhooks/${id}/${token}/messages/${messageId}`, {
+                method: "DELETE",
+            });
         },
     };
 }
@@ -185,9 +143,7 @@ function createWebhook(
  *     content: "Hello"
  * }
  */
-function normalizeMessage(
-    message: WebhookMessage,
-): Record<string, unknown> {
+function normalizeMessage(message: WebhookMessage): Record<string, unknown> {
     if (typeof message === "string") {
         return {
             content: message,
@@ -203,40 +159,30 @@ function normalizeMessage(
 async function request<T = unknown>(
     path: string,
     options: {
-        method:
-            | "GET"
-            | "POST"
-            | "PATCH"
-            | "DELETE";
+        method: "GET" | "POST" | "PATCH" | "DELETE";
 
         body?: Record<string, unknown>;
     },
 ): Promise<T> {
-    const response = await fetch(
-        `https://discord.com/api/v10${path}`,
-        {
-            method: options.method,
+    const response = await fetch(`https://discord.com/api/v10${path}`, {
+        method: options.method,
 
-            headers: {
-                Accept: "application/json",
-
-                ...(options.body
-                    ? {
-                          "Content-Type":
-                              "application/json",
-                      }
-                    : {}),
-            },
+        headers: {
+            Accept: "application/json",
 
             ...(options.body
                 ? {
-                      body: JSON.stringify(
-                          options.body,
-                      ),
+                      "Content-Type": "application/json",
                   }
                 : {}),
         },
-    );
+
+        ...(options.body
+            ? {
+                  body: JSON.stringify(options.body),
+              }
+            : {}),
+    });
 
     /**
      * DELETE success.
@@ -245,18 +191,11 @@ async function request<T = unknown>(
         return undefined as T;
     }
 
-    const contentType =
-        response.headers.get(
-            "content-type",
-        ) ?? "";
+    const contentType = response.headers.get("content-type") ?? "";
 
     let result: unknown;
 
-    if (
-        contentType.includes(
-            "application/json",
-        )
-    ) {
+    if (contentType.includes("application/json")) {
         result = await response.json();
     } else {
         result = await response.text();
@@ -266,9 +205,7 @@ async function request<T = unknown>(
      * Discord API error.
      */
     if (!response.ok) {
-        const error = new Error(
-            `Discord API Error ${response.status}: ${response.statusText}`,
-        ) as Error & {
+        const error = new Error(`Discord API Error ${response.status}: ${response.statusText}`) as Error & {
             status: number;
             body: unknown;
         };
@@ -285,21 +222,14 @@ async function request<T = unknown>(
 /**
  * Parse Discord webhook URL.
  */
-function getData(
-    webhookUrl: string,
-): WebhookData | null {
-    if (
-        typeof webhookUrl !== "string" ||
-        webhookUrl.length === 0
-    ) {
+function getData(webhookUrl: string): WebhookData | null {
+    if (typeof webhookUrl !== "string" || webhookUrl.length === 0) {
         return null;
     }
 
     const match = webhookUrl
         .trim()
-        .match(
-            /^https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(\d{17,20})\/([^/?#\s]+)\/?$/i,
-        );
+        .match(/^https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(\d{17,20})\/([^/?#\s]+)\/?$/i);
 
     if (!match) {
         return null;

@@ -1,22 +1,18 @@
 import {
     Command,
-    MessageFlags,
-    Declare,
-    Embed,
-    Formatter,
-    Options,
     type CommandContext,
     createIntegerOption,
     createStringOption,
+    Declare,
+    Embed,
+    Formatter,
+    MessageFlags,
+    Options,
 } from "seyfert";
-import {
-    DeclareParserConfig,
-    ParserRecommendedConfig,
-    Watch,
-    Yuna,
-} from "yunaforseyfert";
+import { DeclareParserConfig, ParserRecommendedConfig, Watch, Yuna } from "yunaforseyfert";
 
 import { config } from "#config";
+
 const { inspect } = Bun;
 
 @Declare({
@@ -28,7 +24,7 @@ const { inspect } = Bun;
     contexts: ["Guild"],
     guildId: config.DevGuilds,
     props: {
-        category: "Developer"
+        category: "Developer",
     },
 })
 @Options({
@@ -41,7 +37,6 @@ const { inspect } = Bun;
     }),
 })
 @DeclareParserConfig(ParserRecommendedConfig.Eval)
-
 export default class EvalCommand extends Command {
     @Watch({
         beforeCreate(ctx) {
@@ -70,39 +65,38 @@ export default class EvalCommand extends Command {
         const start = Date.now();
         const depth = options?.depth ?? 0;
 
-        let code = options?.code ?? null;
+        let code = options?.code;
         let output = null;
-        let typecode;
+        let typecode: string;
 
         await client.channels.typing(channelId);
 
         if (!code && !code?.length)
             return ctx.editOrReply({
-                embeds: [
-                    new Embed()
-                        .setDescription("`❌` Input code!")
-                        .setColor("Red"),
-                ],
-                flags: MessageFlags.Ephemeral
+                embeds: [new Embed().setDescription("`❌` Input code!").setColor("Red")],
+                flags: MessageFlags.Ephemeral,
             });
 
         try {
             if (typeof output !== "string") {
-                if (/^(?:\(?)\s*await\b/.test(code.toLowerCase()))
-                code = `(async () => ${code})()`;
+                if (/^(?:\(?)\s*await\b/.test(code.toLowerCase())) code = `(async () => ${code})()`;
 
                 output = await eval(code ?? "");
                 typecode = typeof output;
-                output = inspect(output, { depth }).replace(Bun.env.Token ?? "No Token Found!?", "X".repeat(Bun.env.Token?.length ?? 1))
+                output = inspect(output, { depth }).replace(Bun.env.Token ?? "No Token Found!?", "X".repeat(Bun.env.Token?.length ?? 1));
             }
 
             await ctx.editOrReply({
                 embeds: [
                     new Embed()
                         .setColor("Green")
-                        .setDescription(`${output?.length > 4083 ? Formatter.codeBlock((output ?? "").slice(0, 4080) + "...", "js").trim() : Formatter.codeBlock(output ?? "", "js")}`)
+                        .setDescription(
+                            `${output?.length > 4083 ? Formatter.codeBlock(`${(output ?? "").slice(0, 4080)}...`, "js").trim() : Formatter.codeBlock(output ?? "", "js")}`,
+                        )
                         .setTimestamp()
-                        .setFooter({ text: `Type: ${typecode} | ${Math.floor(Date.now() - start)}ms` })
+                        .setFooter({
+                            text: `Type: ${typecode} | ${Math.floor(Date.now() - start)}ms`,
+                        }),
                 ],
             });
         } catch (error) {
@@ -112,9 +106,11 @@ export default class EvalCommand extends Command {
                         .setColor("Red")
                         .setDescription(Formatter.codeBlock(inspect(error).slice(0, 4080), "js"))
                         .setTimestamp()
-                        .setFooter({ text: `Type: Error | ${Math.floor(Date.now() - start)}ms` })
+                        .setFooter({
+                            text: `Type: Error | ${Math.floor(Date.now() - start)}ms`,
+                        }),
                 ],
-                flags: MessageFlags.Ephemeral
+                flags: MessageFlags.Ephemeral,
             });
         }
     }

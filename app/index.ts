@@ -1,26 +1,25 @@
-process.on("unhandledRejection", info => console.error("UnhandledRejection?!", info as unknown));
-process.on("uncaughtException", info => console.error("UncaughtException?!", info as unknown));
+process.on("unhandledRejection", (info) => console.error("UnhandledRejection?!", info as unknown));
+process.on("uncaughtException", (info) => console.error("UncaughtException?!", info as unknown));
 
-import { Client } from "./structures/Client";
-import { Logger, ParseClient, ParseGlobalMiddlewares, definePlugins } from "seyfert";
-import { formatMemoryUsage } from "seyfert/lib/common/it/logger";
-import * as globalMiddlewares from "./middlewares/index";
-
-import { Yuna } from "yunaforseyfert";
-import { CooldownMiddlewares, cooldown } from "@slipher/cooldown";
+import { type CooldownMiddlewares, cooldown } from "@slipher/cooldown";
 import { DatabasePlugin } from "lib/database.plugin";
 import { WebhookPlugin } from "lib/webhook.plugin";
+import { definePlugins, Logger, type ParseClient, type ParseGlobalMiddlewares } from "seyfert";
+import { formatMemoryUsage } from "seyfert/lib/common/it/logger";
+import { Yuna } from "yunaforseyfert";
+import * as globalMiddlewares from "./middlewares/index";
+import { Client } from "./structures/Client";
 
 const plugins = definePlugins(
     Yuna.plugin({
-        parser: { syntax: { namedOptions: ['-', '--'] },},
+        parser: { syntax: { namedOptions: ["-", "--"] } },
     }),
     DatabasePlugin(),
     WebhookPlugin({
         log: "https://discord.com/api/webhooks/1231915746666352670/etkARVaRE_D81COoihRcJQYjtlxjiG3vPtxfPkplcAvg6jJ_x_9v9Qq9CsbszSKTpte4",
     }),
     cooldown({
-        middleware: { global: true }
+        middleware: { global: true },
     }),
 );
 
@@ -28,12 +27,10 @@ declare module "seyfert" {
     interface SeyfertRegistry {
         client: ParseClient<Client<true>>;
         plugins: typeof plugins;
-        middlewares: CooldownMiddlewares<"cooldown">
-        & typeof globalMiddlewares;
+        middlewares: CooldownMiddlewares<"cooldown"> & typeof globalMiddlewares;
     }
 
-    interface GlobalMetadata
-    extends ParseGlobalMiddlewares<typeof globalMiddlewares> {}
+    interface GlobalMetadata extends ParseGlobalMiddlewares<typeof globalMiddlewares> {}
 
     interface ExtraProps {
         onlyForAdmins?: boolean;
@@ -47,19 +44,23 @@ declare module "seyfert" {
     }
 }
 
-Logger.customize((logger, level, args) => {
+Logger.customize((_logger, level, args) => {
     const now = Date.now();
     if (now - Logger.__memoryCache.ts > 1000) {
         Logger.__memoryCache = { rss: process.memoryUsage?.()?.rss ?? 0, ts: now };
     }
     const color = Logger.colorFunctions.get(level) ?? Logger.noColor;
-    return [formatMemoryUsage(Logger.__memoryCache.rss).replace("RAM Usage ", ""), `${color(Logger.prefixes.get(level) ?? "DEBUG")} >`, ...args];
+    return [
+        formatMemoryUsage(Logger.__memoryCache.rss).replace("RAM Usage ", ""),
+        `${color(Logger.prefixes.get(level) ?? "DEBUG")} >`,
+        ...args,
+    ];
 });
 
 const client = new Client({
     globalMiddlewares: Object.keys(globalMiddlewares),
     plugins,
-})
+});
 
 client.setServices({
     middlewares: globalMiddlewares,

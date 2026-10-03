@@ -1,5 +1,5 @@
-import { createPlugin } from "seyfert";
 import { AIODatabase } from "app/database/index";
+import { createPlugin } from "seyfert";
 
 export function DatabasePlugin() {
     return createPlugin({
@@ -11,7 +11,7 @@ export function DatabasePlugin() {
             db: () => new AIODatabase(),
         },
         setup(client) {
-            client.logger.info(`[${this.name}-Plugin] Loaded.`)
-        }
+            client.logger.info(`[${this.name}-Plugin] Loaded.`);
+        },
     });
 }

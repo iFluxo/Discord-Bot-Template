@@ -1,11 +1,5 @@
-import {
-    Declare,
-    Command,
-    type CommandContext,
-    Embed,
-    MessageFlags,
-} from "seyfert";
 import { Cooldown } from "@slipher/cooldown";
+import { Command, type CommandContext, Declare, Embed, MessageFlags } from "seyfert";
 
 import { colors } from "#config";
 
@@ -14,14 +8,13 @@ import { colors } from "#config";
     aliases: [],
     description: "ping.description",
     contexts: ["Guild", "BotDM"],
-    integrationTypes: ["GuildInstall","UserInstall"],
+    integrationTypes: ["GuildInstall", "UserInstall"],
     botPermissions: ["EmbedLinks"],
     props: {
-        category: "ping.category"
+        category: "ping.category",
     },
 })
 @Cooldown.user(1_000)
-
 export default class PingCommand extends Command {
     async run(ctx: CommandContext) {
         const translate = ctx.t.get();
@@ -30,9 +23,8 @@ export default class PingCommand extends Command {
         const pong = ctx.interaction?.createdTimestamp ?? ctx.message?.createdTimestamp ?? Date.now();
         const dbPing = await ctx.db.ping();
 
-        const embed = new Embed()
-            .setColor(colors.Primary)
-            .addFields({
+        const embed = new Embed().setColor(colors.Primary).addFields(
+            {
                 name: translate.ping.client.title,
                 value: translate.ping.client.value(ping),
                 inline: true,
@@ -46,11 +38,12 @@ export default class PingCommand extends Command {
                 name: translate.ping.runtime.title,
                 value: translate.ping.runtime.value(Date.now() - pong),
                 inline: true,
-            });
+            },
+        );
 
         await ctx.editOrReply({
             embeds: [embed],
-            flags: MessageFlags.Ephemeral
+            flags: MessageFlags.Ephemeral,
         });
-  }
+    }
 }
