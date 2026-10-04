@@ -17,17 +17,17 @@ export default class Template extends Command {
             new TextDisplay().setContent(`## Statistics Information\n${ctx.command.description}`),
             new Separator(),
             new TextDisplay().setContent(`
-                        ### OS
-                        \n- \`${os.type()}\`
-                        \n### Release
-                        \n- \`${os.release()}\`
-                        \n### Arch
-                        \n- \`${os.platform()}\` \`${os.machine()}\`
-                        \n### CPU ( Cores )
-                        \n- \`AMD Ryzen 9 9950X\` ( \`16\` )
-                        \n### Uptime
-                        \n- <t:${ctx.readyAt}:R>
-                    `),
+                ### OS
+                \n- \`${os.type()}\`
+                \n### Release
+                \n- \`${os.release()}\`
+                \n### Arch
+                \n- \`${os.platform()}\` \`${os.machine()}\`
+                \n### CPU ( Cores )
+                \n- \`AMD Ryzen 9 9950X\` ( \`16\` )
+                \n### Uptime
+                \n- <t:${ctx.readyAt}:R>
+            `),
         );
 
         await ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2 });
