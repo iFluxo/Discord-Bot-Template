@@ -76,7 +76,7 @@ async function helpSpesific(ctx: CommandContext) {
     const container = new Container().addComponents(
         new TextDisplay()
             .setContent(
-                `# ${commandNameSlash} ( ${commandOwned.aliases?.length > 0 ? `\n\n${translate.help.specific.aliases(commandOwned.aliases.map((n) => commandNameSlash.replace(commandOwned.name, n)).join(", "))}` : ""} )\n${translate[commandOwned.name].description}`,
+                `## ${commandNameSlash}${commandOwned.aliases?.length > 0 ? ` ( ${commandOwned.aliases.map((n) => n).join(", "))} )` : ""}\n${translate[commandOwned.name].description}`,
             ),
         new Separator(),
         new TextDisplay()
