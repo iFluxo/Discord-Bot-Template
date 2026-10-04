@@ -5,7 +5,7 @@ import { colors, config } from "#config";
 
 const prefixOptions = {
     prefixs: createStringOption({
-        description: "New prefixes separated by spaces. Leave empty to view current. Use 'default' to reset.",
+        description: "Add extra prefixes or reset the command prefix for this server.",
         required: false,
     }),
 };
@@ -13,7 +13,7 @@ const prefixOptions = {
 @Declare({
     name: "prefix",
     aliases: [],
-    description: "View, set or reset the command prefix for this server.",
+    description: "Set an extra command prefix or reset to defaults for this server.",
     defaultMemberPermissions: ["ManageGuild"],
     contexts: ["Guild"],
     integrationTypes: ["GuildInstall"],
@@ -35,14 +35,13 @@ export default class PrefixCommand extends Command {
         const input = ctx.options?.prefixs?.trim();
 
         if (!input) {
-            const current = await ctx.db.getPrefix(guildId);
-
             return await ctx.editOrReply({
                 embeds: [
                     new Embed()
                         .setColor(colors.Primary)
-                        .setTitle("Current Prefixes")
-                        .setDescription(current.map((prefix) => `\`${prefix}\``).join(", ")),
+                        .setDescription(
+                            "`ℹ️` Usage:\n- `prefix <prefix...>` — add extra prefixes on top of the defaults\n- `prefix default` — reset to the default prefixes only",
+                        ),
                 ],
                 flags: MessageFlags.Ephemeral,
             });
@@ -61,16 +60,16 @@ export default class PrefixCommand extends Command {
             });
         }
 
-        const prefixs = [...new Set(input.split(/\s+/).filter((prefix) => prefix.length > 0))];
+        const extra = [...new Set(input.split(/\s+/).filter((prefix) => prefix.length > 0))];
 
-        if (!prefixs.length || prefixs.length > 10 || prefixs.some((prefix) => prefix.length > 5)) {
+        if (!extra.length || extra.length > 10 || extra.some((prefix) => prefix.length > 5)) {
             return await ctx.editOrReply({
                 embeds: [new Embed().setColor("Red").setDescription("`❌` Provide 1-10 unique prefixes, each at most 5 characters long.")],
                 flags: MessageFlags.Ephemeral,
             });
         }
 
-        const updated = await ctx.db.setPrefix(guildId, prefixs);
+        const updated = await ctx.db.setPrefix(guildId, [...new Set([...config.CommandPrefixs, ...extra])]);
 
         await ctx.editOrReply({
             embeds: [

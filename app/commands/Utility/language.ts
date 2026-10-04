@@ -5,7 +5,7 @@ import { colors } from "#config";
 
 const languageOptions = {
     locale: createStringOption({
-        description: "Language code to set. Leave empty to view current.",
+        description: "Language code to set.",
         required: false,
     }),
 };
@@ -13,7 +13,7 @@ const languageOptions = {
 @Declare({
     name: "language",
     aliases: ["lang"],
-    description: "View or change the bot language for this server.",
+    description: "Change the bot language for this server.",
     defaultMemberPermissions: ["ManageGuild"],
     contexts: ["Guild"],
     integrationTypes: ["GuildInstall"],
@@ -36,14 +36,13 @@ export default class LanguageCommand extends Command {
         const input = ctx.options?.locale?.trim();
 
         if (!input) {
-            const current = await ctx.db.getLocale(guildId);
-
             return await ctx.editOrReply({
                 embeds: [
                     new Embed()
                         .setColor(colors.Primary)
-                        .setTitle("Current Language")
-                        .setDescription(`\`${current}\`\n\nAvailable: ${available.map((locale) => `\`${locale}\``).join(", ")}`),
+                        .setDescription(
+                            `\`ℹ️\` Usage: \`language <locale>\` — set the bot language for this server.\nAvailable: ${available.map((locale) => `\`${locale}\``).join(", ")}`,
+                        ),
                 ],
                 flags: MessageFlags.Ephemeral,
             });

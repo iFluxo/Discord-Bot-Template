@@ -25,10 +25,10 @@ export default {
         description: "Showing the user global and guild avatar.",
     },
     prefix: {
-        description: "View, set or reset the command prefix for this server.",
+        description: "Set an extra command prefix or reset to defaults for this server.",
     },
     language: {
-        description: "View or change the bot language for this server.",
+        description: "Change the bot language for this server.",
     },
     ping: {
         title: "Latency",
