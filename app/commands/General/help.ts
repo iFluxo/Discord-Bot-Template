@@ -108,7 +108,8 @@ async function commandsList(ctx: CommandContext) {
                 .setContent(`### ${categoryEmoji[`#${category}`]} ${category}\n${commands
                     .filter((cmd) => cmd.props?.category === category)
                     .map((cmd) => convertToSlash(appCommands, cmd.name))
-                    .join(", ")}`);
+                    .join(", ")}`)
+        );
     }
 
     const container = new Container().addComponents(
