@@ -52,7 +52,7 @@ async function helpSpesific(ctx: CommandContext) {
 
     const cmdToSearch = ctx.options.command;
 
-    const embed = new Embed().setColor(colors.Secondary).setDescription(translate.help.spesific.searching(cmdToSearch);
+    const embed = new Embed().setColor(colors.Secondary).setDescription(translate.help.spesific.searching(cmdToSearch));
 
     await ctx.editOrReply({ embeds: [embed] });
 
@@ -92,7 +92,7 @@ async function commandsList(ctx: CommandContext) {
     const commands = ctx.client.commands.values.filter((cmd) => !cmd.props.onlyForDev);
     const appCommands = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
 
-    const embed = new Embed().setColor(colors.Primary).setTitle(translate.help.list.title).setDescription(translate.help.list.description(convertToSlash(appCommands, ctx.command.name));
+    const embed = new Embed().setColor(colors.Primary).setTitle(translate.help.list.title).setDescription(translate.help.list.description(convertToSlash(appCommands, ctx.command.name)));
 
     const categories = readdirSync("app/commands").filter((name) => name !== "Developer");
     for (const category of categories) {
