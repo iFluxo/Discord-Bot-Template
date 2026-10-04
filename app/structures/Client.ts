@@ -111,7 +111,7 @@ const clientOptions = {
         activities: [
             {
                 name: "Custom Status",
-                state: "Made with ❤️ by Surya",
+                state: "Ultra Fast 🚀 with Bun & TypeScript 7",
                 type: ActivityType.Custom,
             },
             {

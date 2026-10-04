@@ -26,9 +26,9 @@ export default class PingCommand extends Command {
          * Fall back to message timestamp and then wall-clock time so the
          * runtime latency figure remains meaningful across interaction types.
          */
+        const dbPing = await ctx.db.ping("mongodb");
         const ping = ctx.client?.gateway?.latency;
         const pong = ctx.interaction?.createdTimestamp ?? ctx.message?.createdTimestamp ?? Date.now();
-        const dbPing = await ctx.db.ping();
 
         const embed = new Embed().setColor(colors.Primary).addFields(
             {
