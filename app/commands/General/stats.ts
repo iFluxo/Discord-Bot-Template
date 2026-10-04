@@ -1,6 +1,6 @@
 import { Cooldown } from "@slipher/cooldown";
 import { Command, type CommandContext, Declare,
-    Container, Separator, TextDisplay, MesageFlags,
+    Container, Separator, TextDisplay, MessageFlags,
 } from "seyfert";
 
 import os from "node:os";
