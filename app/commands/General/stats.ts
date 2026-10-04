@@ -8,7 +8,7 @@ import os from "node:os";
 @Declare({
     name: "stats",
     aliases: ["st"],
-    description: "Showing about bot statistics",
+    description: "Showing about bot statistics.",
     contexts: ["Guild"],
     integrationTypes: ["GuildInstall"],
     botPermissions: ["EmbedLinks"],
