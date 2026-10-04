@@ -68,8 +68,8 @@ async function helpSpesific(ctx: CommandContext) {
 
     embed.setColor(colors.Primary)
         .setAuthor({ name: commandOwned.props?.category })
-        .setTitle(convertToSlash(appCommands, commandOwned.name))
-        .setDescription(`${commandOwned.aliases?.length > 0 ? `Aliases: ${commandOwned.aliases.map(n => convertToSlash(n)).join(", ")}\n`: ""}*${translate[commandOwned.name].description}*`)
+        .setTitle(convertToSlash(appCommands, commandOwned))
+        .setDescription(`*${translate[commandOwned.name].description}${commandOwned.aliases?.length > 0 ? `\nAliases: ${commandOwned.aliases.map(n => convertToSlash(appCommands, n)).join(", ")}`: ""}${Object.entries(commandOwned?.options).length > 0 ? `\nUsage examples: ${convertToSlash(appCommands, commandOwned)}` : ""}*`)
         .setFooter({ text: `Cooldown: ${msToSecond(commandOwned.cooldown?.interval ?? 1000)} second` });
 
     ctx.editOrReply({ embeds: [embed] });
@@ -90,15 +90,16 @@ async function commandsList(ctx: CommandContext) {
 
     const categories = readdirSync("app/commands").filter(name => name !== "Developer");
     for (const category of categories) {
-        embed.addFields({ name: category, value: commands.filter(cmd => cmd.props?.category === category).map(cmd => convertToSlash(appCommands, cmd.name)).join(", "), inline: true });
+        embed.addFields({ name: category, value: commands.filter(cmd => cmd.props?.category === category).map(cmd => convertToSlash(appCommands, cmd)).join(", "), inline: true });
     }
 
     ctx.editOrReply({ embeds: [embed] });
 }
 
-function convertToSlash(appCommands: unknown, name: string) {
-    const command = appCommands?.find(cmd => cmd.name === name?.toLowerCase());
-    return command?.id ? `</${command.name}:${command.id}>` : `\`/${name?.toLowerCase()}\``;
+function convertToSlash(appCommands: unknown, commandOwned: unknown) {
+    const command = appCommands?.find(cmd => cmd.name === (commandOwned?.name ?? commandOwned)?.toLowerCase());
+    const name = (Object.entries(commandOwned?.options).length > 0 ? `${commandOwned.name} ${commandOwned.options.map(o => o.name).join(" ")}` : command.name;
+    return command?.id ? `</${name?.toLowerCase()}:${command.id}>` : `\`/${name?.toLowerCase()}\``;
 }
 
 function msToSecond(ms: number) {
