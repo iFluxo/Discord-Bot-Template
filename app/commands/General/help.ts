@@ -1,7 +1,7 @@
 import { readdirSync } from "node:fs";
 import { Cooldown } from "@slipher/cooldown";
 import { Command, type CommandContext, createStringOption, Declare, Embed, Options,
-    Container, TextDisplay, Separator,
+    Container, TextDisplay, Separator, MessageFlags,
 } from "seyfert";
 
 import { colors } from "#config";
@@ -91,7 +91,7 @@ async function helpSpesific(ctx: CommandContext) {
             ),
         )
 
-    await ctx.editOrReply({ components: [container] });
+    await ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2 });
 }
 
 /**
