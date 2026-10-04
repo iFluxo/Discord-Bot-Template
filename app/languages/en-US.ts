@@ -17,8 +17,9 @@ export default {
         specific: {
             searching: (cmdName?: string) => `*Searching command with name \`${cmdName}\`...*`,
             notFound: (cmdName?: string) => `Command with name \`${cmdName}\` is not found.`,
-            aliases: (list?: string) => `Aliases?: ${list}`,
-            cooldown: (cd?: number) => `Cooldown?: ${cd} seconds`,
+            aliases: (list?: string) => `aliases: ${list}`,
+            category: (name?: string) => `category: \`${name}\``,
+            cooldown: (cd?: number) => `cooldown: ${cd} seconds`,
         },
         options: {
             command: "Input a command name.",
