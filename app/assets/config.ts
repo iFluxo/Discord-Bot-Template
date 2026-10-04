@@ -13,6 +13,8 @@ export const colors = {
 export const emojis = {
     "#Developer": "🔐",
     "#General": "ℹ️",
+    "#Social": "👤",
+    "#Utility": "🛠️",
 };
 
 function generateCases(word: string) {

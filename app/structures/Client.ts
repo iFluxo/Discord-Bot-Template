@@ -20,7 +20,25 @@ const clientOptions = {
         replied_user: false,
     },
     commands: {
-        prefix: () => config.config.CommandPrefixs,
+        prefix: async (message: { guildId?: string | null; client: unknown }) => {
+            const guildId = message?.guildId;
+
+            if (guildId) {
+                try {
+                    return await (
+                        message.client as {
+                            db: {
+                                getPrefix: (id: string) => Promise<string[]>;
+                            };
+                        }
+                    ).db.getPrefix(guildId);
+                } catch {
+                    // fall back to default prefixes
+                }
+            }
+
+            return config.config.CommandPrefixs;
+        },
         reply: () => true,
         deferReplyResponse: () => ({ content: "Sending request..." }),
         defaults: {

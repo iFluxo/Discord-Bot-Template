@@ -21,6 +21,15 @@ export default {
             command: "Input a command name.",
         },
     },
+    avatar: {
+        description: "Showing the user global and guild avatar.",
+    },
+    prefix: {
+        description: "View, set or reset the command prefix for this server.",
+    },
+    language: {
+        description: "View or change the bot language for this server.",
+    },
     ping: {
         title: "Latency",
         description: "Showing client, runtime and database latency.",
