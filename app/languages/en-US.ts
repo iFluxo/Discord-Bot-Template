@@ -19,7 +19,7 @@ export default {
             notFound: (cmdName?: string) => `Command with name \`${cmdName}\` is not found.`,
             aliases: (list?: string) => `aliases: ${list}`,
             category: (name?: string) => `category: \`${name}\``,
-            cooldown: (cd?: number) => `cooldown: ${cd} seconds`,
+            cooldown: (cd?: number) => `cooldown: \`${cd} seconds\``,
         },
         options: {
             command: "Input a command name.",
