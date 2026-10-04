@@ -60,5 +60,5 @@ export default class PingCommand extends Command {
 }
 
 function state(ping?: number = 0) {
-    return ping =< 100 ? "🟢" : ping >= 100 ? "🟡" : "🔴";
+    return ping <= 100 ? "🟢" : (ping <= 200 ? "🟡" : "🔴");
 }
