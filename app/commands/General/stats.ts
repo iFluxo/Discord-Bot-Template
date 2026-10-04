@@ -23,15 +23,16 @@ export default class Template extends Command {
                 new Separator(),
                 new TextDisplay()
                     .setContent(`
-                        ### OS\n
-                        - \`${os.type()}\`\n
-                        ### Release\n
-                        - \`${os.release()}\`\n
-                        ### Arch
-                        - \`${os.machine()}\`\n
-                        ### CPU ( Cores )
-                        - \`${os.cpus()[0].model}\` ( \`${os.cpus().length}\` )
-                        ### Uptime: <t:${Math.round((Date.now() - (Bun.nanoseconds() ?? 0)) / 1000)}:R>
+                        ### OS
+                        \n- \`${os.type()}\`
+                        \n### Release
+                        \n- \`${os.release()}\`
+                        \n### Arch
+                        \n- \`${os.machine()}\`
+                        \n### CPU ( Cores )
+                        \n- \`${os.cpus()[0].model}\` ( \`${os.cpus().length}\` )
+                        \n### Uptime
+                        \n- <t:${Math.round((Date.now() - (Bun.nanoseconds() ?? 0)) / 1000)}:R>
                     `)
             )
 
