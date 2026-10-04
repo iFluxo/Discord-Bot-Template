@@ -52,7 +52,7 @@ async function helpSpesific(ctx: CommandContext) {
 
     const cmdToSearch = ctx.options.command;
 
-    const embed = new Embed().setColor(colors.Secondary).setDescription(translate.help.spesific.searching(cmdToSearch));
+    const embed = new Embed().setColor(colors.Secondary).setDescription(translate.help.specific.searching(cmdToSearch));
 
     await ctx.editOrReply({ embeds: [embed] });
 
@@ -63,7 +63,7 @@ async function helpSpesific(ctx: CommandContext) {
 
     if (!commandOwned)
         return await ctx.editOrReply({
-            embeds: [embed.setColor("Red").setDescription(translate.help.spesific.notFound(cmdToSearch))],
+            embeds: [embed.setColor("Red").setDescription(translate.help.specific.notFound(cmdToSearch))],
         });
 
     const appCommands = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
@@ -74,7 +74,7 @@ async function helpSpesific(ctx: CommandContext) {
         .setAuthor({ name: commandOwned.props?.category })
         .setTitle(commandNameSlash)
         .setDescription(
-            `*${translate[commandOwned.name].description}${commandOwned.aliases?.length > 0 ? `\n\n${translate.help.spesific.aliases(commandOwned.aliases.map((n) => commandNameSlash.replace(commandOwned.name, n).join(", ")))}` : ""}*`,
+            `*${translate[commandOwned.name].description}${commandOwned.aliases?.length > 0 ? `\n\n${translate.help.specific.aliases(commandOwned.aliases.map((n) => commandNameSlash.replace(commandOwned.name, n).join(", ")))}` : ""}*`,
         )
         .setFooter({ text: translate.help.specific.cooldown(msToSecond(commandOwned.cooldown?.interval ?? 1000)) });
 

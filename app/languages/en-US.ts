@@ -14,7 +14,7 @@ export default {
             title: "Commands list",
             description: (helpSlash?: string) => `This is a list of commands. Use ${helpSlash} for more spesific command info.`,
         },
-        spesific: {
+        specific: {
             searching: (cmdName?: string) => `*Searching command with name \`${cmdName}\`...*`,
             notFound: (cmdName?: string) => `Command with name \`${cmdName}\` is not found.`,
             aliases: (list?: string) => `Aliases?: ${list}`,
