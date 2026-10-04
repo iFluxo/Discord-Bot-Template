@@ -60,15 +60,17 @@ async function helpSpesific(ctx: CommandContext) {
     const translate = ctx.t.get();
 
     const commands = ctx.client.commands.values.filter(cmd => !cmd.props.onlyForDev)
-    const commandOwned = commands.find(cmd => cmd.name === cmdToSearch) ?? commands.find(cmd => cmd.aliases.includes(cmdToSearch));
+    const commandOwned = commands.find(cmd => cmd.name === cmdToSearch.toLowerCase()) ?? commands.find(cmd => cmd.aliases.includes(cmdToSearch.toLowerCase());
 
     if (!commandOwned) return ctx.editOrReply({ embeds: [embed.setColor("Red").setDescription(`Command with name \`${cmdToSearch}\` is not found.`)] });
 
+    const appCommands = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
+
     embed.setColor(colors.Primary)
         .setAuthor({ name: commandOwned.props?.category })
-        .setTitle(commandOwned.name)
-        .setDescription(`*${translate[commandOwned.name].description}*`);
-    if (commandOwned.aliases?.length > 0) embed.setFooter({ text: `Aliases: ${commandOwned.aliases.map(n => n).join(", ")} | Cooldown: ${msToSecond(commandOwned.cooldown?.interval ?? 1000)} second` });
+        .setTitle(convertToSlash(appCommands, commandOwned.name))
+        .setDescription(`> Aliases: ${commandOwned.aliases.map(n => convertToSlash(n)).join(", ")}\n*${translate[commandOwned.name].description}*`);
+    if (commandOwned.aliases?.length > 0) embed.setFooter({ text: `Cooldown: ${msToSecond(commandOwned.cooldown?.interval ?? 1000)} second` });
 
     ctx.editOrReply({ embeds: [embed] });
 }
@@ -84,12 +86,19 @@ async function commandsList(ctx: CommandContext) {
     const commands = ctx.client.commands.values.filter(cmd => !cmd.props.onlyForDev);
     const embed = new Embed().setColor(colors.Primary).setTitle(translate.help.list.title).setDescription(translate.help.list.description);
 
+    const appCommands = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
+
     const categories = readdirSync("app/commands").filter(name => name !== "Developer");
     for (const category of categories) {
-        embed.addFields({ name: category, value: commands.filter(cmd => cmd.props?.category === category).map(cmd => `\`/${cmd.name}\``).join(", "), inline: true });
+        embed.addFields({ name: category, value: commands.filter(cmd => cmd.props?.category === category).map(cmd => convertToSlash(appCommands, cmd.name)).join(", "), inline: true });
     }
 
     ctx.editOrReply({ embeds: [embed] });
+}
+
+function convertToSlash(appCommands: unknown, name: string) {
+    const command = appCommands?.find(cmd => cmd.name === name?.toLowerCase());
+    return command?.id ? `</${command.name}:${command.id}>` : `\`/${name?.toLowerCase()}\``;
 }
 
 function msToSecond(ms: number) {
