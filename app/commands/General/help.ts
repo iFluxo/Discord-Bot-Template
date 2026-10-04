@@ -4,7 +4,7 @@ import { Command, type CommandContext, createStringOption, Declare, Embed, Optio
     Container, TextDisplay, Separator, MessageFlags,
 } from "seyfert";
 
-import { colors } from "#config";
+import { emojis as categoryEmoji } from "#config";
 
 /**
  * Command options for the help command.
@@ -99,21 +99,25 @@ async function commandsList(ctx: CommandContext) {
     const commands = ctx.client.commands.values.filter((cmd) => !cmd.props.onlyForDev);
     const appCommands = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
 
-    const embed = new Embed().setColor(colors.Primary).setTitle(translate.help.list.title).setDescription(translate.help.list.description(convertToSlash(appCommands, ctx.command.name)));
-
+    const commandComponents = [];
     const categories = readdirSync("app/commands").filter((name) => name !== "Developer");
     for (const category of categories) {
-        embed.addFields({
-            name: category,
-            value: commands
-                .filter((cmd) => cmd.props?.category === category)
-                .map((cmd) => convertToSlash(appCommands, cmd.name))
-                .join(", "),
-            inline: true,
-        });
+        commandComponents.push(
+            new Separator(),
+            new TextDisplay()
+                .setContent(`### ${categoryEmoji[`#${category}`]} ${category}\n${commands
+                    .filter((cmd) => cmd.props?.category === category)
+                    .map((cmd) => convertToSlash(appCommands, cmd.name))
+                    .join(", ")}`);
     }
 
-    ctx.editOrReply({ embeds: [embed] });
+    const container = new Container().addComponents(
+        new TextDisplay()
+            .setContent(`## ${translate.help.list.title}\n${translate.help.list.description(convertToSlash(appCommands, ctx.command.name))}`)
+        ...commandComponents,
+    );
+
+    ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2, });
 }
 
 function convertToSlash(appCommands: unknown, name: string) {
