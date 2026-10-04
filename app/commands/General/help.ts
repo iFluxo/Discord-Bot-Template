@@ -74,7 +74,7 @@ async function helpSpesific(ctx: CommandContext) {
         .setAuthor({ name: commandOwned.props?.category })
         .setTitle(commandNameSlash)
         .setDescription(
-            `*${translate[commandOwned.name].description}${commandOwned.aliases?.length > 0 ? `\n\n${translate.help.specific.aliases(commandOwned.aliases.map((n) => commandNameSlash.replace(commandOwned.name, n).join(", ")))}` : ""}*`,
+            `*${translate[commandOwned.name].description}${commandOwned.aliases?.length > 0 ? `\n\n${translate.help.specific.aliases(commandOwned.aliases.map((n) => commandNameSlash.replace(commandOwned.name, n)).join(", "))}` : ""}*`,
         )
         .setFooter({ text: translate.help.specific.cooldown(msToSecond(commandOwned.cooldown?.interval ?? 1000)) });
 
