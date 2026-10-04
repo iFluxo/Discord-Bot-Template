@@ -27,7 +27,7 @@ const shellOptions = {
     contexts: ["Guild"],
     guildId: config.DevGuilds,
     props: {
-        category: "Developer",
+        onlyForDev: true,
     },
 })
 

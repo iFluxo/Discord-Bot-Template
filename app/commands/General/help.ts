@@ -27,9 +27,6 @@ const helpOptions = {
     contexts: ["Guild"],
     integrationTypes: ["GuildInstall"],
     botPermissions: ["EmbedLinks"],
-    props: {
-        category: "General",
-    },
 })
 @Cooldown.user(3_000)
 @Options(helpOptions)
@@ -81,7 +78,7 @@ async function helpSpesific(ctx: CommandContext) {
         new Separator(),
         new TextDisplay()
             .setContent(
-                `- ${translate.help.specific.category(commandOwned.props?.category)}\n- ${translate.help.specific.cooldown(msToSecond(commandOwned.cooldown?.interval ?? 1000))}`
+                `- ${translate.help.specific.category(commandOwned.__filePath.split("/").at(-2))}\n- ${translate.help.specific.cooldown(msToSecond(commandOwned.cooldown?.interval ?? 1000))}`
             ),
         )
 
@@ -106,7 +103,7 @@ async function commandsList(ctx: CommandContext) {
             new Separator(),
             new TextDisplay()
                 .setContent(`### \`${categoryEmoji[`#${category}`]}\` ${category}\n- - ${commands
-                    .filter((cmd) => cmd.props?.category === category)
+                    .filter((cmd) => cmd.__filePath.split("/").at(-2) === category)
                     .map((cmd) => convertToSlash(appCommands, cmd.name))
                     .join(", ")}`)
         );

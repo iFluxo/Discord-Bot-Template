@@ -53,7 +53,6 @@ declare module "seyfert" {
         onlyForAdmins?: boolean;
         onlyForDev?: boolean;
         disabled?: boolean;
-        category?: string;
     }
 
     interface InternalOptions {

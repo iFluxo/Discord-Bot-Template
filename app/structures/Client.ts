@@ -32,7 +32,6 @@ const clientOptions = {
                 onlyForAdmin: false,
                 onlyForDev: false,
                 disabled: false,
-                category: "none",
             },
             onRunError: (
                 context: CommandContext | MenuCommandContext<MessageCommandInteraction | UserCommandInteraction>,

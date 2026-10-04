@@ -41,7 +41,7 @@ const evalOptions = {
     contexts: ["Guild"],
     guildId: config.DevGuilds,
     props: {
-        category: "Developer",
+        onlyForDev: true,
     },
 })
 

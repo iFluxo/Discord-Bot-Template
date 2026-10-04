@@ -13,9 +13,6 @@ import { colors } from "#config";
     contexts: ["Guild", "BotDM"],
     integrationTypes: ["GuildInstall", "UserInstall"],
     botPermissions: ["EmbedLinks"],
-    props: {
-        category: "General",
-    },
 })
 @Cooldown.user(1_000)
 export default class PingCommand extends Command {
