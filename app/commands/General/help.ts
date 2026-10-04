@@ -60,7 +60,7 @@ async function helpSpesific(ctx: CommandContext) {
     const translate = ctx.t.get();
 
     const commands = ctx.client.commands.values.filter(cmd => !cmd.props.onlyForDev)
-    const commandOwned = commands.find(cmd => cmd.name === cmdToSearch.toLowerCase()) ?? commands.find(cmd => cmd.aliases.includes(cmdToSearch.toLowerCase());
+    const commandOwned = commands.find(cmd => cmd.name === cmdToSearch.toLowerCase()) ?? commands.find(cmd => cmd.aliases?.includes(cmdToSearch.toLowerCase()));
 
     if (!commandOwned) return ctx.editOrReply({ embeds: [embed.setColor("Red").setDescription(`Command with name \`${cmdToSearch}\` is not found.`)] });
 
