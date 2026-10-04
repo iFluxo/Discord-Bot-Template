@@ -1,9 +1,6 @@
-import { Cooldown } from "@slipher/cooldown";
-import { Command, type CommandContext, Declare,
-    Container, Separator, TextDisplay, MessageFlags,
-} from "seyfert";
-
 import os from "node:os";
+import { Cooldown } from "@slipher/cooldown";
+import { Command, type CommandContext, Container, Declare, MessageFlags, Separator, TextDisplay } from "seyfert";
 
 @Declare({
     name: "stats",
@@ -16,13 +13,10 @@ import os from "node:os";
 @Cooldown.user(1_000)
 export default class Template extends Command {
     async run(ctx: CommandContext) {
-        const container = new Container()
-            .addComponents(
-                new TextDisplay()
-                    .setContent(`## Statistics Information\n${ctx.command.description}`),
-                new Separator(),
-                new TextDisplay()
-                    .setContent(`
+        const container = new Container().addComponents(
+            new TextDisplay().setContent(`## Statistics Information\n${ctx.command.description}`),
+            new Separator(),
+            new TextDisplay().setContent(`
                         ### OS
                         \n- \`${os.type()}\`
                         \n### Release
@@ -33,9 +27,9 @@ export default class Template extends Command {
                         \n- \`AMD Ryzen 9 9950X\` ( \`16\` )
                         \n### Uptime
                         \n- <t:${ctx.readyAt}:R>
-                    `)
-            )
+                    `),
+        );
 
-        await ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2, })
+        await ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2 });
     }
 }

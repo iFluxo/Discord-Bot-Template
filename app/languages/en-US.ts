@@ -23,7 +23,7 @@ export default {
         },
         options: {
             command: "Input a command name.",
-        }
+        },
     },
     ping: {
         title: "Latency",

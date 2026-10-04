@@ -1,7 +1,15 @@
 import { readdirSync } from "node:fs";
 import { Cooldown } from "@slipher/cooldown";
-import { Command, type CommandContext, createStringOption, Declare, Embed, Options,
-    Container, TextDisplay, Separator, MessageFlags,
+import {
+    Command,
+    type CommandContext,
+    Container,
+    createStringOption,
+    Declare,
+    MessageFlags,
+    Options,
+    Separator,
+    TextDisplay,
 } from "seyfert";
 
 import { emojis as categoryEmoji } from "#config";
@@ -51,9 +59,10 @@ async function helpSpesific(ctx: CommandContext) {
 
     const cmdToSearch = ctx.options.command;
 
-    await ctx.editOrReply({ components: [
-        new Container().addComponents(new TextDisplay().setContent(translate.help.specific.searching(cmdToSearch))),
-    ], flags: MessageFlags.IsComponentsV2, });
+    await ctx.editOrReply({
+        components: [new Container().addComponents(new TextDisplay().setContent(translate.help.specific.searching(cmdToSearch)))],
+        flags: MessageFlags.IsComponentsV2,
+    });
 
     const commands = ctx.client.commands.values.filter((cmd) => !cmd.props.onlyForDev);
     const commandOwned =
@@ -62,27 +71,24 @@ async function helpSpesific(ctx: CommandContext) {
 
     if (!commandOwned)
         return await ctx.editOrReply({
-            components: [
-                new Container().addComponents(new TextDisplay().setContent(translate.help.specific.notFound(cmdToSearch))),
-            ], flags: MessageFlags.IsComponentsV2,
+            components: [new Container().addComponents(new TextDisplay().setContent(translate.help.specific.notFound(cmdToSearch)))],
+            flags: MessageFlags.IsComponentsV2,
         });
 
     const appCommands = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
     const commandNameSlash = convertToSlash(appCommands, commandOwned.name);
 
     const container = new Container().addComponents(
-        new TextDisplay()
-            .setContent(
-                `## ${commandNameSlash}${commandOwned.aliases?.length > 0 ? ` ( ${commandOwned.aliases.map((n) => convertToSlash(appCommands, commandOwned.name).replace(commandOwned.name, n)).join(", ")} )` : ""}\n${translate[commandOwned.name].description}`,
-            ),
+        new TextDisplay().setContent(
+            `## ${commandNameSlash}${commandOwned.aliases?.length > 0 ? ` ( ${commandOwned.aliases.map((n) => convertToSlash(appCommands, commandOwned.name).replace(commandOwned.name, n)).join(", ")} )` : ""}\n${translate[commandOwned.name].description}`,
+        ),
         new Separator(),
-        new TextDisplay()
-            .setContent(
-                `- ${translate.help.specific.category(commandOwned.__filePath.split("/").at(-2))}\n- ${translate.help.specific.cooldown(msToSecond(commandOwned.cooldown?.interval ?? 1000))}`
-            ),
-        )
+        new TextDisplay().setContent(
+            `- ${translate.help.specific.category(commandOwned.__filePath.split("/").at(-2))}\n- ${translate.help.specific.cooldown(msToSecond(commandOwned.cooldown?.interval ?? 1000))}`,
+        ),
+    );
 
-    await ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2, });
+    await ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2 });
 }
 
 /**
@@ -101,21 +107,23 @@ async function commandsList(ctx: CommandContext) {
     for (const category of categories) {
         commandComponents.push(
             new Separator(),
-            new TextDisplay()
-                .setContent(`### \`${categoryEmoji[`#${category}`]}\` ${category}\n- - ${commands
+            new TextDisplay().setContent(
+                `### \`${categoryEmoji[`#${category}`]}\` ${category}\n- - ${commands
                     .filter((cmd) => cmd.__filePath.split("/").at(-2) === category)
                     .map((cmd) => convertToSlash(appCommands, cmd.name))
-                    .join(", ")}`)
+                    .join(", ")}`,
+            ),
         );
     }
 
     const container = new Container().addComponents(
-        new TextDisplay()
-            .setContent(`## ${translate.help.list.title}\n${translate.help.list.description(convertToSlash(appCommands, ctx.command.name))}`),
+        new TextDisplay().setContent(
+            `## ${translate.help.list.title}\n${translate.help.list.description(convertToSlash(appCommands, ctx.command.name))}`,
+        ),
         ...commandComponents,
     );
 
-    ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2, });
+    ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2 });
 }
 
 function convertToSlash(appCommands: unknown, name: string) {
