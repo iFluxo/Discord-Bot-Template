@@ -66,6 +66,7 @@ declare module "seyfert" {
 declare module "seyfert/lib/commands/applications/shared" {
     interface ExtendContext {
         config: typeof config;
+        readyAt: number;
     }
 }
 

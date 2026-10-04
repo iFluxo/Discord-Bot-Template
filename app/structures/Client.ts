@@ -18,7 +18,7 @@ import * as config from "#config";
  * centralize user-facing error responses instead of scattering them per command.
  */
 const clientOptions = {
-    context: extendContext(() => ({ config })),
+    context: extendContext(() => ({ config, readyAt: Math.round(Date.now() / 1000), })),
     allowedMentions: {
         parse: ["everyone", "roles", "users"] as ("everyone" | "roles" | "users")[],
         replied_user: false,

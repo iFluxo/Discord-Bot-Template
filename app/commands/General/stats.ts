@@ -28,11 +28,11 @@ export default class Template extends Command {
                         \n### Release
                         \n- \`${os.release()}\`
                         \n### Arch
-                        \n- \`${os.machine()}\`
+                        \n- \`${os.platform()}\` \`${os.machine()}\`
                         \n### CPU ( Cores )
                         \n- \`${os.cpus()[0].model}\` ( \`${os.cpus().length}\` )
                         \n### Uptime
-                        \n- <t:${Math.round((Date.now() - (Bun.nanoseconds() ?? 0)) / 1000)}:R>
+                        \n- <t:${ctx.readyAt}:R>
                     `)
             )
 
