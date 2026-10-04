@@ -113,7 +113,7 @@ async function commandsList(ctx: CommandContext) {
 
     const container = new Container().addComponents(
         new TextDisplay()
-            .setContent(`## ${translate.help.list.title}\n${translate.help.list.description(convertToSlash(appCommands, ctx.command.name))}`)
+            .setContent(`## ${translate.help.list.title}\n${translate.help.list.description(convertToSlash(appCommands, ctx.command.name))}`),
         ...commandComponents,
     );
 
