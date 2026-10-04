@@ -63,7 +63,7 @@ async function helpSpesific(ctx: CommandContext) {
 
     if (!commandOwned)
         return await ctx.editOrReply({
-            embeds: [embed.setColor("Red").setDescription(translate.help.spesific.notFound(cmdToSearch)],
+            embeds: [embed.setColor("Red").setDescription(translate.help.spesific.notFound(cmdToSearch))],
         });
 
     const appCommands = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
