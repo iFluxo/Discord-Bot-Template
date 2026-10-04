@@ -27,7 +27,7 @@ export default {
     },
     ping: {
         title: "Latency",
-        description: "Showing client, database, and runtime latency.",
+        description: "Showing client, runtime and database latency.",
         client: {
             title: "Client",
             value: (ping?: number) => `\`${ping ?? 0} ms\``,
