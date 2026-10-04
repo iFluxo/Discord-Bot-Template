@@ -65,11 +65,12 @@ async function helpSpesific(ctx: CommandContext) {
     if (!commandOwned) return ctx.editOrReply({ embeds: [embed.setColor("Red").setDescription(`Command with name \`${cmdToSearch}\` is not found.`)] });
 
     const appCommands = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
+    const commandNameSlash = convertToSlash(appCommands, commandOwned.name);
 
     embed.setColor(colors.Primary)
         .setAuthor({ name: commandOwned.props?.category })
-        .setTitle(convertToSlash(appCommands, commandOwned.name))
-        .setDescription(`*${translate[commandOwned.name].description}${commandOwned.aliases?.length > 0 ? `\nAliases: ${commandOwned.aliases.map(n => convertToSlash(appCommands, n)).join(", ")}`: ""}${Object.entries(commandOwned?.options).length > 0 ? `\nUsage examples: ${convertToSlash(appCommands, commandOwned.name)}` : ""}*`)
+        .setTitle(commandNameSlash)
+        .setDescription(`*${translate[commandOwned.name].description}${commandOwned.aliases?.length > 0 ? `\n\nAliases: ${commandOwned.aliases.map(n => commandNameSlash.replace(commandOwned.name, n)).join(", ")}`: ""}*`)
         .setFooter({ text: `Cooldown: ${msToSecond(commandOwned.cooldown?.interval ?? 1000)} second` });
 
     ctx.editOrReply({ embeds: [embed] });
