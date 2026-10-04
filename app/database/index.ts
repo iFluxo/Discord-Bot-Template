@@ -1,7 +1,3 @@
-/*
- * Database layer: provides a unified API over Turso/libSQL (Drizzle),
- * Redis caching, and MongoDB, plus health-check utilities.
- */
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/libsql";
 import mongoose from "mongoose";
@@ -10,9 +6,6 @@ import type { Client } from "../structures/Client";
 
 import { CustomTable, GuildTable, type SelectCustom, type SelectGuild } from "./drizzle.schema";
 
-/**
- * Defines the cache namespaces used by the database layer.
- */
 export enum CacheKeys {
     Custom = "custom",
     Guild = "guild",
@@ -21,62 +14,24 @@ export enum CacheKeys {
     Prefixs = "guild:prefixs",
 }
 
-/**
- * Supported database services for latency testing.
- */
 export type PingTarget = "drizzle" | "mongodb" | "redis";
 
-/**
- * Represents the result returned by a database ping.
- */
 export interface PingResult {
-    /**
-     * Database service that was tested.
-     */
     target: PingTarget;
 
-    /**
-     * Measured latency in milliseconds.
-     */
     latency: number;
 
-    /**
-     * Whether the database responded successfully.
-     */
     connected: boolean;
 }
 
-/**
- * Provides database access, caching and database health-check
- * functionality for the application.
- */
 export class AIODatabase {
-    /**
-     * Drizzle ORM instance connected to the Turso/libSQL database.
-     */
     protected readonly drizzle: ReturnType<typeof drizzle>;
-    /**
-     * Redis client used for application caching.
-     */
     readonly cache: Bun.RedisClient;
 
-    /**
-     * Mongoose instance used for MongoDB operations.
-     */
     readonly mongo = mongoose;
 
-    /**
-     * Application client instance.
-     */
     protected readonly client: Client;
 
-    /**
-     * Creates a new database manager.
-     *
-     * @param client Application client instance.
-     *
-     * @throws {Error} If a required environment variable is missing.
-     */
     constructor(client: Client) {
         this.client = client;
 
@@ -115,24 +70,10 @@ export class AIODatabase {
         });
     }
 
-    /**
-     * Generates a namespaced Redis cache key.
-     *
-     * @param namespace Cache namespace.
-     * @param id Resource identifier.
-     * @returns A fully qualified Redis key.
-     */
     private getCacheKey(namespace: CacheKeys, id: string): string {
         return `${namespace}:${id}`;
     }
 
-    /**
-     * Retrieves and deserializes a value from Redis.
-     *
-     * @param namespace Cache namespace.
-     * @param id Resource identifier.
-     * @returns Cached value or null when the key does not exist.
-     */
     private async getCache<T>(namespace: CacheKeys, id: string): Promise<T | null> {
         const key = this.getCacheKey(namespace, id);
         const value = await this.cache.get(key);
@@ -148,47 +89,18 @@ export class AIODatabase {
         }
     }
 
-    /**
-     * Serializes and stores a value in Redis.
-     *
-     * @param namespace Cache namespace.
-     * @param id Resource identifier.
-     * @param value Value to cache.
-     */
     private async setCache(namespace: CacheKeys, id: string, value: unknown): Promise<void> {
         const key = this.getCacheKey(namespace, id);
 
         await this.cache.set(key, JSON.stringify(value));
     }
 
-    /**
-     * Removes a value from Redis.
-     *
-     * @param namespace Cache namespace.
-     * @param id Resource identifier.
-     */
     private async deleteCache(namespace: CacheKeys, id: string): Promise<void> {
         const key = this.getCacheKey(namespace, id);
 
         await this.cache.del(key);
     }
 
-    /**
-     * Checks database connectivity and measures latency.
-     *
-     * When no target is specified, Drizzle/Turso is tested.
-     *
-     * @param target Database service to test.
-     * @returns Database health information and latency.
-     *
-     * @example
-     * ```ts
-     * await database.ping();
-     * await database.ping("drizzle");
-     * await database.ping("mongodb");
-     * await database.ping("redis");
-     * ```
-     */
     public async ping(target: PingTarget = "drizzle"): Promise<PingResult> {
         const start = performance.now();
 
@@ -256,30 +168,14 @@ export class AIODatabase {
         }
     }
 
-    /**
-     * Retrieves all custom records.
-     *
-     * @returns All custom database records.
-     */
     public async getCustoms(): Promise<SelectCustom[]> {
         return this.drizzle.select().from(CustomTable);
     }
 
-    /**
-     * Retrieves all guild records.
-     *
-     * @returns All guild database records.
-     */
     public async getGuilds(): Promise<SelectGuild[]> {
         return this.drizzle.select().from(GuildTable);
     }
 
-    /**
-     * Creates or updates a custom record.
-     *
-     * @param id Custom record identifier.
-     * @param data Custom record data.
-     */
     private async upsertCustom(id: SelectCustom["id"], data: SelectCustom["data"]): Promise<void> {
         await this.drizzle
             .insert(CustomTable)
@@ -295,17 +191,6 @@ export class AIODatabase {
             });
     }
 
-    /**
-     * Adds data to an existing custom value.
-     *
-     * Arrays are appended, numbers are added together and
-     * plain objects are merged. If no previous value exists,
-     * the provided data becomes the new value.
-     *
-     * @param id Custom record identifier.
-     * @param data Data to add.
-     * @returns The resulting custom value.
-     */
     public async addCustom(id: SelectCustom["id"], data: SelectCustom["data"]): Promise<SelectCustom["data"]> {
         const oldData = await this.getCustom(id);
 
@@ -338,12 +223,6 @@ export class AIODatabase {
         return newData;
     }
 
-    /**
-     * Retrieves a custom value from cache or the database.
-     *
-     * @param id Custom record identifier.
-     * @returns Custom data or null when it does not exist.
-     */
     public async getCustom(id: SelectCustom["id"]): Promise<SelectCustom["data"] | null> {
         const cached = await this.getCache<SelectCustom["data"]>(CacheKeys.Custom, id);
 
@@ -362,13 +241,6 @@ export class AIODatabase {
         return row.data;
     }
 
-    /**
-     * Sets a custom value in both the database and cache.
-     *
-     * @param id Custom record identifier.
-     * @param data Custom data.
-     * @returns The stored data.
-     */
     public async setCustom(id: SelectCustom["id"], data: SelectCustom["data"]): Promise<SelectCustom["data"]> {
         await this.upsertCustom(id, data);
 
@@ -377,23 +249,12 @@ export class AIODatabase {
         return data;
     }
 
-    /**
-     * Deletes a custom value from the database and cache.
-     *
-     * @param id Custom record identifier.
-     */
     public async deleteCustom(id: SelectCustom["id"]): Promise<void> {
         await this.drizzle.delete(CustomTable).where(eq(CustomTable.id, id));
 
         await this.deleteCache(CacheKeys.Custom, id);
     }
 
-    /**
-     * Creates or updates a guild record.
-     *
-     * @param id Guild identifier.
-     * @param data Guild data to update.
-     */
     private async upsertGuild(id: SelectGuild["id"], data: Partial<Omit<SelectGuild, "id">>): Promise<void> {
         await this.drizzle
             .insert(GuildTable)
@@ -409,12 +270,6 @@ export class AIODatabase {
             });
     }
 
-    /**
-     * Retrieves a guild from cache or the database.
-     *
-     * @param id Guild identifier.
-     * @returns Guild record or null when it does not exist.
-     */
     public async getGuildById(id: SelectGuild["id"]): Promise<SelectGuild | null> {
         const cached = await this.getCache<SelectGuild>(CacheKeys.Guild, id);
 
@@ -433,49 +288,24 @@ export class AIODatabase {
         return row;
     }
 
-    /**
-     * Retrieves the configured guild color.
-     *
-     * @param id Guild identifier.
-     * @returns Guild color or the application default color.
-     */
     public async getColor(id: SelectGuild["id"]): Promise<number> {
         const guild = await this.getGuildById(id);
 
         return guild?.color ?? colors.Primary;
     }
 
-    /**
-     * Retrieves the configured guild locale.
-     *
-     * @param id Guild identifier.
-     * @returns Guild locale or the application default locale.
-     */
     public async getLocale(id: SelectGuild["id"]): Promise<string> {
         const guild = await this.getGuildById(id);
 
         return guild?.locale ?? config.Locale;
     }
 
-    /**
-     * Retrieves the configured guild prefix.
-     *
-     * @param id Guild identifier.
-     * @returns Guild prefix or the application default prefix.
-     */
     public async getPrefix(id: SelectGuild["id"]): Promise<string[]> {
         const guild = await this.getGuildById(id);
 
         return guild?.prefixs ?? config.CommandPrefixs;
     }
 
-    /**
-     * Updates the guild color and refreshes the guild cache.
-     *
-     * @param id Guild identifier.
-     * @param color New guild color.
-     * @returns The configured color.
-     */
     public async setColor(id: SelectGuild["id"], color: SelectGuild["color"]): Promise<number> {
         await this.upsertGuild(id, {
             color,
@@ -493,13 +323,6 @@ export class AIODatabase {
         return color;
     }
 
-    /**
-     * Updates the guild locale and refreshes the guild cache.
-     *
-     * @param id Guild identifier.
-     * @param locale New guild locale.
-     * @returns The configured locale.
-     */
     public async setLocale(id: SelectGuild["id"], locale: SelectGuild["locale"]): Promise<string> {
         await this.upsertGuild(id, {
             locale,
@@ -517,13 +340,6 @@ export class AIODatabase {
         return locale;
     }
 
-    /**
-     * Updates the guild prefix and refreshes the guild cache.
-     *
-     * @param id Guild identifier.
-     * @param prefixs New guild prefix.
-     * @returns The configured prefix.
-     */
     public async setPrefix(id: SelectGuild["id"], prefixs: SelectGuild["prefixs"]): Promise<string[]> {
         await this.upsertGuild(id, {
             prefixs,
@@ -541,11 +357,6 @@ export class AIODatabase {
         return prefixs;
     }
 
-    /**
-     * Deletes a guild and all related cache entries.
-     *
-     * @param id Guild identifier.
-     */
     public async deleteGuild(id: SelectGuild["id"]): Promise<void> {
         await this.drizzle.delete(GuildTable).where(eq(GuildTable.id, id));
 

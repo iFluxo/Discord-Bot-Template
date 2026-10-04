@@ -29,13 +29,6 @@ export interface WebhookCollection {
     [hookName: string]: Webhook | string;
 }
 
-/**
- * Parses every provided webhook URL during setup and exposes the resulting
- * webhook collection on both the client and command contexts.
- *
- * @param options Map of hook name to Discord webhook URL.
- * @returns The configured Seyfert plugin definition.
- */
 export function WebhookPlugin(options: PluginOptions = {}) {
     const collection: WebhookCollection = {
         name: "Webhook Client",
@@ -76,24 +69,12 @@ export function WebhookPlugin(options: PluginOptions = {}) {
     });
 }
 
-/**
- * Create a webhook instance.
- */
 function createWebhook(data: WebhookData): Webhook {
     const { id, token } = data;
 
     return {
         data,
 
-        /**
-         * Send webhook message.
-         *
-         * String:
-         *   send("Hello")
-         *
-         * Object:
-         *   send({ content: "Hello" })
-         */
         async send(message) {
             return request(`/webhooks/${id}/${token}?wait=true`, {
                 method: "POST",
@@ -101,15 +82,6 @@ function createWebhook(data: WebhookData): Webhook {
             });
         },
 
-        /**
-         * Edit webhook message.
-         *
-         * String:
-         *   edit("Hello")
-         *
-         * Object:
-         *   edit({ content: "Hello" })
-         */
         async edit(messageId, message) {
             return request(`/webhooks/${id}/${token}/messages/${messageId}`, {
                 method: "PATCH",
@@ -117,18 +89,12 @@ function createWebhook(data: WebhookData): Webhook {
             });
         },
 
-        /**
-         * Fetch webhook message.
-         */
         async fetch(messageId) {
             return request(`/webhooks/${id}/${token}/messages/${messageId}`, {
                 method: "GET",
             });
         },
 
-        /**
-         * Delete webhook message.
-         */
         async delete(messageId) {
             await request(`/webhooks/${id}/${token}/messages/${messageId}`, {
                 method: "DELETE",
@@ -137,17 +103,6 @@ function createWebhook(data: WebhookData): Webhook {
     };
 }
 
-/**
- * Convert a string into a Discord message payload.
- *
- * "Hello"
- *
- * becomes:
- *
- * {
- *     content: "Hello"
- * }
- */
 function normalizeMessage(message: WebhookMessage): Record<string, unknown> {
     if (typeof message === "string") {
         return {
@@ -158,9 +113,6 @@ function normalizeMessage(message: WebhookMessage): Record<string, unknown> {
     return message;
 }
 
-/**
- * Manual Discord REST API request.
- */
 async function request<T = unknown>(
     path: string,
     options: {
@@ -189,9 +141,6 @@ async function request<T = unknown>(
             : {}),
     });
 
-    /**
-     * DELETE success.
-     */
     if (response.status === 204) {
         return undefined as T;
     }
@@ -206,9 +155,6 @@ async function request<T = unknown>(
         result = await response.text();
     }
 
-    /**
-     * Discord API error.
-     */
     if (!response.ok) {
         const error = new Error(`Discord API Error ${response.status}: ${response.statusText}`) as Error & {
             status: number;
@@ -224,9 +170,6 @@ async function request<T = unknown>(
     return result as T;
 }
 
-/**
- * Parse Discord webhook URL.
- */
 function getData(webhookUrl: string): WebhookData | null {
     if (typeof webhookUrl !== "string" || webhookUrl.length === 0) {
         return null;

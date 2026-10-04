@@ -1,21 +1,12 @@
-/*
- * Drizzle ORM table definitions with their inferred row types.
- */
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { colors, config } from "#config";
 
-/**
- * Stores custom key-value data.
- */
 export const CustomTable = sqliteTable("custom", {
     id: text("id").primaryKey(),
 
     data: text("data", { mode: "json" }).$type<string | number | boolean | object | unknown[] | null>().default(null),
 });
 
-/**
- * Stores guild-specific configuration.
- */
 export const GuildTable = sqliteTable("guild", {
     id: text("id").primaryKey(),
 

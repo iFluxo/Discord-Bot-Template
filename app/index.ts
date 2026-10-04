@@ -1,7 +1,3 @@
-/*
- * Surface otherwise-silent asynchronous failures so they can be diagnosed
- * instead of crashing or being swallowed by the runtime.
- */
 process.on("unhandledRejection", (info) => console.error("UnhandledRejection?!", info as unknown));
 process.on("uncaughtException", (info) => console.error("UncaughtException?!", info as unknown));
 
@@ -17,11 +13,6 @@ import type enUS from "./languages/en-US";
 import * as globalMiddlewares from "./middlewares/index";
 import { Client } from "./structures/Client";
 
-/**
- * Plugin stack registered on the client. Parser options mirror the prefix
- * conventions used by the message-command parser, and the cooldown plugin
- * applies rate limiting globally.
- */
 const plugins = definePlugins(
     Yuna.plugin({
         parser: { syntax: { namedOptions: ["-", "--"] } },
@@ -35,10 +26,6 @@ const plugins = definePlugins(
     }),
 );
 
-/*
- * Expose application-wide metadata to Seyfert's type system so that
- * middleware results, plugin exports, and language resources are strongly typed.
- */
 declare module "seyfert" {
     interface SeyfertRegistry {
         client: ParseClient<SeyfertClient<true>>;
@@ -60,9 +47,6 @@ declare module "seyfert" {
     }
 }
 
-/*
- * Extend every command context with the shared application config object.
- */
 declare module "seyfert/lib/commands/applications/shared" {
     interface ExtendContext {
         config: typeof config;
@@ -70,19 +54,11 @@ declare module "seyfert/lib/commands/applications/shared" {
     }
 }
 
-/*
- * Reach into Seyfert's internal logger cache so the memory figure in log
- * output can be reused across log lines instead of being sampled per line.
- */
 const loggerMemory = Logger as unknown as { __memoryCache: { rss: number; ts: number } };
 
 Logger.customize((_logger, level, args) => {
     const now = Date.now();
 
-    /*
-     * Refresh the sampled RSS memory usage at most once per second to avoid
-     * the cost of a syscall for every individual log entry.
-     */
     if (now - loggerMemory.__memoryCache.ts > 1000) {
         loggerMemory.__memoryCache = { rss: process.memoryUsage?.()?.rss ?? 0, ts: now };
     }
@@ -94,10 +70,6 @@ Logger.customize((_logger, level, args) => {
     ];
 });
 
-/*
- * Instantiate the bot client with all middlewares registered globally and
- * then bind the middleware services and language resources to the registry.
- */
 const client = new Client({
     globalMiddlewares: Object.keys(globalMiddlewares),
     plugins,

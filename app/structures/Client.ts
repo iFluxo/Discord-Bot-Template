@@ -13,10 +13,6 @@ import {
 import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
 import * as config from "#config";
 
-/**
- * Base client options shared by the custom client and tests. Handlers here
- * centralize user-facing error responses instead of scattering them per command.
- */
 const clientOptions = {
     context: extendContext(() => ({ config, readyAt: Math.round(Date.now() / 1000) })),
     allowedMentions: {
@@ -68,11 +64,6 @@ const clientOptions = {
                 context: CommandContext | MenuCommandContext<MessageCommandInteraction | UserCommandInteraction>,
                 error: string,
             ) => {
-                /*
-                 * Consume the cooldown ticket so repeated triggered attempts still
-                 * count against the user, and auto-delete prefix-command error
-                 * responses after the remaining cooldown window elapses.
-                 */
                 const result = await context?.cooldown?.consume();
                 context.editOrReply({ content: error, flags: MessageFlags.Ephemeral });
                 if (!context.interaction) {
@@ -123,10 +114,6 @@ const clientOptions = {
     }),
 };
 
-/**
- * Application client. Extends Seyfert's client with the shared config,
- * starts the gateway connection, and uploads commands once ready.
- */
 class CustomClient extends Client<true> {
     declare config: typeof config;
 

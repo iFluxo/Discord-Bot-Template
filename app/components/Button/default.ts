@@ -1,8 +1,5 @@
 import { ComponentCommand, type ComponentContext } from "seyfert";
 
-/**
- * Default button component handler used as a template for new buttons.
- */
 export default class Default extends ComponentCommand {
     componentType = "Button" as const;
 
