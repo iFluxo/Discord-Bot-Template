@@ -30,7 +30,7 @@ export default class Template extends Command {
                         \n### Arch
                         \n- \`${os.platform()}\` \`${os.machine()}\`
                         \n### CPU ( Cores )
-                        \n- \`AMD Ryzen 9 9950X3D\` ( \`16\` )
+                        \n- \`AMD Ryzen 9 9950X\` ( \`16\` )
                         \n### Uptime
                         \n- <t:${ctx.readyAt}:R>
                     `)
