@@ -91,7 +91,7 @@ async function helpSpesific(ctx: CommandContext) {
             ),
         )
 
-    await ctx.editOrReply({ embeds: [embed], components: [container] });
+    await ctx.editOrReply({ components: [container] });
 }
 
 /**
