@@ -69,8 +69,8 @@ async function helpSpesific(ctx: CommandContext) {
     embed.setColor(colors.Primary)
         .setAuthor({ name: commandOwned.props?.category })
         .setTitle(convertToSlash(appCommands, commandOwned.name))
-        .setDescription(`> Aliases: ${commandOwned.aliases.map(n => convertToSlash(n)).join(", ")}\n*${translate[commandOwned.name].description}*`);
-    if (commandOwned.aliases?.length > 0) embed.setFooter({ text: `Cooldown: ${msToSecond(commandOwned.cooldown?.interval ?? 1000)} second` });
+        .setDescription(`${commandOwned.aliases?.length > 0 ? `Aliases: ${commandOwned.aliases.map(n => convertToSlash(n)).join(", ")}\n`: ""}*${translate[commandOwned.name].description}*`)
+        .setFooter({ text: `Cooldown: ${msToSecond(commandOwned.cooldown?.interval ?? 1000)} second` });
 
     ctx.editOrReply({ embeds: [embed] });
 }
