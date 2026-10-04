@@ -7,6 +7,6 @@ export default class Default extends ComponentCommand {
     componentType = "Button" as const;
 
     async run(ctx: ComponentContext<typeof this.componentType>) {
-        return ctx.editOrReply({ content: "Hello World from Button" });
+        return await ctx.editOrReply({ content: "Hello World from Button" });
     }
 }

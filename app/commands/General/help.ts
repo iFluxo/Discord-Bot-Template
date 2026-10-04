@@ -55,14 +55,14 @@ async function helpSpesific(ctx: CommandContext) {
         .setColor(colors.Secondary)
         .setDescription(`*Searching command with name \`${cmdToSearch}\`...*`);
 
-    ctx.editOrReply({ embeds: [embed] });
+    await ctx.editOrReply({ embeds: [embed] });
 
     const translate = ctx.t.get();
 
     const commands = ctx.client.commands.values.filter(cmd => !cmd.props.onlyForDev)
     const commandOwned = commands.find(cmd => cmd.name === cmdToSearch.toLowerCase()) ?? commands.find(cmd => cmd.aliases?.includes(cmdToSearch.toLowerCase()));
 
-    if (!commandOwned) return ctx.editOrReply({ embeds: [embed.setColor("Red").setDescription(`Command with name \`${cmdToSearch}\` is not found.`)] });
+    if (!commandOwned) return await ctx.editOrReply({ embeds: [embed.setColor("Red").setDescription(`Command with name \`${cmdToSearch}\` is not found.`)] });
 
     const appCommands = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
     const commandNameSlash = convertToSlash(appCommands, commandOwned.name);
@@ -73,7 +73,7 @@ async function helpSpesific(ctx: CommandContext) {
         .setDescription(`*${translate[commandOwned.name].description}${commandOwned.aliases?.length > 0 ? `\n\nAliases: ${commandOwned.aliases.map(n => commandNameSlash.replace(commandOwned.name, n)).join(", ")}`: ""}*`)
         .setFooter({ text: `Cooldown: ${msToSecond(commandOwned.cooldown?.interval ?? 1000)} second` });
 
-    ctx.editOrReply({ embeds: [embed] });
+    await ctx.editOrReply({ embeds: [embed] });
 }
 
 /**

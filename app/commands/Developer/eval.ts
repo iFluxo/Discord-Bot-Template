@@ -86,7 +86,7 @@ export default class EvalCommand extends Command {
         await client.channels.typing(channelId);
 
         if (!code?.length)
-            return ctx.editOrReply({
+            return await ctx.editOrReply({
                 embeds: [new Embed().setDescription("`❌` Input code!").setColor("Red")],
                 flags: MessageFlags.Ephemeral,
             });

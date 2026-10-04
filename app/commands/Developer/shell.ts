@@ -70,7 +70,7 @@ export default class EvalCommand extends Command {
         await client.channels.typing(channelId);
 
         if (!cmd?.length)
-            return ctx.editOrReply({
+            return await ctx.editOrReply({
                 embeds: [new Embed().setDescription("`❌` Input command!").setColor("Red")],
                 flags: MessageFlags.Ephemeral,
             });
