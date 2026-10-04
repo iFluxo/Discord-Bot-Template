@@ -12,15 +12,17 @@ export default {
         description: "Displaying commands list and usage helper.",
         list: {
             title: "Commands list",
-            description: "This is a list of commands. Use `/help :command name` for spesific command info.",
+            description: (helpSlash?: string) => `This is a list of commands. Use ${helpSlash} for more spesific command info.`,
         },
         spesific: {
-            title: "Help command",
-            description: "Specific command information. Usage is `/help` or `/help :command name`.",
+            searching: (cmdName?: string) => `*Searching command with name \`${cmdName}\`...*`,
+            notFound: (cmdName?: string) => `Command with name \`${cmdName}\` is not found.`,
+            aliases: (list?: string) => `Aliases?: ${list}`,
+            cooldown: (cd?: number) => `Cooldown?: ${cd} seconds`,
         },
         options: {
             command: "Input a command name.",
-        },
+        }
     },
     ping: {
         description: "Showing client, database, and runtime latency.",

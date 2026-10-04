@@ -18,7 +18,6 @@ const helpOptions = {
  * command when a command name is provided.
  */
 
-
 @Declare({
     name: "help",
     aliases: ["h"],
@@ -49,29 +48,35 @@ export default class HelpCommand extends Command {
  * @param ctx The command context used to resolve the current locale.
  */
 async function helpSpesific(ctx: CommandContext) {
+    const translate = ctx.t.get();
+
     const cmdToSearch = ctx.options.command;
 
-    const embed = new Embed()
-        .setColor(colors.Secondary)
-        .setDescription(`*Searching command with name \`${cmdToSearch}\`...*`);
+    const embed = new Embed().setColor(colors.Secondary).setDescription(translate.help.spesific.searching(cmdToSearch);
 
     await ctx.editOrReply({ embeds: [embed] });
 
-    const translate = ctx.t.get();
+    const commands = ctx.client.commands.values.filter((cmd) => !cmd.props.onlyForDev);
+    const commandOwned =
+        commands.find((cmd) => cmd.name === cmdToSearch.toLowerCase()) ??
+        commands.find((cmd) => cmd.aliases?.includes(cmdToSearch.toLowerCase()));
 
-    const commands = ctx.client.commands.values.filter(cmd => !cmd.props.onlyForDev)
-    const commandOwned = commands.find(cmd => cmd.name === cmdToSearch.toLowerCase()) ?? commands.find(cmd => cmd.aliases?.includes(cmdToSearch.toLowerCase()));
-
-    if (!commandOwned) return await ctx.editOrReply({ embeds: [embed.setColor("Red").setDescription(`Command with name \`${cmdToSearch}\` is not found.`)] });
+    if (!commandOwned)
+        return await ctx.editOrReply({
+            embeds: [embed.setColor("Red").setDescription(translate.help.spesific.notFound(cmdToSearch)],
+        });
 
     const appCommands = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
     const commandNameSlash = convertToSlash(appCommands, commandOwned.name);
 
-    embed.setColor(colors.Primary)
+    embed
+        .setColor(colors.Primary)
         .setAuthor({ name: commandOwned.props?.category })
         .setTitle(commandNameSlash)
-        .setDescription(`*${translate[commandOwned.name].description}${commandOwned.aliases?.length > 0 ? `\n\nAliases: ${commandOwned.aliases.map(n => commandNameSlash.replace(commandOwned.name, n)).join(", ")}`: ""}*`)
-        .setFooter({ text: `Cooldown: ${msToSecond(commandOwned.cooldown?.interval ?? 1000)} second` });
+        .setDescription(
+            `*${translate[commandOwned.name].description}${commandOwned.aliases?.length > 0 ? `\n\n${translate.help.spesific.aliases(commandOwned.aliases.map((n) => commandNameSlash.replace(commandOwned.name, n).join(", ")))}` : ""}*`,
+        )
+        .setFooter({ text: translate.help.specific.cooldown(msToSecond(commandOwned.cooldown?.interval ?? 1000)) });
 
     await ctx.editOrReply({ embeds: [embed] });
 }
@@ -84,24 +89,31 @@ async function helpSpesific(ctx: CommandContext) {
 async function commandsList(ctx: CommandContext) {
     const translate = ctx.t.get();
 
-    const commands = ctx.client.commands.values.filter(cmd => !cmd.props.onlyForDev);
-    const embed = new Embed().setColor(colors.Primary).setTitle(translate.help.list.title).setDescription(translate.help.list.description);
-
+    const commands = ctx.client.commands.values.filter((cmd) => !cmd.props.onlyForDev);
     const appCommands = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
 
-    const categories = readdirSync("app/commands").filter(name => name !== "Developer");
+    const embed = new Embed().setColor(colors.Primary).setTitle(translate.help.list.title).setDescription(translate.help.list.description(convertToSlash(appCommands, ctx.command.name));
+
+    const categories = readdirSync("app/commands").filter((name) => name !== "Developer");
     for (const category of categories) {
-        embed.addFields({ name: category, value: commands.filter(cmd => cmd.props?.category === category).map(cmd => convertToSlash(appCommands, cmd.name)).join(", "), inline: true });
+        embed.addFields({
+            name: category,
+            value: commands
+                .filter((cmd) => cmd.props?.category === category)
+                .map((cmd) => convertToSlash(appCommands, cmd.name))
+                .join(", "),
+            inline: true,
+        });
     }
 
     ctx.editOrReply({ embeds: [embed] });
 }
 
 function convertToSlash(appCommands: unknown, name: string) {
-    const command = appCommands?.find(cmd => cmd.name === name?.toLowerCase());
+    const command = appCommands?.find((cmd) => cmd.name === name?.toLowerCase());
     return command ? `</${name?.toLowerCase()}:${command.id}>` : `\`/${name?.toLowerCase()}\``;
 }
 
 function msToSecond(ms: number) {
-    return Math.floor(ms / 1000 % 60);
+    return Math.floor((ms / 1000) % 60);
 }
