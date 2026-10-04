@@ -55,8 +55,8 @@ async function helpSpesific(ctx: CommandContext) {
     const cmdToSearch = ctx.options.command;
 
     await ctx.editOrReply({ components: [
-        new Container().addComponents(new TextDisplay().setContent(translate.help.specific.searching(cmdToSearch)));
-    ], flags: MessageFlags.IsComponentsV2 });
+        new Container().addComponents(new TextDisplay().setContent(translate.help.specific.searching(cmdToSearch))),
+    ], flags: MessageFlags.IsComponentsV2, });
 
     const commands = ctx.client.commands.values.filter((cmd) => !cmd.props.onlyForDev);
     const commandOwned =
@@ -66,7 +66,7 @@ async function helpSpesific(ctx: CommandContext) {
     if (!commandOwned)
         return await ctx.editOrReply({
             components: [
-                new Container().addComponents(new TextDisplay().setContent(translate.help.specific.notFound(cmdToSearch)));
+                new Container().addComponents(new TextDisplay().setContent(translate.help.specific.notFound(cmdToSearch))),
             ], flags: MessageFlags.IsComponentsV2,
         });
 
@@ -85,7 +85,7 @@ async function helpSpesific(ctx: CommandContext) {
             ),
         )
 
-    await ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2 });
+    await ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2, });
 }
 
 /**
