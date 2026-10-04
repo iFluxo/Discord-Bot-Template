@@ -12,6 +12,6 @@ import { Command, type CommandContext, Declare } from "seyfert";
 @Cooldown.user(3_000)
 export default class Template extends Command {
     async run(ctx: CommandContext) {
-        ctx.write({ content: "Hi, from template" });
+        await ctx.write({ content: "Hi, from template" });
     }
 }
