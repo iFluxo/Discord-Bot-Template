@@ -98,7 +98,7 @@ async function commandsList(ctx: CommandContext) {
 
 function convertToSlash(appCommands: unknown, commandOwned: unknown) {
     const command = appCommands?.find(cmd => cmd.name === (commandOwned?.name ?? commandOwned)?.toLowerCase());
-    const name = (Object.entries(commandOwned?.options).length > 0 ? `${commandOwned.name} ${commandOwned.options.map(o => o.name).join(" ")}` : command.name;
+    const name = Object.entries(commandOwned?.options).length > 0 ? `${commandOwned.name} ${commandOwned.options.map(o => o.name).join(" ")}` : command.name;
     return command?.id ? `</${name?.toLowerCase()}:${command.id}>` : `\`/${name?.toLowerCase()}\``;
 }
 
