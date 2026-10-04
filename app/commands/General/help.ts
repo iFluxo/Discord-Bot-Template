@@ -79,13 +79,12 @@ async function helpSpesific(ctx: CommandContext) {
             `*${translate[commandOwned.name].description}${commandOwned.aliases?.length > 0 ? `\n\n${translate.help.specific.aliases(commandOwned.aliases.map((n) => commandNameSlash.replace(commandOwned.name, n)).join(", "))}` : ""}*`,
         )
         .setFooter({ text: translate.help.specific.cooldown(msToSecond(commandOwned.cooldown?.interval ?? 1000)) });
-    const container = new Container().addComponents([
+    const container = new Container().addComponents(
         new TextDisplay()
             .setContent(
                 `# ${commandNameSlash} ( ${commandOwned.aliases?.length > 0 ? `\n\n${translate.help.specific.aliases(commandOwned.aliases.map((n) => commandNameSlash.replace(commandOwned.name, n)).join(", "))}` : ""} )\n${translate[commandOwned.name].description}`,
             ),
         new Separator(),
-    ]
         new TextDisplay()
             .setContent(
                 `- ${translate.help.specific.category(commandOwned.props?.category)}\n- ${translate.help.specific.cooldown(msToSecond(commandOwned.cooldown?.interval ?? 1000))}`
