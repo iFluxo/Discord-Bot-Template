@@ -42,5 +42,5 @@ jobs:
           # 2. Tentukan platform target di sini (misal hanya arm64, atau tambahkan amd64 jika ingin multi-arch)
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ env.Owner }}/discord-bot-template:${{ env.VersionTag }}
-            ghcr.io/${{ env.Owner }}/discord-bot-template:latest
+            ghcr.io/${{ env.Owner }}/dbot:${{ env.VersionTag }}
+            ghcr.io/${{ env.Owner }}/dbot:latest
