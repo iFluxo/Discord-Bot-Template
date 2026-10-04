@@ -105,7 +105,7 @@ async function commandsList(ctx: CommandContext) {
         commandComponents.push(
             new Separator(),
             new TextDisplay()
-                .setContent(`### ${categoryEmoji[`#${category}`]} ${category}\n- - ${commands
+                .setContent(`### \`${categoryEmoji[`#${category}`]}\` ${category}\n- - ${commands
                     .filter((cmd) => cmd.props?.category === category)
                     .map((cmd) => convertToSlash(appCommands, cmd.name))
                     .join(", ")}`)
