@@ -26,17 +26,18 @@ export default {
         }
     },
     ping: {
+        title: "Latency",
         description: "Showing client, database, and runtime latency.",
         client: {
-            title: "Client latency",
+            title: "Client",
             value: (ping?: number) => `\`${ping ?? 0} ms\``,
         },
         database: {
-            title: "Database latency",
+            title: "Database",
             value: (ping?: number) => `\`${ping ?? 0} ms\``,
         },
         runtime: {
-            title: "Runtime latency",
+            title: "Runtime",
             value: (ping?: number) => `\`${ping ?? 0} ms\``,
         },
     },

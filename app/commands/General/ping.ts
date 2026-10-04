@@ -30,20 +30,24 @@ export default class PingCommand extends Command {
         const ping = ctx.client?.gateway?.latency;
         const pong = ctx.interaction?.createdTimestamp ?? ctx.message?.createdTimestamp ?? Date.now();
 
-        const embed = new Embed().setColor(colors.Primary).addFields(
+        const embed = new Embed()
+            .setColor(colors.Primary)
+            .setTitle(translate.ping.title)
+            .setDescription(translate.ping.description)
+            .addFields(
             {
-                name: translate.ping.client.title,
+                name: `\`${state(ping)}\` ${translate.ping.client.title}`,
                 value: translate.ping.client.value(ping),
                 inline: true,
             },
             {
-                name: translate.ping.database.title,
-                value: translate.ping.database.value(dbPing.latency),
+                name: `\`${state(Date.now() - pong)}\` ${translate.ping.runtime.title}`,
+                value: translate.ping.runtime.value(Date.now() - pong),
                 inline: true,
             },
             {
-                name: translate.ping.runtime.title,
-                value: translate.ping.runtime.value(Date.now() - pong),
+                name: `\`${state(dbPing.latency)}\` ${translate.ping.database.title}`,
+                value: translate.ping.database.value(dbPing.latency),
                 inline: true,
             },
         );
@@ -53,4 +57,8 @@ export default class PingCommand extends Command {
             flags: MessageFlags.Ephemeral,
         });
     }
+}
+
+function state(ping?: number = 0) {
+    return ping =< 100 ? "🟢" : ping >= 100 ? "🟡" : "🔴";
 }
