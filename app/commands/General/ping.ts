@@ -32,22 +32,22 @@ export default class PingCommand extends Command {
             .setTitle(translate.ping.title)
             .setDescription(translate.ping.description)
             .addFields(
-            {
-                name: `\`${state(ping)}\` ${translate.ping.client.title}`,
-                value: translate.ping.client.value(ping),
-                inline: true,
-            },
-            {
-                name: `\`${state(Date.now() - pong)}\` ${translate.ping.runtime.title}`,
-                value: translate.ping.runtime.value(Date.now() - pong),
-                inline: true,
-            },
-            {
-                name: `\`${state(dbPing.latency)}\` ${translate.ping.database.title}`,
-                value: translate.ping.database.value(dbPing.latency),
-                inline: true,
-            },
-        );
+                {
+                    name: `\`${state(ping)}\` ${translate.ping.client.title}`,
+                    value: translate.ping.client.value(ping),
+                    inline: true,
+                },
+                {
+                    name: `\`${state(Date.now() - pong)}\` ${translate.ping.runtime.title}`,
+                    value: translate.ping.runtime.value(Date.now() - pong),
+                    inline: true,
+                },
+                {
+                    name: `\`${state(dbPing.latency)}\` ${translate.ping.database.title}`,
+                    value: translate.ping.database.value(dbPing.latency),
+                    inline: true,
+                },
+            );
 
         await ctx.editOrReply({
             embeds: [embed],
@@ -56,6 +56,6 @@ export default class PingCommand extends Command {
     }
 }
 
-function state(ping?: number = 0) {
-    return ping <= 100 ? "🟢" : (ping <= 200 ? "🟡" : "🔴");
+function state(ping?: number) {
+    return ping <= 100 ? "🟢" : ping <= 200 ? "🟡" : "🔴";
 }
