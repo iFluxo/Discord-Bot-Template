@@ -11,6 +11,7 @@ import {
     type UserCommandInteraction,
 } from "seyfert";
 import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
+import { generateCases } from "#plugins/function"
 import * as config from "#config";
 
 const clientOptions = {
@@ -25,19 +26,20 @@ const clientOptions = {
 
             if (guildId) {
                 try {
-                    return await (
+                    const customPrefixs await (
                         message.client as {
                             db: {
                                 getPrefix: (id: string) => Promise<string[]>;
                             };
                         }
                     ).db.getPrefix(guildId);
+                    return customPrefixs.flatMap(p => generateCases(p));
                 } catch {
                     // fall back to default prefixes
                 }
             }
 
-            return config.config.CommandPrefixs;
+            return config.config.CommandPrefixs.flatMap(p => generateCases(p))
         },
         reply: () => true,
         deferReplyResponse: () => ({ content: "Sending request..." }),

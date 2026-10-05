@@ -1,8 +1,15 @@
+const {
+    ConfigLocale,
+    ConfigPrefixs,
+    ConfigDevs,
+    ConfigGuilds,
+} = Bun.env;
+
 export const config = {
-    CommandPrefixs: ["-", ...generateCases("ai"), ...generateCases("aichan")],
-    Locale: "en-US",
-    Developers: ["561170896480501790"],
-    DevGuilds: ["1041813867640131665"],
+    Locale: ConfigLocale ?? "en-US",
+    CommandPrefixs: ConfigPrefixs?.split(",") ?? ["-", "ai", "aichan"],
+    Developers: ConfigDevs?.split(",") ?? ["561170896480501790"],
+    DevGuilds: ConfigGuilds?.split(",") ?? ["1041813867640131665"],
 };
 
 export const colors = {
@@ -16,24 +23,3 @@ export const emojis = {
     "#Social": "👤",
     "#Utility": "🛠️",
 };
-
-function generateCases(word: string) {
-    const result = [];
-    const total = 1 << word.length;
-
-    for (let i = 0; i < total; i++) {
-        let str = "";
-
-        for (let j = 0; j < word.length; j++) {
-            if (i & (1 << j)) {
-                str += word[j].toUpperCase();
-            } else {
-                str += word[j].toLowerCase();
-            }
-        }
-
-        result.push(str);
-    }
-
-    return result;
-}

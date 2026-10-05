@@ -28,6 +28,7 @@
 
         "paths": {
             "app/*": ["./app/*"],
+            "#plugins/*": ["./app/plugins/*"],
             "#config": ["./app/assets/config.ts"]
         }
     },
