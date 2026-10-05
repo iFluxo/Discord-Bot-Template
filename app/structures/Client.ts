@@ -35,7 +35,15 @@ const clientOptions = {
                     ).db.getPrefix(guildId);
                     return customPrefixs.flatMap(p => generateCases(p));
                 } catch {
-                    // fall back to default prefixes
+                    await (
+                        message.client as {
+                            db: {
+                                setPrefix: (id: string, prefixs: string[]) => Promise<string[]>;
+                            };
+                        }
+                    ).db.setPrefix(guildId, customPrefixs);
+
+                    return customPrefixs.flatMap(p => generateCases(p));
                 }
             }
 
