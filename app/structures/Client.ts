@@ -26,7 +26,7 @@ const clientOptions = {
 
             if (guildId) {
                 try {
-                    const customPrefixs await (
+                    const customPrefixs = await (
                         message.client as {
                             db: {
                                 getPrefix: (id: string) => Promise<string[]>;
