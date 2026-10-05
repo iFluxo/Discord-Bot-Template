@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/libsql";
+import { drizzle } from "drizzle-orm/tursodatabase-sync";
 import mongoose from "mongoose";
 import { colors, config } from "#config";
 import type { Client } from "../structures/Client";
@@ -35,6 +35,7 @@ export class AIODatabase {
     constructor(client: Client) {
         this.client = client;
 
+        const tursoPath = Bun.env.TursoPath ?? "local.db";
         const tursoUrl = Bun.env.TursoUrl;
         const tursoAuthToken = Bun.env.TursoAuthToken;
         const redisUrl = Bun.env.RedisUrl;
@@ -58,6 +59,7 @@ export class AIODatabase {
 
         this.drizzle = drizzle({
             connection: {
+                path: tursoPath,
                 url: tursoUrl,
                 authToken: tursoAuthToken,
             },

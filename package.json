@@ -18,9 +18,9 @@
         "ts:dev": "bunx tsc -w"
     },
     "dependencies": {
-        "@libsql/client": "^0.18.0",
+        "@tursodatabase/sync": "next",
         "@slipher/cooldown": "^1.0.0",
-        "drizzle-orm": "^0.45.3",
+        "drizzle-orm": "rc",
         "mongoose": "^9.10.4",
         "seyfert": "^5.1.0",
         "yunaforseyfert": "^1.2.4"
@@ -29,7 +29,7 @@
         "@biomejs/biome": "^2",
         "@types/bun": "^1",
         "@types/node": "^26",
-        "drizzle-kit": "^0",
+        "drizzle-kit": "rc",
         "typescript": "^7"
     }
 }
