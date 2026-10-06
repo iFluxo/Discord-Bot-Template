@@ -1,3 +1,6 @@
+process.on("unhandledRejection", (info: unknown) => console.error("UnhandledRejection?!", info));
+process.on("uncaughtException", (info: unknown) => console.error("UncaughtException?!", info));
+
 import { Logger } from "seyfert";
 import { formatMemoryUsage } from "seyfert/lib/common/it/logger";
 

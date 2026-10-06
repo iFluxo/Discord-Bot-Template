@@ -1,5 +1,4 @@
-process.on("unhandledRejection", (info) => console.error("UnhandledRejection?!", info as unknown));
-process.on("uncaughtException", (info) => console.error("UncaughtException?!", info as unknown));
+import("./plugins/utils.logger");
 
 import { type CooldownMiddlewares, cooldown } from "@slipher/cooldown";
 import { DatabasePlugin } from "app/plugins/database.plugin";
@@ -11,8 +10,6 @@ import type * as config from "#config";
 import type enUS from "./languages/en-US";
 import * as globalMiddlewares from "./middlewares/index";
 import { Client } from "./structures/Client";
-
-import("./plugins/utils.logger");
 
 const plugins = definePlugins(
     Yuna.plugin({
