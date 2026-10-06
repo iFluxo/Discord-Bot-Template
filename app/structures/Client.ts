@@ -152,7 +152,7 @@ const clientOptions = {
         activities: [
             {
                 name: "Custom Status",
-                state: "Ultra Fast 🚀 with Bun & TypeScript 7",
+                state: "Ultra Fast 🚀 Powered by Seyfert",
                 type: ActivityType.Custom,
             }
         ],
