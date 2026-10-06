@@ -1,4 +1,5 @@
 import os from "node:os";
+import { formatMemoryUsage } from "seyfert/lib/common/it/logger";
 import { Cooldown } from "@slipher/cooldown";
 import { Command, type CommandContext, Declare, Embed } from "seyfert";
 
@@ -40,17 +41,10 @@ export default class Template extends Command {
                     value: `\`${os.cpus()[0]?.model ?? "Unknown"}\` ( \`${os.cpus().length}\` cores )`,
                     inline: true,
                 },
-                { name: "💾 Memory ( RSS )", value: `\`${formatBytes(memory.rss)}\``, inline: true },
+                { name: "💾 Memory ( RSS )", value: `\`${formatMemoryUsage(memory.rss)}\``, inline: true },
                 { name: "⏱️ Uptime", value: `<t:${ctx.readyAt}:R>`, inline: true },
             );
 
         await ctx.editOrReply({ embeds: [embed] });
     }
-}
-
-function formatBytes(bytes: number) {
-    if (bytes === 0) return "0 B";
-    const sizes = ["B", "KB", "MB", "GB", "TB"];
-    const index = Math.floor(Math.log(bytes) / Math.log(1024));
-    return `${(bytes / 1024 ** index).toFixed(2)} ${sizes[index]}`;
 }

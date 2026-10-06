@@ -12,7 +12,7 @@ import {
 } from "seyfert";
 import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
 import * as config from "#config";
-import { generateCases } from "#plugins/function";
+import { generateCases } from "#utils/function";
 
 type PrefixMessage = {
     content: string;
@@ -32,9 +32,10 @@ const clientOptions = {
             const guildId = message.guildId;
             const clientConfig = (message.client as { config?: { config?: { CommandPrefixs: string[] } } }).config;
             let CommandPrefixs: string[] = clientConfig?.config?.CommandPrefixs ?? [];
-            const meName = (message.client as { me?: { toString(): string } | null }).me?.toString() ?? `<@${message.client?.id}>`;
+            const meMention = (message.client as { me?: { toString(): string } | null }).me?.toString() ?? CommandPrefixs[0];
+            const meUsername = (message.client as { username?: string | null }).username?.toLowercase() ?? CommandPrefixs[0];
 
-            if (message.content === meName) {
+            if (message.content === meMention) {
                 (message as { react?: (emoji: string) => unknown }).react?.("👋🏻");
                 return CommandPrefixs;
             }
@@ -49,7 +50,7 @@ const clientOptions = {
                     ).db.getPrefix(guildId);
                     if (customPrefixs) {
                         customPrefixs = customPrefixs.flatMap((p) => generateCases(p));
-                        customPrefixs.push(meName);
+                        customPrefixs.push(meMention, meUsername);
                         return customPrefixs;
                     }
                 } catch {
@@ -62,13 +63,13 @@ const clientOptions = {
                     ).db.setPrefix(guildId, [...new Set([...CommandPrefixs])]);
 
                     CommandPrefixs = CommandPrefixs.flatMap((p) => generateCases(p));
-                    CommandPrefixs.push(meName);
+                    CommandPrefixs.push(meMention, meUsername);
                     return CommandPrefixs;
                 }
             }
 
             CommandPrefixs = CommandPrefixs.flatMap((p) => generateCases(p));
-            CommandPrefixs.push(meName);
+            CommandPrefixs.push(meMention, meUsername);
             return CommandPrefixs;
         },
         reply: () => true,
@@ -146,18 +147,14 @@ const clientOptions = {
             },
         },
     },
-    presence: (shardId: number) => ({
+    presence: (_shardId) => ({
         status: PresenceUpdateStatus.Online,
         activities: [
             {
                 name: "Custom Status",
                 state: "Ultra Fast 🚀 with Bun & TypeScript 7",
                 type: ActivityType.Custom,
-            },
-            {
-                name: `Total ${shardId} shard!`,
-                type: ActivityType.Watching,
-            },
+            }
         ],
         since: Date.now(),
         afk: false,

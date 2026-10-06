@@ -32,7 +32,7 @@ export class AIODatabase {
 
     protected readonly client: Client;
 
-    constructor(client: Client) {
+    constructor(client: Client, connectedLog: boolean = false) {
         this.client = client;
 
         const tursoPath = Bun.env.TursoPath ?? "local.db";
@@ -64,14 +64,16 @@ export class AIODatabase {
                 authToken: tursoAuthToken,
             },
         });
-        this.client.logger.info("[Turso] Connected");
+        if (connectedLog) this.client.logger.info("[Database: Turso] Connected");
 
         this.cache = new Bun.RedisClient(redisUrl);
-        this.client.logger.info("[Redis] Connected");
+        if (connectedLog) this.client.logger.info("[Database: Redis] Connected");
 
         mongoose.connect(mongoUrl)
-            .then(() => this.client.logger.info("[MongoDB] Connected"))
-            .catch((error) => this.client.logger.error("[MongoDB] Connection error:", error));
+            .then(() => {
+                if (connectedLog) this.client.logger.info("[Database: MongoDB] Connected")
+            })
+            .catch((error) => this.client.logger.error("[Database: MongoDB] Connection error:", error));
     }
 
     private getCacheKey(namespace: CacheKeys, id: string): string {

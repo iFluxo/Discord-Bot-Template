@@ -29,7 +29,7 @@
 
         "paths": {
             "app/*": ["./app/*"],
-            "#plugins/function": ["./app/plugins/function.plugin.ts"],
+            "#utils/function": ["./app/plugins/utils.function.ts"],
             "#config": ["./app/assets/config.ts"]
         }
     },
