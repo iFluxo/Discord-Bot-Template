@@ -71,7 +71,7 @@ export class AIODatabase {
             .then(() => {
                 if (connectedLog) this.client.logger.info("[Database: Redis] Connected");
             })
-            .catch((error) => this.client.logger.info("[Database: Redis] Connection error:", error);
+            .catch((error) => this.client.logger.info("[Database: Redis] Connection error:", error))
 
         mongoose.connect(mongoUrl)
             .then(() => {
