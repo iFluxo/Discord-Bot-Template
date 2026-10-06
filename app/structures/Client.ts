@@ -30,9 +30,9 @@ const clientOptions = {
                 return CommandPrefixs;
             }
             if (guildId) {
-                CommandPrefixs.push(message.client?.me?.toString());
+                //CommandPrefixs.push(message.client?.me?.toString());
                 try {
-                    const customPrefixs = await (
+                    let customPrefixs = await (
                         message.client as {
                             db: {
                                 getPrefix: (id: string) => Promise<string[]>;
@@ -40,8 +40,9 @@ const clientOptions = {
                         }
                     ).db.getPrefix(guildId);
                     if (customPrefixs) {
-                        customPrefixs.push(message.client.toString());
-                        return customPrefixs.flatMap((p) => generateCases(p));
+                        customPrefixs = customPrefixs.flatMap((p) => generateCases(p));
+                        //customPrefixs.push(message.client?.me?.toString());
+                        return customPrefixs;
                     }
                 } catch {
                     await (
