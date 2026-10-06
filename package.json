@@ -3,7 +3,7 @@
     "description": "Using TypeScript 7, Bun & Seyfert",
     "version": "0.0.1",
     "main": "app/index.ts",
-    "type": "commonjs",
+    "type": "module",
     "scripts": {
         "biome:format": "bunx @biomejs/biome format --write",
         "biome:lint": "bunx @biomejs/biome lint --write",

@@ -11,8 +11,8 @@ import {
     type UserCommandInteraction,
 } from "seyfert";
 import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
-import { generateCases } from "#plugins/function"
 import * as config from "#config";
+import { generateCases } from "#plugins/function";
 
 const clientOptions = {
     context: extendContext(() => ({ config, readyAt: Math.round(Date.now() / 1000) })),
@@ -33,7 +33,7 @@ const clientOptions = {
                             };
                         }
                     ).db.getPrefix(guildId);
-                    if (customPrefixs) return customPrefixs.flatMap(p => generateCases(p));
+                    if (customPrefixs) return customPrefixs.flatMap((p) => generateCases(p));
                 } catch {
                     await (
                         message.client as {
@@ -43,11 +43,11 @@ const clientOptions = {
                         }
                     ).db.setPrefix(guildId, [...new Set([...config.config.CommandPrefixs])]);
 
-                    return config.config.CommandPrefixs.flatMap(p => generateCases(p));
+                    return config.config.CommandPrefixs.flatMap((p) => generateCases(p));
                 }
             }
 
-            return config.config.CommandPrefixs.flatMap(p => generateCases(p))
+            return config.config.CommandPrefixs.flatMap((p) => generateCases(p));
         },
         reply: () => true,
         deferReplyResponse: () => ({ content: "Sending request..." }),

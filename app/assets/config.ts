@@ -1,9 +1,4 @@
-const {
-    ConfigLocale,
-    ConfigPrefixs,
-    ConfigDevs,
-    ConfigGuilds,
-} = import.meta.env;
+const { ConfigLocale, ConfigPrefixs, ConfigDevs, ConfigGuilds } = import.meta.env;
 
 export const config = {
     Locale: ConfigLocale ?? "en-US",
