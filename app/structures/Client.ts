@@ -24,6 +24,7 @@ const clientOptions = {
         prefix: async (message: { content: string, guildId?: string | null; client: unknown }) => {
             const guildId = message?.guildId;
             const { CommandPrefixs } = config.config;
+            CommandPrefixs.push(client.me.toString());
 
             if (message.content === client.me.toString()) {
                 return message.react("👋🏻");
