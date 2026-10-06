@@ -1,8 +1,8 @@
-import("./plugins/utils.logger");
+import "./plugins/utils.logger";
 
 import { type CooldownMiddlewares, cooldown } from "@slipher/cooldown";
-import { DatabasePlugin } from "app/plugins/database.plugin";
-import { WebhookPlugin } from "app/plugins/webhook.plugin";
+import { DatabasePlugin } from "./app/plugins/database.plugin";
+import { WebhookPlugin } from "./app/plugins/webhook.plugin";
 import type { LocaleString, Client as SeyfertClient } from "seyfert";
 import { definePlugins, type ParseClient, type ParseGlobalMiddlewares } from "seyfert";
 import { Yuna } from "yunaforseyfert";

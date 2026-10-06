@@ -67,7 +67,11 @@ export class AIODatabase {
         if (connectedLog) this.client.logger.info("[Database: Turso] Connected");
 
         this.cache = new Bun.RedisClient(redisUrl);
-        if (connectedLog) this.client.logger.info("[Database: Redis] Connected");
+        this.cache.connect()
+            .then(() => {
+                if (connectedLog) this.client.logger.info("[Database: Redis] Connected");
+            })
+            .catch((error) => this.client.logger.info("[Database: Redis] Connection error:", error);
 
         mongoose.connect(mongoUrl)
             .then(() => {
