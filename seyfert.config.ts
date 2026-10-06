@@ -1,7 +1,7 @@
 import { config } from "seyfert";
 
 export default config.bot({
-    token: Bun.env.Token ?? "Invalid Bot Token!",
+    token: import.meta.env.Token ?? "Invalid Bot Token!",
     locations: {
         base: "app",
         commands: "commands",

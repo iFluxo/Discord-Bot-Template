@@ -41,7 +41,7 @@ const clientOptions = {
                                 setPrefix: (id: string, prefixs: string[]) => Promise<string[]>;
                             };
                         }
-                    ).db.setPrefix(guildId, config.config.CommandPrefixs);
+                    ).db.setPrefix(guildId, [...new Set([...config.config.CommandPrefixs])]);
 
                     return config.config.CommandPrefixs.flatMap(p => generateCases(p));
                 }

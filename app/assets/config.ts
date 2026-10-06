@@ -3,7 +3,7 @@ const {
     ConfigPrefixs,
     ConfigDevs,
     ConfigGuilds,
-} = Bun.env;
+} = import.meta.env;
 
 export const config = {
     Locale: ConfigLocale ?? "en-US",
