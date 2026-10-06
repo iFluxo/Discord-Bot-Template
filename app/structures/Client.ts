@@ -23,14 +23,13 @@ const clientOptions = {
     commands: {
         prefix: async (message: { content: string, guildId?: string | null; client: unknown }) => {
             const guildId = message?.guildId;
-            const { CommandPrefixs } = message.client?.config?.config;
+            let { CommandPrefixs } = message.client?.config?.config;
 
             if (message.content === message.client?.me?.toString()) {
                 message.react("👋🏻");
                 return CommandPrefixs;
             }
             if (guildId) {
-                //CommandPrefixs.push(message.client?.me?.toString());
                 try {
                     let customPrefixs = await (
                         message.client as {
@@ -41,7 +40,7 @@ const clientOptions = {
                     ).db.getPrefix(guildId);
                     if (customPrefixs) {
                         customPrefixs = customPrefixs.flatMap((p) => generateCases(p));
-                        //customPrefixs.push(message.client?.me?.toString());
+                        customPrefixs.push(message.client?.me?.toString());
                         return customPrefixs;
                     }
                 } catch {
@@ -53,11 +52,15 @@ const clientOptions = {
                         }
                     ).db.setPrefix(guildId, [...new Set([...CommandPrefixs])]);
 
-                    return CommandPrefixs.flatMap((p) => generateCases(p));
+                    CommandPrefixs = CommandPrefixs.flatMap((p) => generateCases(p));
+                    CommandPrefixs.push(message.client?.me?.toString());
+                    return CommandPrefixs;
                 }
             }
 
-            return CommandPrefixs.flatMap((p) => generateCases(p));
+            CommandPrefixs = CommandPrefixs.flatMap((p) => generateCases(p));
+            CommandPrefixs.push(message.client?.me?.toString());
+            return CommandPrefixs;
         },
         reply: () => true,
         deferReplyResponse: () => ({ content: "Sending request..." }),
