@@ -33,7 +33,7 @@ const clientOptions = {
                             };
                         }
                     ).db.getPrefix(guildId);
-                    return customPrefixs.flatMap(p => generateCases(p));
+                    if (customPrefixs) return customPrefixs.flatMap(p => generateCases(p));
                 } catch {
                     await (
                         message.client as {
@@ -41,9 +41,9 @@ const clientOptions = {
                                 setPrefix: (id: string, prefixs: string[]) => Promise<string[]>;
                             };
                         }
-                    ).db.setPrefix(guildId, customPrefixs);
+                    ).db.setPrefix(guildId, config.config.CommandPrefixs);
 
-                    return customPrefixs.flatMap(p => generateCases(p));
+                    return config.config.CommandPrefixs.flatMap(p => generateCases(p));
                 }
             }
 
