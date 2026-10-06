@@ -1,6 +1,8 @@
 import os from "node:os";
 import { Cooldown } from "@slipher/cooldown";
-import { Command, type CommandContext, Container, Declare, MessageFlags, Separator, TextDisplay } from "seyfert";
+import { Command, type CommandContext, Declare, Embed } from "seyfert";
+
+import { colors } from "#config";
 
 @Declare({
     name: "stats",
@@ -13,23 +15,42 @@ import { Command, type CommandContext, Container, Declare, MessageFlags, Separat
 @Cooldown.user(1_000)
 export default class Template extends Command {
     async run(ctx: CommandContext) {
-        const container = new Container().addComponents(
-            new TextDisplay().setContent(`## Statistics Information\n${ctx.command.description}`),
-            new Separator(),
-            new TextDisplay().setContent(`
-                ### OS
-                \n- \`${os.type()}\`
-                \n### Release
-                \n- \`${os.release()}\`
-                \n### Arch
-                \n- \`${os.platform()}\` \`${os.machine()}\`
-                \n### CPU ( Cores )
-                \n- \`AMD Ryzen 9 9950X\` ( \`16\` )
-                \n### Uptime
-                \n- <t:${ctx.readyAt}:R>
-            `),
-        );
+        const { cache, gateway } = ctx.client;
+        const memory = process.memoryUsage();
 
-        await ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2 });
+        const embed = new Embed()
+            .setColor(colors.Primary)
+            .setTitle("Statistics Information")
+            .setDescription(ctx.command.description)
+            .addFields(
+                { name: "🏠 Total Guilds", value: `${cache.guilds?.count() ?? 0}`, inline: true },
+                { name: "👥 Total Users", value: `${cache.users?.count() ?? 0}`, inline: true },
+                { name: "💬 Total Channels", value: `${cache.channels?.count("*") ?? 0}`, inline: true },
+                { name: "🎭 Total Roles", value: `${cache.roles?.count("*") ?? 0}`, inline: true },
+                { name: "😀 Total Emojis", value: `${cache.emojis?.count("*") ?? 0}`, inline: true },
+                { name: "🧑 Total Members", value: `${cache.members?.count("*") ?? 0}`, inline: true },
+                { name: "📚 Total Messages", value: `${cache.messages?.count("*") ?? 0}`, inline: true },
+                { name: "⚡ Latency", value: `${gateway.latency} ms`, inline: true },
+                { name: "🗄️ Shards", value: `${gateway.totalShards}`, inline: true },
+                { name: "🖥️ OS", value: `\`${os.type()}\``, inline: true },
+                { name: "📀 Release", value: `\`${os.release()}\``, inline: true },
+                { name: "🏗️ Arch", value: `\`${os.platform()}\` \`${os.machine()}\``, inline: true },
+                {
+                    name: "🧠 CPU",
+                    value: `\`${os.cpus()[0]?.model ?? "Unknown"}\` ( \`${os.cpus().length}\` cores )`,
+                    inline: true,
+                },
+                { name: "💾 Memory ( RSS )", value: `\`${formatBytes(memory.rss)}\``, inline: true },
+                { name: "⏱️ Uptime", value: `<t:${ctx.readyAt}:R>`, inline: true },
+            );
+
+        await ctx.editOrReply({ embeds: [embed] });
     }
+}
+
+function formatBytes(bytes: number) {
+    if (bytes === 0) return "0 B";
+    const sizes = ["B", "KB", "MB", "GB", "TB"];
+    const index = Math.floor(Math.log(bytes) / Math.log(1024));
+    return `${(bytes / 1024 ** index).toFixed(2)} ${sizes[index]}`;
 }

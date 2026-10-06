@@ -14,6 +14,13 @@ import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
 import * as config from "#config";
 import { generateCases } from "#plugins/function";
 
+type PrefixMessage = {
+    content: string;
+    guildId?: string | null;
+    client: unknown;
+    react?: (emoji: string) => unknown;
+};
+
 const clientOptions = {
     context: extendContext(() => ({ config, readyAt: Math.round(Date.now() / 1000) })),
     allowedMentions: {
@@ -21,12 +28,14 @@ const clientOptions = {
         replied_user: false,
     },
     commands: {
-        prefix: async (message: { content: string, guildId?: string | null; client: unknown }) => {
-            const guildId = message?.guildId;
-            let { CommandPrefixs } = message.client?.config?.config;
+        prefix: async (message: PrefixMessage) => {
+            const guildId = message.guildId;
+            const clientConfig = (message.client as { config?: { config?: { CommandPrefixs: string[] } } }).config;
+            let CommandPrefixs: string[] = clientConfig?.config?.CommandPrefixs ?? [];
+            const meName = (message.client as { me?: { toString(): string } | null }).me?.toString() ?? `<@${message.client?.id}>`;
 
-            if (message.content === message.client?.me?.toString()) {
-                message.react("👋🏻");
+            if (message.content === meName) {
+                (message as { react?: (emoji: string) => unknown }).react?.("👋🏻");
                 return CommandPrefixs;
             }
             if (guildId) {
@@ -40,7 +49,7 @@ const clientOptions = {
                     ).db.getPrefix(guildId);
                     if (customPrefixs) {
                         customPrefixs = customPrefixs.flatMap((p) => generateCases(p));
-                        customPrefixs.push(message.client?.me?.toString());
+                        customPrefixs.push(meName);
                         return customPrefixs;
                     }
                 } catch {
@@ -53,13 +62,13 @@ const clientOptions = {
                     ).db.setPrefix(guildId, [...new Set([...CommandPrefixs])]);
 
                     CommandPrefixs = CommandPrefixs.flatMap((p) => generateCases(p));
-                    CommandPrefixs.push(message.client?.me?.toString());
+                    CommandPrefixs.push(meName);
                     return CommandPrefixs;
                 }
             }
 
             CommandPrefixs = CommandPrefixs.flatMap((p) => generateCases(p));
-            CommandPrefixs.push(message.client?.me?.toString());
+            CommandPrefixs.push(meName);
             return CommandPrefixs;
         },
         reply: () => true,
