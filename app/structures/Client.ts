@@ -24,12 +24,12 @@ const clientOptions = {
         prefix: async (message: { content: string, guildId?: string | null; client: unknown }) => {
             const guildId = message?.guildId;
             const { CommandPrefixs } = config.config;
-            CommandPrefixs.push(message.client.me?.toString());
 
-            if (message.content === message.client.me?.toString()) {
+            if (message.content === message.client?.me?.toString()) {
                 return message.react("👋🏻");
             }
             if (guildId) {
+                CommandPrefixs.push(message.client?.me?.toString());
                 try {
                     const customPrefixs = await (
                         message.client as {
