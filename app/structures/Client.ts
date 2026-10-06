@@ -21,9 +21,13 @@ const clientOptions = {
         replied_user: false,
     },
     commands: {
-        prefix: async (message: { guildId?: string | null; client: unknown }) => {
+        prefix: async (message: { content: string, guildId?: string | null; client: unknown }) => {
             const guildId = message?.guildId;
+            const { CommandPrefixs } = config.config;
 
+            if (message.content === client.me.toString()) {
+                return message.react("👋🏻");
+            }
             if (guildId) {
                 try {
                     const customPrefixs = await (
@@ -41,13 +45,13 @@ const clientOptions = {
                                 setPrefix: (id: string, prefixs: string[]) => Promise<string[]>;
                             };
                         }
-                    ).db.setPrefix(guildId, [...new Set([...config.config.CommandPrefixs])]);
+                    ).db.setPrefix(guildId, [...new Set([...CommandPrefixs])]);
 
-                    return config.config.CommandPrefixs.flatMap((p) => generateCases(p));
+                    return CommandPrefixs.flatMap((p) => generateCases(p));
                 }
             }
 
-            return config.config.CommandPrefixs.flatMap((p) => generateCases(p));
+            return CommandPrefixs.flatMap((p) => generateCases(p));
         },
         reply: () => true,
         deferReplyResponse: () => ({ content: "Sending request..." }),
