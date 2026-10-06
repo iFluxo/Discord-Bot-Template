@@ -12,7 +12,7 @@ export function DatabasePlugin() {
             db: (client) => new AIODatabase(client as Client),
         },
         setup(client) {
-            client.logger.info(`[${this.name}-Plugin] Loaded.`);
+            client.logger.info(`[${this.name}-Plugin] loaded`);
         },
     });
 }

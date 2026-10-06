@@ -22,22 +22,14 @@ export interface Webhook {
 }
 
 export interface WebhookCollection {
-    name: string;
-    version: string;
-    creator: string;
-
     [hookName: string]: Webhook | string;
 }
 
 export function WebhookPlugin(options: PluginOptions = {}) {
-    const collection: WebhookCollection = {
-        name: "Webhook Client",
-        version: "0.0.1-flux",
-        creator: "iFluxo (Fluxo)",
-    };
+    const collection: WebhookCollection = {};
 
     return createPlugin({
-        name: "WebhookClient",
+        name: "Webhook",
 
         client: {
             webhook: () => collection,
@@ -64,7 +56,7 @@ export function WebhookPlugin(options: PluginOptions = {}) {
                 size++;
             }
 
-            client.logger.info(`[${this.name}-Plugin] ${size} Loaded.`);
+            client.logger.info(`[${this.name}-Plugin] ${size} loaded`);
         },
     });
 }

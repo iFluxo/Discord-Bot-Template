@@ -166,12 +166,7 @@ class CustomClient extends Client<true> {
 
         this.config = config;
 
-        this.start()
-            .then(() => this.uploadCommands())
-            .catch((error: unknown) => {
-                this.logger.fatal(error);
-                process.exit(1);
-            });
+        this.start().then(() => this.uploadCommands());
     }
 }
 
