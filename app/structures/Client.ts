@@ -26,7 +26,8 @@ const clientOptions = {
             const { CommandPrefixs } = config.config;
 
             if (message.content === message.client?.me?.toString()) {
-                return message.react("👋🏻");
+                message.react("👋🏻");
+                return CommandPrefixs;
             }
             if (guildId) {
                 CommandPrefixs.push(message.client?.me?.toString());
@@ -38,7 +39,7 @@ const clientOptions = {
                             };
                         }
                     ).db.getPrefix(guildId);
-                    if (customPrefixs) return customPrefixs.flatMap((p) => generateCases(p));
+                    if (customPrefixs) return customPrefixs.flatMap((p) => generateCases(p)).push(message.client?.me?.toString());
                 } catch {
                     await (
                         message.client as {
