@@ -64,12 +64,14 @@ export class AIODatabase {
                 authToken: tursoAuthToken,
             },
         });
+        this.client.logger.info("[Turso] Connected");
 
         this.cache = new Bun.RedisClient(redisUrl);
+        this.client.logger.info("[Redis] Connected");
 
-        mongoose.connect(mongoUrl).catch((error) => {
-            console.error("[MongoDB] Connection error:", error);
-        });
+        mongoose.connect(mongoUrl)
+            .then(() => this.client.logger.info("[MongoDB] Connected"))
+            .catch((error) => this.client.logger.error("[MongoDB] Connection error:", error));
     }
 
     private getCacheKey(namespace: CacheKeys, id: string): string {
