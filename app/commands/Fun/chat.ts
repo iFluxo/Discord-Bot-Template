@@ -132,7 +132,8 @@ export default class ChatCommand extends Command {
             reply = await askAI([...past, { role: "user", content: truncated }]);
             pushHistory(key, { role: "user", content: truncated });
             pushHistory(key, { role: "assistant", content: reply });
-        } catch {
+        } catch (error) {
+            ctx.client.logger.error(error);
             return await ctx.editOrReply({
                 embeds: [new Embed().setColor("Red").setDescription("`❌` The AI is unavailable right now. Please try again in a moment.")],
             });
