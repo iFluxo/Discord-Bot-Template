@@ -11,8 +11,9 @@ const chatOptions = {
     }),
 };
 
-const AI_ENDPOINT = "https://text.pollinations.ai/openai";
-const AI_MODEL = "openai";
+const AI_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
+const AI_MODEL = "llama-3.3-70b-versatile";
+const AI_API_KEY = import.meta.env.GroqApiKey ?? "";
 const MAX_INPUT = 4000;
 const EMBED_LIMIT = 4000;
 const CONTENT_LIMIT = 1900;
@@ -62,13 +63,15 @@ function splitText(text: string, limit: number): string[] {
 }
 
 async function askAI(messages: ChatMessage[]): Promise<string> {
+    if (!AI_API_KEY) throw new Error("Groq API key is not configured");
+
     const body = JSON.stringify({ model: AI_MODEL, messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages] });
 
     for (let attempt = 0; attempt < 3; attempt++) {
         try {
             const response = await fetch(AI_ENDPOINT, {
                 method: "POST",
-                headers: { "content-type": "application/json" },
+                headers: { "content-type": "application/json", authorization: `Bearer ${AI_API_KEY}` },
                 body,
                 signal: AbortSignal.timeout(30_000),
             });
@@ -144,7 +147,7 @@ export default class ChatCommand extends Command {
                 iconUrl: ctx.author.avatarURL({ size: 64 }),
             })
             .setDescription(first)
-            .setFooter({ text: "Powered by Pollinations.ai" });
+            .setFooter({ text: "Powered by Groq" });
 
         await ctx.editOrReply({ embeds: [embed], allowed_mentions: { parse: [] } });
 

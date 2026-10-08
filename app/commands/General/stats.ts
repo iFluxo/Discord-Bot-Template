@@ -1,7 +1,7 @@
 import os from "node:os";
-import { formatMemoryUsage } from "seyfert/lib/common/it/logger";
 import { Cooldown } from "@slipher/cooldown";
 import { Command, type CommandContext, Declare, Embed } from "seyfert";
+import { formatMemoryUsage } from "seyfert/lib/common/it/logger";
 
 import { colors } from "#config";
 
