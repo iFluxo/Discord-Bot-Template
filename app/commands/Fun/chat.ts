@@ -12,7 +12,7 @@ const chatOptions = {
 };
 
 const AI_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
-const AI_MODEL = "llama-3.3-70b-versatile";
+const AI_MODEL = "openai/gpt-oss-120b";
 const AI_API_KEY = import.meta.env.GroqApiKey ?? "";
 const MAX_INPUT = 4000;
 const EMBED_LIMIT = 4000;
