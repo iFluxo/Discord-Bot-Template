@@ -24,6 +24,9 @@ export default {
     avatar: {
         description: "Showing the user global and guild avatar.",
     },
+    chat: {
+        description: "Chat with a friendly AI assistant.",
+    },
     prefix: {
         description: "Set an extra command prefix or reset to defaults for this server.",
     },

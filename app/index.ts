@@ -1,23 +1,21 @@
 import "./plugins/utils.logger";
 
 import { type CooldownMiddlewares, cooldown } from "@slipher/cooldown";
-import { DatabasePlugin } from "./plugins/database.plugin";
-import { WebhookPlugin } from "./plugins/webhook.plugin";
 import type { LocaleString, Client as SeyfertClient } from "seyfert";
 import { definePlugins, type ParseClient, type ParseGlobalMiddlewares } from "seyfert";
 import { Yuna } from "yunaforseyfert";
 import type * as config from "#config";
 import type enUS from "./languages/en-US";
 import * as globalMiddlewares from "./middlewares/index";
+import { DatabasePlugin } from "./plugins/database.plugin";
+import { WebhookPlugin } from "./plugins/webhook.plugin";
 import { Client } from "./structures/Client";
 
 const plugins = definePlugins(
     Yuna.plugin({
         parser: { syntax: { namedOptions: ["-", "--"] } },
     }),
-    DatabasePlugin({
-        connectedLog: true,
-    }),
+    DatabasePlugin(true),
     WebhookPlugin({
         log: import.meta.env.WebhookLogUrl ?? "",
     }),

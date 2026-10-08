@@ -33,7 +33,7 @@ const clientOptions = {
             const clientConfig = (message.client as { config?: { config?: { CommandPrefixs: string[] } } }).config;
             let CommandPrefixs: string[] = clientConfig?.config?.CommandPrefixs ?? [];
             const meMention = (message.client as { me?: { toString(): string } | null }).me?.toString() ?? CommandPrefixs[0];
-            const meUsername = (message.client as { username?: string | null }).username?.toLowercase() ?? CommandPrefixs[0];
+            const meUsername = (message.client as { username?: string | null }).username?.toLowerCase() ?? CommandPrefixs[0];
 
             if (message.content === meMention) {
                 (message as { react?: (emoji: string) => unknown }).react?.("👋🏻");
@@ -147,14 +147,14 @@ const clientOptions = {
             },
         },
     },
-    presence: (_shardId) => ({
+    presence: (_shardId: number) => ({
         status: PresenceUpdateStatus.Online,
         activities: [
             {
                 name: "Custom Status",
                 state: "Ultra Fast 🚀 Powered by Seyfert",
                 type: ActivityType.Custom,
-            }
+            },
         ],
         since: Date.now(),
         afk: false,
