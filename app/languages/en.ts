@@ -75,8 +75,8 @@ export default {
             locale: "Language code to set.",
         },
         current: (current?: string, list?: string) =>
-            `\`ℹ️\` Current language: ${current}\nAvailable: ${list}\n\nUsage: \`language <locale>\` — set the bot language for this server.`,
-        notSupported: (input?: string, list?: string) => `\`❌\` Language \`${input}\` is not supported.\nAvailable: ${list}`,
+            `\`ℹ️\` Current language: ${current}\nAvailable:\n${list}\n\nUsage: \`language <locale>\` — set the bot language for this server.`,
+        notSupported: (input?: string, list?: string) => `\`❌\` Language \`${input}\` is not supported.\nAvailable:\n${list}`,
         updated: (locale?: string, name?: string) => `✅ Language has been set to \`${locale}\`${name ? ` (${name})` : ""}.`,
     },
 
