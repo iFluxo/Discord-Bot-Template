@@ -51,7 +51,8 @@ export default class LanguageCommand extends Command {
         const available = Object.keys(ctx.client.langs.values);
         const displayLocale = (locale: string) =>
             `\`${locale}\`${ctx.client.langs.values[locale]?.metadata?.name ? ` (${ctx.client.langs.values[locale]?.metadata?.name})` : ""}`;
-        const availableText = available.map(displayLocale).join("\n");
+        const availableLine = (locale: string) => `- ${displayLocale(locale)}`;
+        const availableText = available.map(availableLine).join("\n");
         const input = ctx.options?.locale?.trim();
 
         if (!input) {
