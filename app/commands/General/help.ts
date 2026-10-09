@@ -24,6 +24,18 @@ let appCommandsCache: { data: RESTGetAPIApplicationCommandsResult | undefined; e
 const helpOptions = {
     command: createStringOption({
         description: "Input a command name.",
+        async autocomplete(interaction) {
+            const query = interaction.getInput().toLowerCase();
+            const commands = interaction.client.commands.values.filter((cmd) => !cmd.props.onlyForDev);
+            const names = [
+                ...new Set(commands.flatMap((cmd) => (cmd instanceof Command ? [cmd.name, ...(cmd.aliases ?? [])] : [cmd.name]))),
+            ]
+                .filter((name) => name.toLowerCase().includes(query))
+                .slice(0, 25)
+                .map((name) => ({ name, value: name }));
+
+            await interaction.respond(names);
+        },
     }),
 };
 

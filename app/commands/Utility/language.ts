@@ -8,6 +8,20 @@ const languageOptions = {
     locale: createStringOption({
         description: "Language code to set.",
         required: false,
+        async autocomplete(interaction) {
+            const query = interaction.getInput().toLowerCase();
+            const available = Object.keys(interaction.client.langs.values);
+
+            await interaction.respond(
+                available
+                    .filter((locale) => locale.toLowerCase().includes(query))
+                    .slice(0, 25)
+                    .map((locale) => ({
+                        name: `${locale} (${interaction.client.langs.values[locale]?.metadata?.name ?? "Unknown"})`,
+                        value: locale,
+                    })),
+            );
+        },
     }),
 };
 
@@ -35,14 +49,18 @@ export default class LanguageCommand extends Command {
         }
 
         const available = Object.keys(ctx.client.langs.values);
-        const availableText = available.map((locale) => `\`${locale}\``).join(", ");
+        const displayLocale = (locale: string) =>
+            `\`${locale}\`${ctx.client.langs.values[locale]?.metadata?.name ? ` (${ctx.client.langs.values[locale]?.metadata?.name})` : ""}`;
+        const availableText = available.map(displayLocale).join(", ");
         const input = ctx.options?.locale?.trim();
 
         if (!input) {
             const current = await ctx.db.getLocale(guildId);
 
             return await ctx.editOrReply({
-                embeds: [new Embed().setColor(colors.Primary).setDescription(translate.language.current(current, availableText))],
+                embeds: [
+                    new Embed().setColor(colors.Primary).setDescription(translate.language.current(displayLocale(current), availableText)),
+                ],
                 flags: MessageFlags.Ephemeral,
             });
         }
@@ -61,7 +79,11 @@ export default class LanguageCommand extends Command {
         setLocale(guildId, updated);
 
         await ctx.editOrReply({
-            embeds: [new Embed().setColor(colors.Primary).setDescription(translate.language.updated(updated))],
+            embeds: [
+                new Embed()
+                    .setColor(colors.Primary)
+                    .setDescription(translate.language.updated(updated, ctx.client.langs.values[updated]?.metadata?.name)),
+            ],
             flags: MessageFlags.Ephemeral,
         });
     }

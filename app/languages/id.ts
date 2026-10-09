@@ -1,6 +1,6 @@
 export default {
     metadata: {
-        name: "Indonesian",
+        name: "Bahasa Indonesia",
         code: "id",
     },
 
@@ -76,9 +76,9 @@ export default {
             locale: "Kode bahasa yang akan diatur.",
         },
         current: (current?: string, list?: string) =>
-            `\`ℹ️\` Bahasa saat ini: \`${current}\`\nTersedia: ${list}\n\nPenggunaan: \`language <locale>\` — atur bahasa bot untuk server ini.`,
+            `\`ℹ️\` Bahasa saat ini: ${current}\nTersedia: ${list}\n\nPenggunaan: \`language <locale>\` — atur bahasa bot untuk server ini.`,
         notSupported: (input?: string, list?: string) => `\`❌\` Bahasa \`${input}\` tidak didukung.\nTersedia: ${list}`,
-        updated: (locale?: string) => `✅ Bahasa telah diatur ke \`${locale}\`.`,
+        updated: (locale?: string, name?: string) => `✅ Bahasa telah diatur ke \`${locale}\`${name ? ` (${name})` : ""}.`,
     },
 
     ping: {
