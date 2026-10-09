@@ -63,6 +63,7 @@ client.setServices({
         default: "en-US",
         aliases: {
             "en-US": ["en" as unknown as LocaleString],
+            "id-ID": ["id" as unknown as LocaleString],
         },
     },
 });
