@@ -1,3 +1,26 @@
+import type { CommandContext, GuildMemberStructure, UserStructure } from "seyfert";
+
+const MENTION_PATTERN = /^<@!?(\d+)>$/;
+const ID_PATTERN = /^\d{15,20}$/;
+
+export type UserResolvable = GuildMemberStructure | UserStructure;
+
+function candidateNames(user: UserStructure): string[] {
+    return [user.username, user.globalName, user.name]
+        .filter((value): value is string => typeof value === "string")
+        .map((value) => value.toLowerCase());
+}
+
+function matchesMember(member: GuildMemberStructure, query: string): boolean {
+    const names = candidateNames(member.user);
+    if (member.nick) names.push(member.nick.toLowerCase());
+    return names.includes(query);
+}
+
+function resolveMention(ctx: CommandContext): UserResolvable | undefined {
+    return ctx.message?.mentions?.users?.[0];
+}
+
 export function generateCases(word: string) {
     const result = [];
     const total = 1 << word.length;
@@ -17,4 +40,47 @@ export function generateCases(word: string) {
     }
 
     return result;
+}
+
+export async function getUser(ctx: CommandContext, query = ""): Promise<UserResolvable> {
+    const input = query.trim().toLowerCase();
+    const guildId = ctx.guildId;
+
+    if (!input) {
+        return resolveMention(ctx) ?? ctx.author;
+    }
+
+    const id = input.match(MENTION_PATTERN)?.[1] ?? (ID_PATTERN.test(input) ? input : undefined);
+
+    if (id) {
+        if (guildId) {
+            const cachedMember = await ctx.client.cache.members?.get(id, guildId);
+            if (cachedMember) return cachedMember;
+
+            try {
+                return await ctx.client.members.fetch(guildId, id);
+            } catch {}
+        }
+
+        const cachedUser = await ctx.client.cache.users?.get(id);
+        if (cachedUser) return cachedUser;
+
+        try {
+            return await ctx.client.users.fetch(id);
+        } catch {
+            return resolveMention(ctx) ?? ctx.author;
+        }
+    }
+
+    if (guildId) {
+        const members = await ctx.client.cache.members?.values(guildId);
+        const member = members?.find((entry) => matchesMember(entry, input));
+        if (member) return member;
+    }
+
+    const users = await ctx.client.cache.users?.values();
+    const user = users?.find((entry) => candidateNames(entry).includes(input));
+    if (user) return user;
+
+    return resolveMention(ctx) ?? ctx.author;
 }

@@ -14,6 +14,7 @@ export const colors = {
 
 export const emojis = {
     "#Developer": "🔐",
+    "#Fun": "🎭",
     "#General": "ℹ️",
     "#Social": "👤",
     "#Utility": "🛠️",
