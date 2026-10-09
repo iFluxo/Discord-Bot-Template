@@ -56,7 +56,6 @@ declare module "seyfert" {
 
     interface ExtraProps {
         onlyForDev?: boolean;
-        disabled?: boolean;
     }
 
     interface InternalOptions {

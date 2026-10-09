@@ -76,7 +76,6 @@ const clientOptions = {
         defaults: {
             props: {
                 onlyForDev: false,
-                disabled: false,
             },
             onRunError: (
                 context: CommandContext | MenuCommandContext<MessageCommandInteraction | UserCommandInteraction>,
