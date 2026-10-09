@@ -112,6 +112,7 @@ async function request<T = unknown>(
 
         body?: Record<string, unknown>;
     },
+    attempt = 0,
 ): Promise<T> {
     const response = await fetch(`https://discord.com/api/v10${path}`, {
         method: options.method,
@@ -132,6 +133,14 @@ async function request<T = unknown>(
               }
             : {}),
     });
+
+    if ((response.status === 429 || response.status >= 500) && attempt < 3) {
+        const retryAfter = Number(response.headers.get("retry-after") ?? "1");
+
+        await new Promise((resolve) => setTimeout(resolve, Math.max(retryAfter, 1) * 1000));
+
+        return request<T>(path, options, attempt + 1);
+    }
 
     if (response.status === 204) {
         return undefined as T;

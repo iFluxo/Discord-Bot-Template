@@ -136,27 +136,7 @@ export class AIODatabase {
                 }
 
                 case "drizzle": {
-                    const payload = {
-                        test: "Pong!",
-                        timestamp: Date.now(),
-                    };
-
-                    await this.drizzle
-                        .insert(CustomTable)
-                        .values({
-                            id: "ping-test",
-                            data: payload,
-                        })
-                        .onConflictDoUpdate({
-                            target: CustomTable.id,
-                            set: {
-                                data: payload,
-                            },
-                        });
-
                     await this.drizzle.select().from(CustomTable).where(eq(CustomTable.id, "ping-test"));
-
-                    await this.drizzle.delete(CustomTable).where(eq(CustomTable.id, "ping-test"));
 
                     break;
                 }

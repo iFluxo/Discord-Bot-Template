@@ -65,7 +65,7 @@ export default class EvalCommand extends Command {
             });
 
         try {
-            output = execSync(cmd).toString();
+            output = execSync(cmd, { timeout: 30_000, maxBuffer: 10 * 1024 * 1024 }).toString();
             await ctx.editOrReply({
                 embeds: [
                     new Embed()

@@ -16,7 +16,7 @@ export default class PingCommand extends Command {
     async run(ctx: CommandContext) {
         const translate = ctx.t.get();
 
-        const dbPing = await ctx.db.ping("mongodb");
+        const dbPing = await ctx.db.ping();
         const ping = ctx.client?.gateway?.latency;
         const pong = ctx.interaction?.createdTimestamp ?? ctx.message?.createdTimestamp ?? Date.now();
 

@@ -49,4 +49,7 @@ export default {
             value: (ping?: number) => `\`${ping ?? 0} ms\``,
         },
     },
+    stats: {
+        description: "Showing about bot statistics.",
+    },
 };

@@ -5,5 +5,5 @@ export const commandInterface = createMiddleware<void, CommandContext>(async ({ 
     context.client.logger.info(
         `${context.author.username} (${context.author.id}) used /${context?.resolver?.fullCommandName} in ${(await context.guild())?.name}`,
     );
-    next();
+    return next();
 });

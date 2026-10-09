@@ -1,4 +1,5 @@
 import { readdirSync } from "node:fs";
+import { join } from "node:path";
 import { Cooldown } from "@slipher/cooldown";
 import {
     Command,
@@ -34,8 +35,8 @@ const helpOptions = {
 @Options(helpOptions)
 export default class HelpCommand extends Command {
     async run(ctx: CommandContext<typeof helpOptions>) {
-        if (ctx.options?.command?.length) helpSpesific(ctx);
-        else commandsList(ctx);
+        if (ctx.options?.command?.length) await helpSpesific(ctx);
+        else await commandsList(ctx);
     }
 }
 
@@ -61,7 +62,7 @@ async function helpSpesific(ctx: CommandContext<typeof helpOptions>) {
             flags: MessageFlags.IsComponentsV2,
         });
 
-    const appCommands = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
+    const appCommands = await getAppCommands(ctx);
     const commandNameSlash = convertToSlash(appCommands, commandOwned.name);
 
     const commandAliases = commandOwned instanceof Command ? (commandOwned.aliases ?? []) : [];
@@ -84,10 +85,11 @@ async function commandsList(ctx: CommandContext) {
     const translate = ctx.t.get();
 
     const commands = ctx.client.commands.values.filter((cmd) => !cmd.props.onlyForDev);
-    const appCommands = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
+    const appCommands = await getAppCommands(ctx);
 
     const commandComponents = [];
-    const categories = readdirSync("app/commands").filter((name) => name !== "Developer");
+    const commandsRoot = join(import.meta.dir, "..");
+    const categories = readdirSync(commandsRoot).filter((name) => name !== "Developer");
     for (const category of categories) {
         commandComponents.push(
             new Separator(),
@@ -107,7 +109,24 @@ async function commandsList(ctx: CommandContext) {
         ...commandComponents,
     );
 
-    ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2 });
+    await ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2 });
+}
+
+const APP_COMMANDS_TTL = 300_000;
+
+let appCommandsCache: { data: RESTGetAPIApplicationCommandsResult | undefined; expires: number } | undefined;
+
+async function getAppCommands(ctx: CommandContext): Promise<RESTGetAPIApplicationCommandsResult | undefined> {
+    const now = Date.now();
+
+    if (appCommandsCache && appCommandsCache.expires > now) {
+        return appCommandsCache.data;
+    }
+
+    const data = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
+    appCommandsCache = { data, expires: now + APP_COMMANDS_TTL };
+
+    return data;
 }
 
 function convertToSlash(appCommands: RESTGetAPIApplicationCommandsResult | undefined, name: string) {

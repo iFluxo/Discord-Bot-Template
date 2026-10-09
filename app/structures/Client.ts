@@ -24,7 +24,7 @@ type PrefixMessage = {
 const clientOptions = {
     context: extendContext(() => ({ config, readyAt: Math.round(Date.now() / 1000) })),
     allowedMentions: {
-        parse: ["everyone", "roles", "users"] as ("everyone" | "roles" | "users")[],
+        parse: [] as ("everyone" | "roles" | "users")[],
         replied_user: false,
     },
     commands: {
@@ -172,7 +172,9 @@ class CustomClient extends Client<true> {
 
         this.config = config;
 
-        this.start().then(() => this.uploadCommands());
+        this.start()
+            .then(() => this.uploadCommands())
+            .catch((error) => this.logger.fatal(error));
     }
 }
 
