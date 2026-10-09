@@ -1,6 +1,6 @@
 export default {
     metadata: {
-        name: "Indonesian",
+        name: "Bahasa Indonesia",
         code: "id-ID",
     },
 

@@ -2,6 +2,16 @@ import { type CommandContext, createMiddleware } from "seyfert";
 
 export const commandInterface = createMiddleware<void, CommandContext>(async ({ context, next }) => {
     if (context.command.props?.onlyForDev && !context.config.config.Developers.includes(context.author.id)) return;
+
+    if (context.guildId) {
+        const locale = await context.db.getLocale(context.guildId);
+
+        Object.defineProperty(context, "t", {
+            configurable: true,
+            value: context.client.t(locale),
+        });
+    }
+
     context.client.logger.info(
         `${context.author.username} (${context.author.id}) used /${context?.resolver?.fullCommandName} in ${(await context.guild())?.name}`,
     );
