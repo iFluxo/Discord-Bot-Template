@@ -13,7 +13,7 @@ const avatarOptions = {
 
 @Declare({
     name: "avatar",
-    aliases: ["av"],
+    aliases: ["ava", "av"],
     description: "Showing the user global and guild avatar.",
     contexts: ["Guild", "BotDM"],
     integrationTypes: ["GuildInstall", "UserInstall"],

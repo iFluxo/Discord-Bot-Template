@@ -12,7 +12,7 @@ const prefixOptions = {
 
 @Declare({
     name: "prefix",
-    aliases: [],
+    aliases: ["prf", "pf"],
     description: "Set an extra command prefix or reset to defaults for this server.",
     defaultMemberPermissions: ["ManageGuild"],
     contexts: ["Guild"],

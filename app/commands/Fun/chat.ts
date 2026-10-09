@@ -121,7 +121,7 @@ async function askAI(messages: ChatMessage[]): Promise<string> {
 
 @Declare({
     name: "chat",
-    aliases: ["ai"],
+    aliases: ["ask", "ai"],
     description: "Chat with a friendly AI assistant.",
     contexts: ["Guild", "BotDM"],
     integrationTypes: ["GuildInstall", "UserInstall"],

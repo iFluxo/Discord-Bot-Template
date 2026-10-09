@@ -27,7 +27,7 @@ const languageOptions = {
 
 @Declare({
     name: "language",
-    aliases: ["lang"],
+    aliases: ["lang", "lg"],
     description: "Change the bot language for this server.",
     defaultMemberPermissions: ["ManageGuild"],
     contexts: ["Guild"],
