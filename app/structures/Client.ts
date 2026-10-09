@@ -75,7 +75,6 @@ const clientOptions = {
         deferReplyResponse: (ctx: CommandContext) => ({ content: ctx.t.get().common.deferReply }),
         defaults: {
             props: {
-                onlyForAdmin: false,
                 onlyForDev: false,
                 disabled: false,
             },

@@ -55,7 +55,6 @@ declare module "seyfert" {
     interface GlobalMetadata extends ParseGlobalMiddlewares<typeof globalMiddlewares> {}
 
     interface ExtraProps {
-        onlyForAdmins?: boolean;
         onlyForDev?: boolean;
         disabled?: boolean;
     }
