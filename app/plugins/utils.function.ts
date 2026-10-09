@@ -73,14 +73,26 @@ export async function getUser(ctx: CommandContext, query = ""): Promise<UserReso
     }
 
     if (guildId) {
-        const members = await ctx.client.cache.members?.values(guildId);
-        const member = members?.find((entry) => matchesMember(entry, input));
-        if (member) return member;
+        try {
+            const members = await ctx.client.cache.members?.values(guildId);
+            if (members?.length) {
+                const member = members.find((entry) => matchesMember(entry, input));
+                if (member) return member;
+            }
+
+            const allMembers = await ctx.client.members.list(guildId, { limit: 1000 });
+            const member = allMembers?.find((entry) => matchesMember(entry, input));
+            if (member) return member;
+        } catch {}
     }
 
-    const users = await ctx.client.cache.users?.values();
-    const user = users?.find((entry) => candidateNames(entry).includes(input));
-    if (user) return user;
+    try {
+        const users = await ctx.client.cache.users?.values();
+        if (users?.length) {
+            const user = users.find((entry) => candidateNames(entry).includes(input));
+            if (user) return user;
+        }
+    } catch {}
 
     return resolveMention(ctx) ?? ctx.author;
 }
