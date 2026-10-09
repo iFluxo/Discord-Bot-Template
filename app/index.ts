@@ -15,7 +15,7 @@ import type * as config from "#config";
 import type en from "./languages/en";
 import * as globalMiddlewares from "./middlewares/index";
 import { DatabasePlugin } from "./plugins/database.plugin";
-import { resolveLocale } from "./plugins/utils.locale";
+import { resolveLocale } from "./plugins/utils.function";
 import { WebhookPlugin } from "./plugins/webhook.plugin";
 import { Client } from "./structures/Client";
 

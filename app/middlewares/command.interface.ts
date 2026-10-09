@@ -1,6 +1,6 @@
 import { type CommandContext, createMiddleware } from "seyfert";
 
-import { setLocale } from "../plugins/utils.locale";
+import { setLocale } from "#utils/function";
 
 export const commandInterface = createMiddleware<void, CommandContext>(async ({ context, next }) => {
     if (context.command.props?.onlyForDev && !context.config.config.Developers.includes(context.author.id)) return;
