@@ -23,11 +23,12 @@ const prefixOptions = {
 @Options(prefixOptions)
 export default class PrefixCommand extends Command {
     async run(ctx: CommandContext<typeof prefixOptions>) {
+        const translate = ctx.t.get();
         const guildId = ctx.guildId;
 
         if (!guildId) {
             return await ctx.editOrReply({
-                content: "This command can only be used inside a server.",
+                content: translate.common.onlyInGuild,
                 flags: MessageFlags.Ephemeral,
             });
         }
@@ -35,13 +36,13 @@ export default class PrefixCommand extends Command {
         const input = ctx.options?.prefixs?.trim();
 
         if (!input) {
+            const current = await ctx.db.getPrefix(guildId);
+
             return await ctx.editOrReply({
                 embeds: [
                     new Embed()
                         .setColor(colors.Primary)
-                        .setDescription(
-                            "`ℹ️` Usage:\n- `prefix <prefix...>` — add extra prefixes on top of the defaults\n- `prefix default` — reset to the default prefixes only",
-                        ),
+                        .setDescription(translate.prefix.current(current.map((prefix) => `\`${prefix}\``).join(", "))),
                 ],
                 flags: MessageFlags.Ephemeral,
             });
@@ -54,7 +55,7 @@ export default class PrefixCommand extends Command {
                 embeds: [
                     new Embed()
                         .setColor(colors.Primary)
-                        .setDescription(`✅ Prefix has been reset to: ${reseted.map((prefix) => `\`${prefix}\``).join(", ")}`),
+                        .setDescription(translate.prefix.reset(reseted.map((prefix) => `\`${prefix}\``).join(", "))),
                 ],
                 flags: MessageFlags.Ephemeral,
             });
@@ -64,7 +65,7 @@ export default class PrefixCommand extends Command {
 
         if (!extra.length || extra.length > 10 || extra.some((prefix) => prefix.length > 5)) {
             return await ctx.editOrReply({
-                embeds: [new Embed().setColor("Red").setDescription("`❌` Provide 1-10 unique prefixes, each at most 5 characters long.")],
+                embeds: [new Embed().setColor("Red").setDescription(translate.prefix.invalid)],
                 flags: MessageFlags.Ephemeral,
             });
         }
@@ -75,7 +76,7 @@ export default class PrefixCommand extends Command {
             embeds: [
                 new Embed()
                     .setColor(colors.Primary)
-                    .setDescription(`✅ Prefix has been updated to: ${updated.map((prefix) => `\`${prefix}\``).join(", ")}`),
+                    .setDescription(translate.prefix.updated(updated.map((prefix) => `\`${prefix}\``).join(", "))),
             ],
             flags: MessageFlags.Ephemeral,
         });

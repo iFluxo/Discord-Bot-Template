@@ -38,12 +38,11 @@ export default class EvalCommand extends Command {
             watcher.stop("Another Execution");
         },
         onStop(reason) {
+            const timestamp = Math.trunc(Date.now() / 1000);
             this.ctx?.editOrReply({
                 content: "",
                 embeds: [
-                    new Embed()
-                        .setDescription(`> Shell watcher ended <t:${Math.trunc(Date.now() / 1000)}:R>. (\`${reason}\`)`)
-                        .setColor("Greyple"),
+                    new Embed().setDescription(this.ctx?.t.get().dev.shell.watcherEnded("Shell", reason, timestamp)).setColor("Greyple"),
                 ],
             });
         },
@@ -51,6 +50,7 @@ export default class EvalCommand extends Command {
     async run(ctx: CommandContext<typeof shellOptions>) {
         const { client, options, channelId } = ctx;
 
+        const translate = ctx.t.get();
         const start = Date.now();
 
         const cmd = options?.cmd;
@@ -60,7 +60,7 @@ export default class EvalCommand extends Command {
 
         if (!cmd?.length)
             return await ctx.editOrReply({
-                embeds: [new Embed().setDescription("`❌` Input command!").setColor("Red")],
+                embeds: [new Embed().setDescription(translate.dev.shell.empty).setColor("Red")],
                 flags: MessageFlags.Ephemeral,
             });
 
@@ -73,7 +73,7 @@ export default class EvalCommand extends Command {
                         .setTitle(`> \`${cmd}\``)
                         .setDescription(`${Formatter.codeBlock(output ?? "", "bash")}`)
                         .setFooter({
-                            text: `Unix Shell | ${Math.floor(Date.now() - start)} ms`,
+                            text: translate.dev.shell.footer(Math.floor(Date.now() - start)),
                         }),
                 ],
             });
@@ -85,7 +85,7 @@ export default class EvalCommand extends Command {
                         .setTitle(`> \`${cmd}\``)
                         .setDescription(Formatter.codeBlock(inspect(error).slice(0, 4080), "bash"))
                         .setFooter({
-                            text: `Error | ${Math.floor(Date.now() - start)} ms`,
+                            text: translate.dev.shell.errorFooter(Math.floor(Date.now() - start)),
                         }),
                 ],
                 flags: MessageFlags.Ephemeral,

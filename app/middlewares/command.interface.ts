@@ -1,10 +1,14 @@
 import { type CommandContext, createMiddleware } from "seyfert";
 
+import { setLocale } from "../plugins/utils.locale";
+
 export const commandInterface = createMiddleware<void, CommandContext>(async ({ context, next }) => {
     if (context.command.props?.onlyForDev && !context.config.config.Developers.includes(context.author.id)) return;
 
     if (context.guildId) {
         const locale = await context.db.getLocale(context.guildId);
+
+        setLocale(context.guildId, locale);
 
         Object.defineProperty(context, "t", {
             configurable: true,

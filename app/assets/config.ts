@@ -1,7 +1,7 @@
 const { ConfigLocale, ConfigPrefixs, ConfigDevs, ConfigGuilds } = import.meta.env;
 
 export const config = {
-    Locale: ConfigLocale ?? "en-US",
+    Locale: ConfigLocale ?? "en",
     CommandPrefixs: ConfigPrefixs?.split(",") ?? ["-", "ai"],
     Developers: ConfigDevs?.split(",") ?? ["561170896480501790"],
     DevGuilds: ConfigGuilds?.split(",") ?? ["1041813867640131665"],

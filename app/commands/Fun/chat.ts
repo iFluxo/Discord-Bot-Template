@@ -127,12 +127,13 @@ async function askAI(messages: ChatMessage[]): Promise<string> {
 @Options(chatOptions)
 export default class ChatCommand extends Command {
     async run(ctx: CommandContext<typeof chatOptions>) {
+        const translate = ctx.t.get();
         const input = ctx.options?.message?.trim();
         const key = `${ctx.channelId}:${ctx.author.id}`;
 
         if (!input) {
             return await ctx.editOrReply({
-                embeds: [new Embed().setColor("Red").setDescription("`❌` Provide a message to chat with the AI.")],
+                embeds: [new Embed().setColor("Red").setDescription(translate.chat.empty)],
                 flags: MessageFlags.Ephemeral,
             });
         }
@@ -140,7 +141,7 @@ export default class ChatCommand extends Command {
         if (RESET_PATTERN.test(input)) {
             history.delete(key);
             return await ctx.editOrReply({
-                embeds: [new Embed().setColor(colors.Primary).setDescription("`🔄` Conversation history has been cleared.")],
+                embeds: [new Embed().setColor(colors.Primary).setDescription(translate.chat.reset)],
                 flags: MessageFlags.Ephemeral,
             });
         }
@@ -158,7 +159,7 @@ export default class ChatCommand extends Command {
         } catch (error) {
             ctx.client.logger.error(error);
             return await ctx.editOrReply({
-                embeds: [new Embed().setColor("Red").setDescription("`❌` The AI is unavailable right now. Please try again in a moment.")],
+                embeds: [new Embed().setColor("Red").setDescription(translate.chat.unavailable)],
             });
         }
 
@@ -171,7 +172,7 @@ export default class ChatCommand extends Command {
                 iconUrl: ctx.author.avatarURL({ size: 64 }),
             })
             .setDescription(first)
-            .setFooter({ text: "Powered by Pollinations.ai" });
+            .setFooter({ text: translate.chat.footer });
 
         await ctx.editOrReply({ embeds: [embed], allowed_mentions: { parse: [] } });
 

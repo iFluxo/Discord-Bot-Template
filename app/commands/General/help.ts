@@ -14,8 +14,12 @@ import {
     Separator,
     TextDisplay,
 } from "seyfert";
-
+import type { UsingClient } from "seyfert/lib/commands/applications/shared";
 import { emojis as categoryEmoji } from "#config";
+
+const APP_COMMANDS_TTL = 300_000;
+
+let appCommandsCache: { data: RESTGetAPIApplicationCommandsResult | undefined; expires: number } | undefined;
 
 const helpOptions = {
     command: createStringOption({
@@ -35,14 +39,18 @@ const helpOptions = {
 @Options(helpOptions)
 export default class HelpCommand extends Command {
     async run(ctx: CommandContext<typeof helpOptions>) {
-        if (ctx.options?.command?.length) await helpSpesific(ctx);
-        else await commandsList(ctx);
+        const translate = ctx.t.get();
+
+        if (ctx.options?.command?.length) await helpSpecific(ctx, translate);
+        else
+            await ctx.editOrReply({
+                components: [await buildCommandsList(ctx.client, translate)],
+                flags: MessageFlags.IsComponentsV2,
+            });
     }
 }
 
-async function helpSpesific(ctx: CommandContext<typeof helpOptions>) {
-    const translate = ctx.t.get();
-
+async function helpSpecific(ctx: CommandContext<typeof helpOptions>, translate: DefaultLocale) {
     const cmdToSearch = ctx.options.command;
     if (!cmdToSearch) return;
 
@@ -62,7 +70,7 @@ async function helpSpesific(ctx: CommandContext<typeof helpOptions>) {
             flags: MessageFlags.IsComponentsV2,
         });
 
-    const appCommands = await getAppCommands(ctx);
+    const appCommands = await getAppCommands(ctx.client);
     const commandNameSlash = convertToSlash(appCommands, commandOwned.name);
 
     const commandAliases = commandOwned instanceof Command ? (commandOwned.aliases ?? []) : [];
@@ -81,15 +89,14 @@ async function helpSpesific(ctx: CommandContext<typeof helpOptions>) {
     await ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2 });
 }
 
-async function commandsList(ctx: CommandContext) {
-    const translate = ctx.t.get();
-
-    const commands = ctx.client.commands.values.filter((cmd) => !cmd.props.onlyForDev);
-    const appCommands = await getAppCommands(ctx);
+export async function buildCommandsList(client: UsingClient, translate: DefaultLocale): Promise<Container> {
+    const commands = client.commands.values.filter((cmd) => !cmd.props.onlyForDev);
+    const appCommands = await getAppCommands(client);
 
     const commandComponents = [];
     const commandsRoot = join(import.meta.dir, "..");
     const categories = readdirSync(commandsRoot).filter((name) => name !== "Developer");
+
     for (const category of categories) {
         commandComponents.push(
             new Separator(),
@@ -102,28 +109,22 @@ async function commandsList(ctx: CommandContext) {
         );
     }
 
-    const container = new Container().addComponents(
+    return new Container().addComponents(
         new TextDisplay().setContent(
-            `## ${translate.help.list.title}\n${translate.help.list.description(convertToSlash(appCommands, ctx.command.name))}`,
+            `## ${translate.help.list.title}\n${translate.help.list.description(convertToSlash(appCommands, "help"))}`,
         ),
         ...commandComponents,
     );
-
-    await ctx.editOrReply({ components: [container], flags: MessageFlags.IsComponentsV2 });
 }
 
-const APP_COMMANDS_TTL = 300_000;
-
-let appCommandsCache: { data: RESTGetAPIApplicationCommandsResult | undefined; expires: number } | undefined;
-
-async function getAppCommands(ctx: CommandContext): Promise<RESTGetAPIApplicationCommandsResult | undefined> {
+async function getAppCommands(client: UsingClient): Promise<RESTGetAPIApplicationCommandsResult | undefined> {
     const now = Date.now();
 
     if (appCommandsCache && appCommandsCache.expires > now) {
         return appCommandsCache.data;
     }
 
-    const data = await ctx.client.proxy.applications(ctx.client.applicationId)?.commands?.get();
+    const data = await client.proxy.applications(client.applicationId)?.commands?.get();
     appCommandsCache = { data, expires: now + APP_COMMANDS_TTL };
 
     return data;

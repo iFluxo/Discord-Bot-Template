@@ -2,6 +2,7 @@ import { Cooldown } from "@slipher/cooldown";
 import { Command, type CommandContext, createStringOption, Declare, Embed, MessageFlags, Options } from "seyfert";
 
 import { colors } from "#config";
+import { setLocale } from "../../plugins/utils.locale";
 
 const languageOptions = {
     locale: createStringOption({
@@ -23,50 +24,44 @@ const languageOptions = {
 @Options(languageOptions)
 export default class LanguageCommand extends Command {
     async run(ctx: CommandContext<typeof languageOptions>) {
+        const translate = ctx.t.get();
         const guildId = ctx.guildId;
 
         if (!guildId) {
             return await ctx.editOrReply({
-                content: "This command can only be used inside a server.",
+                content: translate.common.onlyInGuild,
                 flags: MessageFlags.Ephemeral,
             });
         }
 
         const available = Object.keys(ctx.client.langs.values);
+        const availableText = available.map((locale) => `\`${locale}\``).join(", ");
         const input = ctx.options?.locale?.trim();
 
         if (!input) {
+            const current = await ctx.db.getLocale(guildId);
+
             return await ctx.editOrReply({
-                embeds: [
-                    new Embed()
-                        .setColor(colors.Primary)
-                        .setDescription(
-                            `\`ℹ️\` Usage: \`language <locale>\` — set the bot language for this server.\nAvailable: ${available.map((locale) => `\`${locale}\``).join(", ")}`,
-                        ),
-                ],
+                embeds: [new Embed().setColor(colors.Primary).setDescription(translate.language.current(current, availableText))],
                 flags: MessageFlags.Ephemeral,
             });
         }
 
-        const resolved = available.find((locale) => locale.toLowerCase() === input.toLowerCase());
+        const resolved = ctx.client.langs.getLocale(input);
 
-        if (!resolved) {
+        if (!available.includes(resolved)) {
             return await ctx.editOrReply({
-                embeds: [
-                    new Embed()
-                        .setColor("Red")
-                        .setDescription(
-                            `\`❌\` Language \`${input}\` is not supported.\nAvailable: ${available.map((locale) => `\`${locale}\``).join(", ")}`,
-                        ),
-                ],
+                embeds: [new Embed().setColor("Red").setDescription(translate.language.notSupported(input, availableText))],
                 flags: MessageFlags.Ephemeral,
             });
         }
 
         const updated = await ctx.db.setLocale(guildId, resolved);
 
+        setLocale(guildId, updated);
+
         await ctx.editOrReply({
-            embeds: [new Embed().setColor(colors.Primary).setDescription(`✅ Language has been set to \`${updated}\`.`)],
+            embeds: [new Embed().setColor(colors.Primary).setDescription(translate.language.updated(updated))],
             flags: MessageFlags.Ephemeral,
         });
     }

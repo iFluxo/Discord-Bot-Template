@@ -1,15 +1,32 @@
 import "./plugins/utils.logger";
 
-import { type CooldownMiddlewares, cooldown } from "@slipher/cooldown";
-import type { LocaleString, Client as SeyfertClient } from "seyfert";
-import { definePlugins, type ParseClient, type ParseGlobalMiddlewares } from "seyfert";
+import { type CooldownMiddlewares, type CooldownResult, cooldown } from "@slipher/cooldown";
+import {
+    type AnyContext,
+    definePlugins,
+    Formatter,
+    type LocaleString,
+    type ParseClient,
+    type ParseGlobalMiddlewares,
+    type Client as SeyfertClient,
+} from "seyfert";
 import { Yuna } from "yunaforseyfert";
 import type * as config from "#config";
-import type enUS from "./languages/en-US";
+import type en from "./languages/en";
 import * as globalMiddlewares from "./middlewares/index";
 import { DatabasePlugin } from "./plugins/database.plugin";
+import { resolveLocale } from "./plugins/utils.locale";
 import { WebhookPlugin } from "./plugins/webhook.plugin";
 import { Client } from "./structures/Client";
+
+function cooldownMessage(result: CooldownResult, context: AnyContext): string {
+    const guildId = (context as { guildId?: string | null }).guildId;
+    const client = context.client as {
+        t(locale: string): { get(): { middleware: { cooldown(time?: string): string } } };
+    };
+
+    return client.t(resolveLocale(guildId)).get().middleware.cooldown(Formatter.timestamp(result.retryAfter));
+}
 
 const plugins = definePlugins(
     Yuna.plugin({
@@ -20,7 +37,10 @@ const plugins = definePlugins(
         log: import.meta.env.WebhookLogUrl ?? "",
     }),
     cooldown({
-        middleware: { global: true },
+        middleware: {
+            global: true,
+            message: cooldownMessage,
+        },
     }),
 );
 
@@ -29,7 +49,7 @@ declare module "seyfert" {
         client: ParseClient<SeyfertClient<true>>;
         plugins: typeof plugins;
         middlewares: CooldownMiddlewares<"cooldown"> & typeof globalMiddlewares;
-        langs: typeof enUS;
+        langs: typeof en;
     }
 
     interface GlobalMetadata extends ParseGlobalMiddlewares<typeof globalMiddlewares> {}
@@ -60,10 +80,10 @@ const client = new Client({
 client.setServices({
     middlewares: globalMiddlewares,
     langs: {
-        default: "en-US",
+        default: "en",
         aliases: {
-            "en-US": ["en" as unknown as LocaleString],
-            "id-ID": ["id" as unknown as LocaleString],
+            en: ["en-US" as unknown as LocaleString],
+            id: ["id-ID" as unknown as LocaleString],
         },
     },
 });

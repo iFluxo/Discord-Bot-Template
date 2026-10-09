@@ -36,7 +36,6 @@ const clientOptions = {
             const meUsername = (message.client as { username?: string | null }).username?.toLowerCase() ?? CommandPrefixs[0];
 
             if (message.content === meMention) {
-                (message as { react?: (emoji: string) => unknown }).react?.("👋🏻");
                 return CommandPrefixs;
             }
             if (guildId) {
@@ -73,7 +72,7 @@ const clientOptions = {
             return CommandPrefixs;
         },
         reply: () => true,
-        deferReplyResponse: () => ({ content: "Sending request..." }),
+        deferReplyResponse: (ctx: CommandContext) => ({ content: ctx.t.get().common.deferReply }),
         defaults: {
             props: {
                 onlyForAdmin: false,
@@ -85,20 +84,20 @@ const clientOptions = {
                 error: unknown,
             ) => {
                 context.editOrReply({
-                    content: "Something went wrong!",
+                    content: context.t.get().errors.run,
                     flags: MessageFlags.Ephemeral,
                 });
                 context.client.logger.error(error);
             },
             onOptionsError: (context: CommandContext) => {
                 context.editOrReply({
-                    content: "Invalid options provided.",
+                    content: context.t.get().errors.options,
                     flags: MessageFlags.Ephemeral,
                 });
             },
             onPermissionsFail: (context: CommandContext, permissions: PermissionStrings) => {
                 context.editOrReply({
-                    content: `You need ${permissions.join(", ")} permissions to use this command.`,
+                    content: context.t.get().errors.permissions(permissions.join(", ")),
                     flags: MessageFlags.Ephemeral,
                 });
             },
@@ -107,7 +106,7 @@ const clientOptions = {
                 permissions: PermissionStrings,
             ) => {
                 context.editOrReply({
-                    content: `I need ${permissions.join(", ")} permissions to run this command.`,
+                    content: context.t.get().errors.botPermissions(permissions.join(", ")),
                     flags: MessageFlags.Ephemeral,
                 });
             },
@@ -131,7 +130,7 @@ const clientOptions = {
         defaults: {
             onRunError: (context: ComponentContext) => {
                 context.editOrReply({
-                    content: "Component error!",
+                    content: context.t.get().components.error,
                     flags: MessageFlags.Ephemeral,
                 });
             },
@@ -141,7 +140,7 @@ const clientOptions = {
         defaults: {
             onRunError: (context: ModalContext) => {
                 context.editOrReply({
-                    content: "Modal error!",
+                    content: context.t.get().components.modalError,
                     flags: MessageFlags.Ephemeral,
                 });
             },

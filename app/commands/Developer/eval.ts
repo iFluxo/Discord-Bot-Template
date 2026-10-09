@@ -52,11 +52,12 @@ export default class EvalCommand extends Command {
             watcher.stop("Another Execution");
         },
         onStop(reason) {
+            const timestamp = Math.trunc(Date.now() / 1000);
             this.ctx?.editOrReply({
                 content: "",
                 embeds: [
                     new Embed()
-                        .setDescription(`\`📕\` Eval command watcher ended <t:${Math.trunc(Date.now() / 1000)}:R>. (\`${reason}\`)`)
+                        .setDescription(this.ctx?.t.get().dev.eval.watcherEnded("Eval command", reason, timestamp))
                         .setColor("Greyple"),
                 ],
             });
@@ -65,6 +66,7 @@ export default class EvalCommand extends Command {
     async run(ctx: CommandContext<typeof evalOptions>) {
         const { client, options, channelId } = ctx;
 
+        const translate = ctx.t.get();
         const start = Date.now();
         const depth = options?.depth ?? 0;
 
@@ -76,7 +78,7 @@ export default class EvalCommand extends Command {
 
         if (!code?.length)
             return await ctx.editOrReply({
-                embeds: [new Embed().setDescription("`❌` Input code!").setColor("Red")],
+                embeds: [new Embed().setDescription(translate.dev.eval.empty).setColor("Red")],
                 flags: MessageFlags.Ephemeral,
             });
 
@@ -101,7 +103,7 @@ export default class EvalCommand extends Command {
                         )
                         .setTimestamp()
                         .setFooter({
-                            text: `Type: ${typecode} | ${Math.floor(Date.now() - start)}ms`,
+                            text: translate.dev.eval.type(typecode ?? "undefined", Math.floor(Date.now() - start)),
                         }),
                 ],
             });
@@ -113,7 +115,7 @@ export default class EvalCommand extends Command {
                         .setDescription(Formatter.codeBlock(inspect(error).slice(0, 4080), "js"))
                         .setTimestamp()
                         .setFooter({
-                            text: `Type: Error | ${Math.floor(Date.now() - start)}ms`,
+                            text: translate.dev.eval.errorType(Math.floor(Date.now() - start)),
                         }),
                 ],
                 flags: MessageFlags.Ephemeral,

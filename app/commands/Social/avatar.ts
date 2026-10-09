@@ -23,6 +23,7 @@ const avatarOptions = {
 @Options(avatarOptions)
 export default class AvatarCommand extends Command {
     async run(ctx: CommandContext<typeof avatarOptions>) {
+        const translate = ctx.t.get();
         const resolved = await getUser(ctx, ctx.options?.user);
         const isMember = "user" in resolved;
 
@@ -37,7 +38,7 @@ export default class AvatarCommand extends Command {
         const embed = new Embed()
             .setColor(colors.Primary)
             .setAuthor({ name: user.id })
-            .setTitle(`${user.globalName ?? user.name}'s Avatar`)
+            .setTitle(translate.avatar.title(user.globalName ?? user.name))
             .setURL(guildAvatar ?? undefined)
             .setImage(guildAvatar ?? globalAvatar);
 
